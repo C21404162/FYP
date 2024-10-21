@@ -1,5 +1,6 @@
-[gd_scene load_steps=11 format=3 uid="uid://daea0cguij4h2"]
+[gd_scene load_steps=12 format=3 uid="uid://daea0cguij4h2"]
 
+[ext_resource type="Texture2D" uid="uid://cbywlgvjn8emc" path="res://Textures/696.jpg" id="1_rpqyh"]
 [ext_resource type="Script" path="res://Player.gd" id="1_vwaj1"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mvl8r"]
@@ -24,8 +25,9 @@ sky = SubResource("Sky_0r71q")
 tonemap_mode = 2
 glow_enabled = true
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tx62p"]
-albedo_color = Color(0, 0.893742, 0.0529533, 1)
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_yxgdt"]
+albedo_texture = ExtResource("1_rpqyh")
+uv1_triplanar = true
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_vxuxf"]
 
@@ -82,10 +84,10 @@ transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75
 shadow_enabled = true
 
 [node name="CSGBox3D" type="CSGBox3D" parent="Map"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.000499994, 0)
-material_override = SubResource("StandardMaterial3D_tx62p")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.000499994, 0)
+material_override = SubResource("StandardMaterial3D_yxgdt")
 use_collision = true
-size = Vector3(14, 0.001, 15)
+size = Vector3(100, 0.001, 100)
 
 [node name="Player" type="CharacterBody3D" parent="."]
 script = ExtResource("1_vwaj1")
