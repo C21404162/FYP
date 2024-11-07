@@ -23,8 +23,15 @@ sky_material = SubResource("ProceduralSkyMaterial_v853q")
 [sub_resource type="Environment" id="Environment_jna2u"]
 background_mode = 2
 sky = SubResource("Sky_0r71q")
+ambient_light_color = Color(1, 0.98395, 0.638086, 1)
+ambient_light_sky_contribution = 0.0
+ambient_light_energy = 0.02
 tonemap_mode = 2
 glow_enabled = true
+fog_enabled = true
+fog_light_color = Color(1, 0.98395, 0.638086, 1)
+fog_light_energy = 0.02
+fog_density = 0.1
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_yxgdt"]
 albedo_texture = ExtResource("1_rpqyh")
@@ -82,6 +89,7 @@ environment = SubResource("Environment_jna2u")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="Map"]
 transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
+visible = false
 shadow_enabled = true
 
 [node name="CSGBox3D" type="CSGBox3D" parent="Map"]
@@ -103,6 +111,11 @@ shape = SubResource("ConvexPolygonShape3D_8oc3h")
 
 [node name="Head" type="Node3D" parent="Player"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+
+[node name="SpotLight3D" type="SpotLight3D" parent="Player/Head"]
+light_color = Color(1, 0.98395, 0.638086, 1)
+spot_range = 7.5
+spot_angle = 65.082
 
 [node name="Camera3D" type="Camera3D" parent="Player/Head"]
 
