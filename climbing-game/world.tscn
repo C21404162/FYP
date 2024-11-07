@@ -1,7 +1,8 @@
-[gd_scene load_steps=12 format=3 uid="uid://daea0cguij4h2"]
+[gd_scene load_steps=13 format=3 uid="uid://daea0cguij4h2"]
 
 [ext_resource type="Texture2D" uid="uid://cbywlgvjn8emc" path="res://Textures/696.jpg" id="1_rpqyh"]
 [ext_resource type="Script" path="res://Player.gd" id="1_vwaj1"]
+[ext_resource type="MeshLibrary" uid="uid://i8i83p4gpb4c" path="res://tileset.tres" id="3_onxy0"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mvl8r"]
 albedo_color = Color(0.656139, 0.120944, 0.509566, 1)
@@ -104,3 +105,12 @@ shape = SubResource("ConvexPolygonShape3D_8oc3h")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
 
 [node name="Camera3D" type="Camera3D" parent="Player/Head"]
+
+[node name="GridMap" type="GridMap" parent="."]
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 0, 0)
+mesh_library = ExtResource("3_onxy0")
+cell_size = Vector3(1, 1, 1)
+cell_center_y = false
+data = {
+"cells": PackedInt32Array(65534, 14, 2, 65534, 15, 2, 65535, 15, 2, 65535, 14, 2, 65535, 16, 2, 65534, 16, 2, 65533, 16, 2, 65533, 15, 2, 65533, 14, 2, 65533, 13, 2, 65534, 13, 2, 65535, 13, 2, 0, 13, 2, 0, 14, 2, 0, 15, 2, 0, 16, 2, 65532, 17, 655361, 65532, 12, 1048577, 1, 12, 1, 1, 17, 1441793, 65532, 13, 1048576, 65532, 14, 1048576, 65532, 15, 1048576, 65532, 16, 1048576, 65533, 17, 655360, 65534, 17, 655360, 65535, 17, 655360, 0, 17, 655360, 1, 16, 1441792, 1, 15, 1441792, 1, 14, 1441792, 1, 13, 1441792, 0, 12, 0, 65533, 12, 0, 65534, 12, 1048579, 65535, 12, 3, 65534, 11, 1048576, 65535, 11, 1441792, 65535, 10, 1441792, 65534, 10, 1048576, 65534, 9, 655363, 65535, 9, 1441795, 65533, 9, 655360, 0, 9, 655360, 1, 8, 1441792, 1, 7, 1441792, 65532, 7, 1048576, 65532, 8, 1048576, 65532, 9, 655361, 1, 9, 1441793, 1, 6, 1, 65533, 8, 1048578, 65534, 8, 1048578, 65535, 8, 1048578, 0, 8, 1048578, 65533, 7, 1048578, 65534, 7, 1048578, 65535, 7, 1048578, 0, 7, 1048578, 65532, 6, 1048577, 65533, 6, 1048579, 0, 6, 3, 65535, 6, 2, 65534, 6, 2)
+}
