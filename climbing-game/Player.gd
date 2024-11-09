@@ -12,13 +12,14 @@ const BOB_AMP = 0.03
 var t_bob = 0.0
 
 #fov
-const BASE_FOV = 75.0
+const BASE_FOV = 90.0
 const FOV_CHANGE = 1.5
 
 @export var hand_smoothing = 20.0
 @export var reach_distance = 1.0
 @export var reach_speed = 5.0
-@export var climb_force = 20.0  # Force applied when climbing
+@export var climb_force = 20.0
+@export var swing_strength = 5.0  # Added: Controls swing momentum
 
 @onready var head = $Head
 @onready var camera = $Head/Camera3D
@@ -36,6 +37,11 @@ var left_hand_grabbing = false
 var right_hand_grabbing = false
 var grab_point_left: Vector3
 var grab_point_right: Vector3
+
+# Added: Store the direction vector between hands when both are grabbing
+var hang_direction: Vector3
+# Added: Store the current swing velocity
+var swing_velocity: Vector3
 
 func _ready():
 	left_hand.gravity_scale = 0
@@ -82,58 +88,70 @@ func _unhandled_input(event):
 func _physics_process(delta: float) -> void:
 	check_grab_state()
 	
-	# Modified gravity handling for climbing
-	if not is_on_floor() and not (left_hand_grabbing or right_hand_grabbing):
-		velocity += get_gravity() * delta
-	elif left_hand_grabbing or right_hand_grabbing:
-		# Reduce or eliminate gravity while grabbing
-		velocity.y = lerp(velocity.y, 0.0, delta * 10.0)
+	if left_hand_grabbing or right_hand_grabbing:
+		# Calculate hanging position - point slightly below the grab point
+		var hang_point = Vector3.ZERO
+		if left_hand_grabbing and right_hand_grabbing:
+			# Average position between both hands
+			hang_point = (grab_point_left + grab_point_right) / 2
+			hang_direction = (grab_point_right - grab_point_left).normalized()
+		elif left_hand_grabbing:
+			hang_point = grab_point_left
+		else:
+			hang_point = grab_point_right
+			
+		# Position player below hang point
+		var target_pos = hang_point + Vector3(0, -1.5, 0)  # Adjust -1.5 based on your player model
+		global_position = global_position.lerp(target_pos, delta * 10.0)
 		
-		# Allow climbing movement
-		if Input.is_action_pressed("up"):  # Assuming "up" is your forward/climb up input
-			velocity.y = climb_force * delta
-		elif Input.is_action_pressed("down"):  # Add a down input in project settings
-			velocity.y = -climb_force * delta
-	
-	# Handle jump
-	if Input.is_action_just_pressed("jump"):
-		if is_on_floor() or left_hand_grabbing or right_hand_grabbing:
-			velocity.y = JUMP_VELOCITY
-			# Release grab when jumping
-			left_hand_grabbing = false
-			right_hand_grabbing = false
-
-	# Handle sprint
-	if Input.is_action_pressed("sprint"):
-		speed = SPRINT_SPEED
+		# Handle swinging
+		var input_dir = Input.get_vector("left", "right", "up", "down")
+		if input_dir != Vector2.ZERO:
+			var swing_dir = (head.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
+			swing_velocity += swing_dir * swing_strength * delta
+		
+		# Apply swing physics
+		swing_velocity = swing_velocity.lerp(Vector3.ZERO, delta * 2.0)  # Damping
+		velocity = swing_velocity
+		
+		# Zero out vertical velocity while hanging
+		velocity.y = 0
+		
 	else:
-		speed = WALK_SPEED
+		# Handle jump
+		if Input.is_action_just_pressed("jump"):
+			if is_on_floor():
+				velocity.y = JUMP_VELOCITY
 	
-	# Modified movement for climbing
-	var input_dir = Input.get_vector("left", "right", "up", "down")
-	var direction = (head.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
+		# Apply gravity when not grabbing
+		if not is_on_floor():
+			velocity += get_gravity() * delta
 	
-	if is_on_floor() or not (left_hand_grabbing or right_hand_grabbing):
+		# Handle sprint
+		if Input.is_action_pressed("sprint"):
+			speed = SPRINT_SPEED
+		else:
+			speed = WALK_SPEED
+		
+		# Regular movement
+		var input_dir = Input.get_vector("left", "right", "up", "down")
+		var direction = (head.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
+		
 		if direction:
 			velocity.x = direction.x * speed
 			velocity.z = direction.z * speed
 		else:
 			velocity.x = lerp(velocity.x, direction.x * speed, delta * 7.0)
 			velocity.z = lerp(velocity.z, direction.z * speed, delta * 7.0)
-	else:
-		# Reduced horizontal movement while climbing
-		velocity.x = lerp(velocity.x, direction.x * speed * 0.5, delta * 3.0)
-		velocity.z = lerp(velocity.z, direction.z * speed * 0.5, delta * 3.0)
 
-	#headbob (disabled while climbing)
-	if not (left_hand_grabbing or right_hand_grabbing):
+		#headbob
 		t_bob += delta * velocity.length() * float(is_on_floor())
 		camera.transform.origin = _headbob(t_bob)
 
-	#fov
-	var velocity_clamped = clamp(velocity.length(), 0.5, SPRINT_SPEED * 2)
-	var target_fov = BASE_FOV + FOV_CHANGE * velocity_clamped
-	camera.fov = lerp(camera.fov, target_fov, delta * 8.0)
+		#fov
+		var velocity_clamped = clamp(velocity.length(), 0.5, SPRINT_SPEED * 2)
+		var target_fov = BASE_FOV + FOV_CHANGE * velocity_clamped
+		camera.fov = lerp(camera.fov, target_fov, delta * 8.0)
 
 	update_hands(delta)
 	move_and_slide()
