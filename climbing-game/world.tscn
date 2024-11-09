@@ -58,16 +58,6 @@ radius = 0.271085
 
 [node name="Map" type="Node3D" parent="."]
 
-[node name="CSGBox3D8" type="CSGBox3D" parent="Map"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, -7.75)
-use_collision = true
-size = Vector3(15, 1.5, 0.5)
-
-[node name="CSGBox3D7" type="CSGBox3D" parent="Map"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.25, 0.75, 0.25)
-use_collision = true
-size = Vector3(0.5, 1.5, 15.5)
-
 [node name="CSGBox3D6" type="CSGBox3D" parent="Map"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.25, 0.75, 0.25)
 use_collision = true
@@ -103,6 +93,16 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.000499994, 0)
 material_override = SubResource("StandardMaterial3D_yxgdt")
 use_collision = true
 size = Vector3(100, 0.001, 100)
+
+[node name="CSGBox3D5" type="CSGBox3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.25, -9.5)
+use_collision = true
+size = Vector3(1, 8.5, 1)
+
+[node name="CSGBox3D7" type="CSGBox3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8, -13.25)
+use_collision = true
+size = Vector3(1, 1, 7.5)
 
 [node name="Player" type="CharacterBody3D" parent="."]
 script = ExtResource("1_vwaj1")
