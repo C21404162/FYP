@@ -15,11 +15,11 @@ var t_bob = 0.0
 const BASE_FOV = 90.0
 const FOV_CHANGE = 1.5
 
-@export var hand_smoothing = 20.0
-@export var reach_distance = 1.0
-@export var reach_speed = 5.0
-@export var climb_force = 20.0
-@export var swing_strength = 5.0  # Added: Controls swing momentum
+@export var hand_smoothing = 35.0
+@export var reach_distance = 0.8
+@export var reach_speed = 12.0
+@export var climb_force = 10.0
+@export var swing_strength = 50.0  # Added: Controls swing momentum
 
 @onready var head = $Head
 @onready var camera = $Head/Camera3D
