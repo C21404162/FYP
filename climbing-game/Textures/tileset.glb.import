@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://dwd0wbf756w8o"
-path="res://.godot/imported/crypt-large-roof.glb-dce2031721fd1c509d14b90ea4cfce2d.scn"
+uid="uid://c5hmffb1t1q8q"
+path="res://.godot/imported/tileset.glb-400b5c20a53adea2a980e856a21c2433.scn"
 
 [deps]
 
-source_file="res://Models/graveyard-kit/Crypt/crypt-large-roof.glb"
-dest_files=["res://.godot/imported/crypt-large-roof.glb-dce2031721fd1c509d14b90ea4cfce2d.scn"]
+source_file="res://Textures/tileset.glb"
+dest_files=["res://.godot/imported/tileset.glb-400b5c20a53adea2a980e856a21c2433.scn"]
 
 [params]
 
