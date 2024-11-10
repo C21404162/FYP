@@ -19,7 +19,7 @@ const FOV_CHANGE = 1.5
 @export var reach_distance = 0.8
 @export var reach_speed = 12.0
 @export var climb_force = 10.0
-@export var swing_strength = 50.0  # Added: Controls swing momentum
+@export var swing_strength = 35.0  # Added: Controls swing momentum
 
 @onready var head = $Head
 @onready var camera = $Head/Camera3D
