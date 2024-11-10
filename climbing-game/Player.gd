@@ -15,11 +15,20 @@ var t_bob = 0.0
 const BASE_FOV = 90.0
 const FOV_CHANGE = 1.5
 
+# Added: Define collision layers as constants for clarity
+const LAYER_WORLD = 1
+const LAYER_HANDS = 2
+const LAYER_PLAYER = 4
+
 @export var hand_smoothing = 35.0
 @export var reach_distance = 0.8
 @export var reach_speed = 12.0
 @export var climb_force = 10.0
-@export var swing_strength = 35.0  # Added: Controls swing momentum
+@export var swing_strength = 200.0
+@export var hang_distance = 2.0  # Distance below grab point when hanging
+@export var swing_damping = 0.98  # How quickly swing momentum decreases
+@export var max_swing_speed = 10.0  # Maximum swing velocity
+@export var swing_acceleration = 30.0  # How quickly swing builds up
 
 @onready var head = $Head
 @onready var camera = $Head/Camera3D
@@ -38,31 +47,30 @@ var right_hand_grabbing = false
 var grab_point_left: Vector3
 var grab_point_right: Vector3
 
-# Added: Store the direction vector between hands when both are grabbing
+# Swing physics variables
 var hang_direction: Vector3
-# Added: Store the current swing velocity
 var swing_velocity: Vector3
+var swing_angle: float = 0.0
+var swing_angular_velocity: float = 0.0
 
 func _ready():
 	left_hand.gravity_scale = 0
 	right_hand.gravity_scale = 0
 	
-	# Set up hands to collide with environment but not the player
-	left_hand.collision_layer = 2   
-	left_hand.collision_mask = 1|4  
-	right_hand.collision_layer = 2
-	right_hand.collision_mask = 1|4
+	# Updated collision setup for hands
+	left_hand.collision_layer = LAYER_HANDS
+	left_hand.collision_mask = LAYER_WORLD
+	right_hand.collision_layer = LAYER_HANDS
+	right_hand.collision_mask = LAYER_WORLD
 	
-	# Enable contact monitoring for grab detection
+	collision_layer = LAYER_PLAYER
+	collision_mask = LAYER_WORLD
+	
 	left_hand.contact_monitor = true
 	left_hand.max_contacts_reported = 1
 	right_hand.contact_monitor = true
 	right_hand.max_contacts_reported = 1
 	
-	# Make player ignore hand collisions
-	collision_mask &= ~2  
-	
-	# Store the initial relative positions of hands to camera
 	left_hand_initial_offset = left_hand.global_position - camera.global_position
 	right_hand_initial_offset = right_hand.global_position - camera.global_position
 	
@@ -74,96 +82,103 @@ func _unhandled_input(event):
 		camera.rotate_x(-event.relative.y * SENSITIVITY)
 		camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-40), deg_to_rad(60))
 		
-	# Handle reaching/grabbing input
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			left_hand_reaching = event.pressed
-			if !event.pressed:  # Released left click
+			if !event.pressed:
 				left_hand_grabbing = false
 		elif event.button_index == MOUSE_BUTTON_RIGHT:
 			right_hand_reaching = event.pressed
-			if !event.pressed:  # Released right click
+			if !event.pressed:
 				right_hand_grabbing = false
 
 func _physics_process(delta: float) -> void:
 	check_grab_state()
 	
 	if left_hand_grabbing or right_hand_grabbing:
-		# Calculate hanging position - point slightly below the grab point
-		var hang_point = Vector3.ZERO
-		if left_hand_grabbing and right_hand_grabbing:
-			# Average position between both hands
-			hang_point = (grab_point_left + grab_point_right) / 2
-			hang_direction = (grab_point_right - grab_point_left).normalized()
-		elif left_hand_grabbing:
-			hang_point = grab_point_left
-		else:
-			hang_point = grab_point_right
-			
-		# Position player below hang point
-		var target_pos = hang_point + Vector3(0, -1.5, 0)  # Adjust -1.5 based on your player model
-		global_position = global_position.lerp(target_pos, delta * 10.0)
-		
-		# Handle swinging
-		var input_dir = Input.get_vector("left", "right", "up", "down")
-		if input_dir != Vector2.ZERO:
-			var swing_dir = (head.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
-			swing_velocity += swing_dir * swing_strength * delta
-		
-		# Apply swing physics
-		swing_velocity = swing_velocity.lerp(Vector3.ZERO, delta * 2.0)  # Damping
-		velocity = swing_velocity
-		
-		# Zero out vertical velocity while hanging
-		velocity.y = 0
-		
+		handle_climbing(delta)
 	else:
-		# Handle jump
-		if Input.is_action_just_pressed("jump"):
-			if is_on_floor():
-				velocity.y = JUMP_VELOCITY
-	
-		# Apply gravity when not grabbing
-		if not is_on_floor():
-			velocity += get_gravity() * delta
-	
-		# Handle sprint
-		if Input.is_action_pressed("sprint"):
-			speed = SPRINT_SPEED
-		else:
-			speed = WALK_SPEED
-		
-		# Regular movement
-		var input_dir = Input.get_vector("left", "right", "up", "down")
-		var direction = (head.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
-		
-		if direction:
-			velocity.x = direction.x * speed
-			velocity.z = direction.z * speed
-		else:
-			velocity.x = lerp(velocity.x, direction.x * speed, delta * 7.0)
-			velocity.z = lerp(velocity.z, direction.z * speed, delta * 7.0)
-
-		#headbob
-		t_bob += delta * velocity.length() * float(is_on_floor())
-		camera.transform.origin = _headbob(t_bob)
-
-		#fov
-		var velocity_clamped = clamp(velocity.length(), 0.5, SPRINT_SPEED * 2)
-		var target_fov = BASE_FOV + FOV_CHANGE * velocity_clamped
-		camera.fov = lerp(camera.fov, target_fov, delta * 8.0)
+		handle_normal_movement(delta)
 
 	update_hands(delta)
 	move_and_slide()
 
+func handle_climbing(delta: float) -> void:
+	var hang_point: Vector3
+	var forward_dir: Vector3
+	
+	if left_hand_grabbing and right_hand_grabbing:
+		# Two-handed hanging
+		hang_point = (grab_point_left + grab_point_right) / 2
+		hang_direction = (grab_point_right - grab_point_left).normalized()
+		forward_dir = hang_direction.cross(Vector3.UP)
+	else:
+		# Single-handed hanging
+		hang_point = grab_point_left if left_hand_grabbing else grab_point_right
+		forward_dir = -head.global_transform.basis.z
+		forward_dir.y = 0
+		forward_dir = forward_dir.normalized()
+		hang_direction = Vector3.RIGHT
+	
+	# Calculate ideal hanging position
+	var ideal_pos = hang_point + Vector3(0, -hang_distance, 0)
+	
+	# Apply swing physics
+	var input_dir = Input.get_vector("left", "right", "up", "down")
+	if input_dir != Vector2.ZERO:
+		var swing_dir = (forward_dir * input_dir.y + hang_direction * input_dir.x).normalized()
+		swing_velocity += swing_dir * swing_acceleration * delta
+	
+	# Apply swing limits and damping
+	swing_velocity = swing_velocity.limit_length(max_swing_speed)
+	swing_velocity *= swing_damping
+	
+	# Calculate final position with swing
+	var target_pos = ideal_pos + swing_velocity * delta
+	
+	# Smoothly move to target position
+	velocity = (target_pos - global_position) * climb_force
+	
+	# Allow letting go with jump
+	if Input.is_action_just_pressed("jump"):
+		left_hand_grabbing = false
+		right_hand_grabbing = false
+		velocity += Vector3.UP * JUMP_VELOCITY  # Add upward boost
+		velocity += -head.global_transform.basis.z * 5.0  # Add forward momentum
+
+func handle_normal_movement(delta: float) -> void:
+	if Input.is_action_just_pressed("jump") and is_on_floor():
+		velocity.y = JUMP_VELOCITY
+	
+	if not is_on_floor():
+		velocity += get_gravity() * delta
+	
+	speed = SPRINT_SPEED if Input.is_action_pressed("sprint") else WALK_SPEED
+	
+	var input_dir = Input.get_vector("left", "right", "up", "down")
+	var direction = (head.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
+	
+	if direction:
+		velocity.x = direction.x * speed
+		velocity.z = direction.z * speed
+	else:
+		velocity.x = lerp(velocity.x, direction.x * speed, delta * 7.0)
+		velocity.z = lerp(velocity.z, direction.z * speed, delta * 7.0)
+	
+	# Headbob and FOV updates
+	t_bob += delta * velocity.length() * float(is_on_floor())
+	camera.transform.origin = _headbob(t_bob)
+	
+	var velocity_clamped = clamp(velocity.length(), 0.5, SPRINT_SPEED * 2)
+	var target_fov = BASE_FOV + FOV_CHANGE * velocity_clamped
+	camera.fov = lerp(camera.fov, target_fov, delta * 8.0)
+
 func check_grab_state():
-	# Check left hand
 	if left_hand_reaching and left_hand.get_contact_count() > 0:
 		if !left_hand_grabbing:
 			grab_point_left = left_hand.global_position
 			left_hand_grabbing = true
 	
-	# Check right hand
 	if right_hand_reaching and right_hand.get_contact_count() > 0:
 		if !right_hand_grabbing:
 			grab_point_right = right_hand.global_position
@@ -172,27 +187,28 @@ func check_grab_state():
 func update_hands(delta):
 	var cam_basis = camera.global_transform.basis
 	
-	# Left hand position
 	var left_target
 	if left_hand_grabbing:
 		left_target = grab_point_left
 	else:
-		left_target = camera.global_position + cam_basis * left_hand_initial_offset
-		if left_hand_reaching:
-			left_target += -cam_basis.z * reach_distance
+		left_target = camera.global_position + cam_basis * left_hand_initial_offset + \
+			(-cam_basis.z * reach_distance if left_hand_reaching else Vector3.ZERO)
 	
-	# Right hand position
 	var right_target
 	if right_hand_grabbing:
 		right_target = grab_point_right
 	else:
-		right_target = camera.global_position + cam_basis * right_hand_initial_offset
-		if right_hand_reaching:
-			right_target += -cam_basis.z * reach_distance
+		right_target = camera.global_position + cam_basis * right_hand_initial_offset + \
+			(-cam_basis.z * reach_distance if right_hand_reaching else Vector3.ZERO)
 	
-	# Update positions
-	left_hand.global_position = left_hand.global_position.lerp(left_target, delta * (reach_speed if left_hand_reaching else hand_smoothing))
-	right_hand.global_position = right_hand.global_position.lerp(right_target, delta * (reach_speed if right_hand_reaching else hand_smoothing))
+	left_hand.global_position = left_hand.global_position.lerp(
+		left_target, 
+		delta * (reach_speed if left_hand_reaching else hand_smoothing)
+	)
+	right_hand.global_position = right_hand.global_position.lerp(
+		right_target, 
+		delta * (reach_speed if right_hand_reaching else hand_smoothing)
+	)
 
 func _headbob(time) -> Vector3:
 	var pos = Vector3.ZERO
