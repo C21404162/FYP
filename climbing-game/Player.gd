@@ -21,13 +21,13 @@ const LAYER_HANDS = 2
 const LAYER_PLAYER = 4
 
 @export var hand_smoothing = 35.0
-@export var reach_distance = 0.8
+@export var reach_distance = 0.9
 @export var reach_speed = 12.0
 @export var climb_force = 10.0
 @export var swing_strength = 10.0
-@export var hang_distance = 30  # Distance below grab point when hanging
+@export var hang_distance = 50  # Distance below grab point when hanging
 @export var swing_damping = 0.99  # How quickly swing momentum decreases
-@export var max_swing_speed = 20.0  # Maximum swing velocity
+@export var max_swing_speed = 10.0  # Maximum swing velocity
 @export var swing_acceleration = 40.0  # How quickly swing builds up
 
 @onready var head = $Head
