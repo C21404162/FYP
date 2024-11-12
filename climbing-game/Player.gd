@@ -6,12 +6,12 @@ const SPRINT_SPEED = 5.0
 const JUMP_VELOCITY = 4.5
 const SENSITIVITY = 0.005
 
-#headbob
+# Headbob
 const BOB_FREQ = 2.0
 const BOB_AMP = 0.03
 var t_bob = 0.0
 
-#fov
+# FOV
 const BASE_FOV = 90.0
 const FOV_CHANGE = 1.5
 
@@ -24,7 +24,7 @@ const LAYER_PLAYER = 4
 @export var reach_distance = 0.9
 @export var reach_speed = 12.0
 @export var climb_force = 10.0
-@export var swing_strength = 10.0
+@export var swing_strength = 40.0
 @export var hang_distance = 50  # Distance below grab point when hanging
 @export var swing_damping = 0.99  # How quickly swing momentum decreases
 @export var max_swing_speed = 10.0  # Maximum swing velocity
@@ -113,19 +113,18 @@ func _physics_process(delta: float) -> void:
 func handle_climbing(delta: float) -> void:
 	var hang_point: Vector3
 	var forward_dir: Vector3
-	
+
 	if left_hand_grabbing and right_hand_grabbing:
 		# Two-handed hanging
 		hang_point = (grab_point_left + grab_point_right) / 2
 		hang_direction = (grab_point_right - grab_point_left).normalized()
-		forward_dir = hang_direction.cross(Vector3.UP)
 	else:
 		# Single-handed hanging
 		hang_point = grab_point_left if left_hand_grabbing else grab_point_right
-		forward_dir = -head.global_transform.basis.z
-		forward_dir.y = 0
-		forward_dir = forward_dir.normalized()
-		hang_direction = Vector3.RIGHT
+		hang_direction = Vector3.RIGHT.rotated(Vector3.UP, head.global_rotation.y)
+
+	# Get the forward direction from the camera orientation
+	forward_dir = -camera.global_transform.basis.z
 
 	# Initialize transition when first grabbing
 	if !transition_to_hang:
@@ -135,45 +134,44 @@ func handle_climbing(delta: float) -> void:
 		# Initialize swing velocity based on current movement
 		swing_velocity = velocity
 		swing_velocity.y = 0  # Remove vertical component
-	
+
 	# Update transition
 	if transition_to_hang:
 		transition_time = min(transition_time + delta, TRANSITION_DURATION)
 		var t = ease(transition_time / TRANSITION_DURATION, 0.5)  # Smooth easing
-		
+
 		# Calculate ideal hanging position
 		var ideal_pos = hang_point + hang_offset
-		
+
 		# Apply swing physics
 		var input_dir = Input.get_vector("left", "right", "up", "down")
-		if input_dir != Vector2.ZERO:
-			var swing_dir = (forward_dir * input_dir.y + hang_direction * input_dir.x).normalized()
-			swing_velocity += swing_dir * swing_acceleration * delta
-		
+		var swing_dir = (forward_dir * input_dir.y + hang_direction * input_dir.x).normalized()
+		swing_velocity += swing_dir * swing_acceleration * delta
+
 		# Apply swing limits and damping
 		swing_velocity = swing_velocity.limit_length(max_swing_speed)
 		swing_velocity *= swing_damping
-		
+
 		# Calculate final position with swing
 		var target_pos = ideal_pos + swing_velocity * delta
-		
+
 		# Blend between current position and target position during transition
 		if transition_time < TRANSITION_DURATION:
 			target_pos = initial_grab_position.lerp(target_pos, t)
-		
+
 		# Smoothly move to target position
 		velocity = (target_pos - global_position) * climb_force
-		
+
 		# Apply some pendulum-like motion
 		if t > 0.1:  # Start pendulum after initial grab
 			var to_center = (hang_point - global_position)
 			var pendulum_force = to_center.normalized() * (to_center.length() - hang_distance) * climb_force
 			velocity += pendulum_force * delta
-	
+
 	# Allow letting go with jump - now with better momentum preservation
 	if Input.is_action_just_pressed("jump"):
 		var release_velocity = swing_velocity  # Store current swing velocity
-		var forward_boost = -head.global_transform.basis.z * 5.0  # Forward direction
+		var forward_boost = forward_dir * 5.0  # Forward direction
 		
 		# Calculate release direction based on swing
 		var release_direction = (release_velocity.normalized() + forward_boost.normalized()).normalized()
