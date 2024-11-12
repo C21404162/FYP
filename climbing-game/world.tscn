@@ -2,7 +2,7 @@
 
 [ext_resource type="Material" uid="uid://rt8kwy52hryb" path="res://Materials/highlight.tres" id="1_lgiqj"]
 [ext_resource type="Texture2D" uid="uid://cbywlgvjn8emc" path="res://Textures/696.jpg" id="1_rpqyh"]
-[ext_resource type="Script" path="res://Player.gd" id="1_vwaj1"]
+[ext_resource type="Script" path="res://Scripts/Player.gd" id="1_vwaj1"]
 [ext_resource type="MeshLibrary" uid="uid://i8i83p4gpb4c" path="res://tileset.tres" id="3_onxy0"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mvl8r"]
