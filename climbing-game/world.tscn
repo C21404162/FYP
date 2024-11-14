@@ -102,6 +102,26 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8, -13.25)
 use_collision = true
 size = Vector3(1, 1, 7.5)
 
+[node name="CSGBox3D8" type="CSGBox3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.25, 4.25, -4.249)
+use_collision = true
+size = Vector3(4.5, 8.5, 0.5)
+
+[node name="CSGBox3D9" type="CSGBox3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.749, 4, -1)
+use_collision = true
+size = Vector3(0.5, 9, 7)
+
+[node name="CSGBox3D10" type="CSGBox3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.25, 4.25, 2.249)
+use_collision = true
+size = Vector3(4.5, 8.5, 0.5)
+
+[node name="CSGBox3D11" type="CSGBox3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.75, 5.5, -1)
+use_collision = true
+size = Vector3(0.5, 6, 7)
+
 [node name="Player" type="CharacterBody3D" parent="."]
 script = ExtResource("1_vwaj1")
 
@@ -134,7 +154,7 @@ shape = SubResource("SphereShape3D_uj484")
 transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0)
 mesh = SubResource("SphereMesh_1wjrs")
 
-[node name="HingeJoint3D" type="HingeJoint3D" parent="Player/lefthand"]
+[node name="PinJoint3D" type="PinJoint3D" parent="Player/lefthand"]
 
 [node name="righthand" type="RigidBody3D" parent="Player"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 1.2, -0.6)
@@ -148,7 +168,7 @@ shape = SubResource("SphereShape3D_3c451")
 transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0)
 mesh = SubResource("SphereMesh_wc6pi")
 
-[node name="HingeJoint3D" type="HingeJoint3D" parent="Player/righthand"]
+[node name="PinJoint3D" type="PinJoint3D" parent="Player/righthand"]
 
 [node name="GridMap" type="GridMap" parent="."]
 transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 0, 0)
