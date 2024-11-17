@@ -1,9 +1,10 @@
-[gd_scene load_steps=18 format=3 uid="uid://daea0cguij4h2"]
+[gd_scene load_steps=20 format=3 uid="uid://daea0cguij4h2"]
 
 [ext_resource type="Material" uid="uid://rt8kwy52hryb" path="res://Materials/highlight.tres" id="1_lgiqj"]
 [ext_resource type="Texture2D" uid="uid://cbywlgvjn8emc" path="res://Textures/696.jpg" id="1_rpqyh"]
 [ext_resource type="Script" path="res://Scripts/Player.gd" id="1_vwaj1"]
 [ext_resource type="MeshLibrary" uid="uid://i8i83p4gpb4c" path="res://tileset.tres" id="3_onxy0"]
+[ext_resource type="Texture2D" uid="uid://dl4ehmpcpnc3u" path="res://Textures/IMG_2034.jpg" id="3_umr55"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mvl8r"]
 albedo_color = Color(0.656139, 0.120944, 0.509566, 1)
@@ -33,6 +34,9 @@ fog_density = 0.1
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_yxgdt"]
 albedo_texture = ExtResource("1_rpqyh")
 uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gtese"]
+albedo_texture = ExtResource("3_umr55")
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_vxuxf"]
 radius = 0.3
@@ -116,6 +120,7 @@ size = Vector3(0.5, 9, 7)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.25, 4.25, 2.249)
 use_collision = true
 size = Vector3(4.5, 8.5, 0.5)
+material = SubResource("StandardMaterial3D_gtese")
 
 [node name="CSGBox3D11" type="CSGBox3D" parent="Map"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.75, 5.5, -1)
