@@ -24,6 +24,7 @@ const LAYER_PLAYER = 4
 @onready var left_hand = $lefthand
 @onready var right_hand = $righthand
 
+
 # Store initial hand positions
 var left_hand_initial_offset: Vector3
 var right_hand_initial_offset: Vector3
@@ -174,6 +175,7 @@ func check_grab_state():
 func update_hands(delta):
 	var cam_basis = camera.global_transform.basis
 	
+	# Position update (same as before)
 	var left_target = grab_point_left if left_hand_grabbing else \
 		camera.global_position + cam_basis * left_hand_initial_offset + \
 		(-cam_basis.z * reach_distance if left_hand_reaching else Vector3.ZERO)
@@ -182,6 +184,7 @@ func update_hands(delta):
 		camera.global_position + cam_basis * right_hand_initial_offset + \
 		(-cam_basis.z * reach_distance if right_hand_reaching else Vector3.ZERO)
 	
+	# Position lerping (same as before)
 	left_hand.global_position = left_hand.global_position.lerp(
 		left_target,
 		delta * (reach_speed if left_hand_reaching else hand_smoothing)
@@ -191,3 +194,37 @@ func update_hands(delta):
 		right_target,
 		delta * (reach_speed if right_hand_reaching else hand_smoothing)
 	)
+	
+	# Base rotations for non-grabbing state
+	var left_adjustment = Basis().rotated(Vector3.FORWARD, deg_to_rad(180))
+	var right_adjustment = Basis().rotated(Vector3.FORWARD, deg_to_rad(180))
+	
+	# Handle left hand rotation
+	if left_hand_grabbing:
+		var grab_dir = (grab_point_left - camera.global_position).normalized()
+		var target_basis = Basis.looking_at(grab_dir, Vector3.UP)
+		left_hand.global_transform.basis = left_hand.global_transform.basis.slerp(
+			target_basis, 
+			delta * hand_smoothing
+		)
+	else:
+		# Always follow camera when not grabbing
+		left_hand.global_transform.basis = left_hand.global_transform.basis.slerp(
+			cam_basis * left_adjustment,
+			delta * hand_smoothing
+		)
+	
+	# Handle right hand rotation independently
+	if right_hand_grabbing:
+		var grab_dir = (grab_point_right - camera.global_position).normalized()
+		var target_basis = Basis.looking_at(grab_dir, Vector3.UP)
+		right_hand.global_transform.basis = right_hand.global_transform.basis.slerp(
+			target_basis, 
+			delta * hand_smoothing
+		)
+	else:
+		# Always follow camera when not grabbing
+		right_hand.global_transform.basis = right_hand.global_transform.basis.slerp(
+			cam_basis * right_adjustment,
+			delta * hand_smoothing
+		)
