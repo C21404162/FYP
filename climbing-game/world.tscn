@@ -1,16 +1,18 @@
-[gd_scene load_steps=20 format=3 uid="uid://daea0cguij4h2"]
+[gd_scene load_steps=25 format=3 uid="uid://daea0cguij4h2"]
 
 [ext_resource type="Material" uid="uid://rt8kwy52hryb" path="res://Materials/highlight.tres" id="1_lgiqj"]
 [ext_resource type="Texture2D" uid="uid://cbywlgvjn8emc" path="res://Textures/696.jpg" id="1_rpqyh"]
 [ext_resource type="Script" path="res://Scripts/Player.gd" id="1_vwaj1"]
 [ext_resource type="MeshLibrary" uid="uid://i8i83p4gpb4c" path="res://tileset.tres" id="3_onxy0"]
+[ext_resource type="Texture2D" uid="uid://c2ote7bbhccsr" path="res://Textures/cobble_wall.png" id="3_umbod"]
 [ext_resource type="Texture2D" uid="uid://dl4ehmpcpnc3u" path="res://Textures/IMG_2034.jpg" id="3_umr55"]
+[ext_resource type="Texture2D" uid="uid://diq7n02p7gbs4" path="res://Models/wooden_plank_model_wood_bark.png" id="4_05muq"]
+[ext_resource type="PackedScene" uid="uid://8qoj8306fs56" path="res://Models/well_model.glb" id="5_07b2l"]
+[ext_resource type="PackedScene" uid="uid://dx11h6ui0c2mi" path="res://Models/wooden_plank_model.glb" id="6_imwlo"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mvl8r"]
-albedo_color = Color(0.656139, 0.120944, 0.509566, 1)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_x5puq"]
-albedo_color = Color(0.839433, 0.236933, 0.232018, 1)
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5qhtx"]
+albedo_texture = ExtResource("3_umbod")
+texture_filter = 0
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_v853q"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -34,6 +36,12 @@ fog_density = 0.1
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_yxgdt"]
 albedo_texture = ExtResource("1_rpqyh")
 uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hx26c"]
+albedo_texture = ExtResource("3_umbod")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_201aj"]
+albedo_texture = ExtResource("4_05muq")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gtese"]
 albedo_texture = ExtResource("3_umr55")
@@ -60,28 +68,17 @@ radius = 0.199912
 
 [node name="Map" type="Node3D" parent="."]
 
-[node name="CSGBox3D6" type="CSGBox3D" parent="Map"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.25, 0.75, 0.25)
-use_collision = true
-size = Vector3(0.5, 1.5, 15.5)
-
 [node name="CSGBox3D4" type="CSGBox3D" parent="Map"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.25, 0.5, -4.75)
-material_override = SubResource("StandardMaterial3D_mvl8r")
 use_collision = true
 size = Vector3(1.5, 1, 1.5)
+material = SubResource("StandardMaterial3D_5qhtx")
 
 [node name="CSGBox3D3" type="CSGBox3D" parent="Map"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, -4.75)
 use_collision = true
 size = Vector3(2, 1.5, 1.5)
 material = ExtResource("1_lgiqj")
-
-[node name="CSGBox3D2" type="CSGBox3D" parent="Map"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5, 1.25, -4.75)
-material_override = SubResource("StandardMaterial3D_x5puq")
-use_collision = true
-size = Vector3(2, 2.5, 1.5)
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="Map"]
 environment = SubResource("Environment_jna2u")
@@ -107,25 +104,39 @@ use_collision = true
 size = Vector3(1, 1, 7.5)
 
 [node name="CSGBox3D8" type="CSGBox3D" parent="Map"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.25, 4.25, -4.249)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.5, 2.25, 7.251)
 use_collision = true
-size = Vector3(4.5, 8.5, 0.5)
+size = Vector3(5, 4.5, 0.5)
+material = SubResource("StandardMaterial3D_hx26c")
 
 [node name="CSGBox3D9" type="CSGBox3D" parent="Map"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.749, 4, -1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.249, 2, 10.5)
+material_override = SubResource("StandardMaterial3D_201aj")
 use_collision = true
-size = Vector3(0.5, 9, 7)
+size = Vector3(0.5, 5, 7)
 
 [node name="CSGBox3D10" type="CSGBox3D" parent="Map"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.25, 4.25, 2.249)
+transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 13.5, 2.25, 13.749)
 use_collision = true
-size = Vector3(4.5, 8.5, 0.5)
+size = Vector3(5, 4.5, 0.5)
 material = SubResource("StandardMaterial3D_gtese")
 
 [node name="CSGBox3D11" type="CSGBox3D" parent="Map"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.75, 5.5, -1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.75, 4, 10.5)
 use_collision = true
-size = Vector3(0.5, 6, 7)
+size = Vector3(0.5, 1, 7)
+
+[node name="wooden_plank_model" parent="Map" instance=ExtResource("6_imwlo")]
+transform = Transform3D(0.173867, 0, -0.0465874, 0, 0.18, 0, 0.0465874, 0, 0.173867, 12, 2.5, 8.5)
+
+[node name="wooden_plank_model2" parent="Map" instance=ExtResource("6_imwlo")]
+transform = Transform3D(-0.155885, 0, -0.09, 0, 0.18, 0, 0.09, 0, -0.155885, 13.5, 3.5, 13)
+
+[node name="wooden_plank_model3" parent="Map" instance=ExtResource("6_imwlo")]
+transform = Transform3D(-0.0465874, 0, -0.173867, 0, 0.18, 0, 0.173867, 0, -0.0465874, 15.0602, 6, 11)
+
+[node name="well_model" parent="Map" instance=ExtResource("5_07b2l")]
+transform = Transform3D(0.18, 0, 0, 0, 0.18, 0, 0, 0, 0.18, 13.5, 4.5, 10)
 
 [node name="Player" type="CharacterBody3D" parent="."]
 script = ExtResource("1_vwaj1")

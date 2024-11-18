@@ -1,6 +1,7 @@
-[gd_scene load_steps=6 format=3 uid="uid://cw5ty64yjmos8"]
+[gd_scene load_steps=7 format=3 uid="uid://cw5ty64yjmos8"]
 
 [ext_resource type="Script" path="res://Scripts/menu.gd" id="1_3ru06"]
+[ext_resource type="PackedScene" uid="uid://8qoj8306fs56" path="res://Models/well_model.glb" id="2_3qr0f"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_iw7r8"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -66,12 +67,15 @@ focus_neighbor_bottom = NodePath("../start")
 text = "exit"
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.5, 0)
 
 [node name="CSGBox3D" type="CSGBox3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -4)
 size = Vector3(100, 0, 100)
 material = SubResource("StandardMaterial3D_epqux")
+
+[node name="well_model" parent="." instance=ExtResource("2_3qr0f")]
+transform = Transform3D(0.18, 0, 0, 0, 0.18, 0, 0, 0, 0.18, 0.5, -1, -12)
 
 [connection signal="pressed" from="VBoxContainer/start" to="." method="_on_start_pressed"]
 [connection signal="pressed" from="VBoxContainer/exit" to="." method="_on_exit_pressed"]

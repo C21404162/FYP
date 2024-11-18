@@ -36,6 +36,9 @@ var right_hand_grabbing = false
 var grab_point_left: Vector3
 var grab_point_right: Vector3
 
+# Noclip state
+var noclip_enabled = false
+
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 func _ready():
@@ -78,11 +81,21 @@ func _unhandled_input(event):
 			MOUSE_BUTTON_RIGHT:
 				right_hand_reaching = event.pressed
 				if !event.pressed: right_hand_grabbing = false
+	
+	# Noclip toggle
+	if event.is_action_pressed("noclip"):
+		noclip_enabled = !noclip_enabled
+		if noclip_enabled:
+			collision_mask = 0  # Disable collision
+		else:
+			collision_mask = LAYER_WORLD  # Restore world collision
 
 func _physics_process(delta):
 	check_grab_state()
 	
-	if left_hand_grabbing or right_hand_grabbing:
+	if noclip_enabled:
+		handle_noclip(delta)
+	elif left_hand_grabbing or right_hand_grabbing:
 		handle_climbing(delta)
 	else:
 		handle_movement(delta)
@@ -90,14 +103,29 @@ func _physics_process(delta):
 	update_hands(delta)
 	move_and_slide()
 
+func handle_noclip(delta):
+	var input_dir = Input.get_vector("left", "right", "up", "down")
+	var direction = (head.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
+	
+	var noclip_speed = SPRINT_SPEED * 2  # Faster movement in noclip
+	var vertical_input = Input.get_action_strength("jump") - Input.get_action_strength("crouch")
+	
+	velocity = direction * noclip_speed
+	velocity.y = vertical_input * noclip_speed
+
 func handle_movement(delta):
 	if not is_on_floor():
 		velocity.y -= gravity * delta
-		# Air control
-		var air_control = 0.3
-		if velocity.length() > 0:
-			velocity.x *= 0.99
-			velocity.z *= 0.99
+		
+		# Improved air control
+		var input_dir = Input.get_vector("left", "right", "up", "down")
+		var direction = (head.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
+		var speed = SPRINT_SPEED if Input.is_action_pressed("sprint") else WALK_SPEED
+		
+		if direction:
+			# Smoother air control with reduced influence
+			velocity.x = lerp(velocity.x, direction.x * speed, delta * 5.0)
+			velocity.z = lerp(velocity.z, direction.z * speed, delta * 5.0)
 	elif Input.is_action_just_pressed("jump"):
 		velocity.y = JUMP_VELOCITY
 	
@@ -110,28 +138,28 @@ func handle_movement(delta):
 			velocity.x = direction.x * speed
 			velocity.z = direction.z * speed
 		else:
-			velocity.x = lerp(velocity.x, direction.x * speed, delta * 0.3)
-			velocity.z = lerp(velocity.z, direction.z * speed, delta * 0.3)
+			velocity.x = lerp(velocity.x, direction.x * speed, delta * 0.25)
+			velocity.z = lerp(velocity.z, direction.z * speed, delta * 0.25)
 	elif is_on_floor():
 		velocity.x = lerp(velocity.x, 0.0, delta * 7.0)
 		velocity.z = lerp(velocity.z, 0.0, delta * 7.0)
 
 func handle_climbing(delta):
 	var hang_point: Vector3
-	var forward_dir = -camera.global_transform.basis.z
-	
+	var forward_dir = camera.global_transform.basis.z
+
 	if left_hand_grabbing and right_hand_grabbing:
 		hang_point = (grab_point_left + grab_point_right) / 2
 	else:
 		hang_point = grab_point_left if left_hand_grabbing else grab_point_right
 	
 	var target_pos = hang_point + hang_offset
-	velocity = (target_pos - global_position) * climb_force
+	velocity = velocity.lerp((target_pos - global_position) * climb_force, delta * 10.0)  # Added lerp for smoother movement
 	
 	if Input.is_action_just_pressed("jump"):
 		left_hand_grabbing = false
 		right_hand_grabbing = false
-		velocity = forward_dir * SPRINT_SPEED
+		velocity = -forward_dir * SPRINT_SPEED
 		velocity.y = JUMP_VELOCITY
 
 func check_grab_state():
