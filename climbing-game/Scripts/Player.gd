@@ -8,8 +8,8 @@ const SENSITIVITY = 0.005
 
 # Physics & climbing settings
 @export var hand_smoothing = 35.0
-@export var reach_distance = 0.9
-@export var reach_speed = 12.0
+@export var reach_distance = 0.7
+@export var reach_speed = 12.5
 @export var climb_force = 10.0
 @export var hang_offset = Vector3(0, -1.8, 0)
 
@@ -23,7 +23,6 @@ const LAYER_PLAYER = 4
 @onready var camera = $Head/Camera3D
 @onready var left_hand = $lefthand
 @onready var right_hand = $righthand
-
 
 # Store initial hand positions
 var left_hand_initial_offset: Vector3
@@ -72,7 +71,7 @@ func _unhandled_input(event):
 	if event is InputEventMouseMotion:
 		head.rotate_y(-event.relative.x * SENSITIVITY)
 		camera.rotate_x(-event.relative.y * SENSITIVITY)
-		camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-40), deg_to_rad(60))
+		camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-90), deg_to_rad(90))
 	
 	if event is InputEventMouseButton:
 		match event.button_index:
@@ -125,8 +124,8 @@ func handle_movement(delta):
 		
 		if direction:
 			# Smoother air control with reduced influence
-			velocity.x = lerp(velocity.x, direction.x * speed, delta * 5.0)
-			velocity.z = lerp(velocity.z, direction.z * speed, delta * 5.0)
+			velocity.x = lerp(velocity.x, direction.x * speed, delta * 2.0)
+			velocity.z = lerp(velocity.z, direction.z * speed, delta * 2.0)
 	elif Input.is_action_just_pressed("jump"):
 		velocity.y = JUMP_VELOCITY
 	
