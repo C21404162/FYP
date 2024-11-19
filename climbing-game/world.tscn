@@ -140,6 +140,27 @@ transform = Transform3D(-0.0465874, 0, -0.173867, 0, 0.18, 0, 0.173867, 0, -0.04
 [node name="well_model" parent="Map" instance=ExtResource("5_07b2l")]
 transform = Transform3D(0.18, 0, 0, 0, 0.18, 0, 0, 0, 0.18, 13.5, 4.5, 10)
 
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 10, 0)
+use_collision = true
+radius = 3.5
+height = 20.0
+sides = 13
+
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="Map/CSGCylinder3D"]
+operation = 2
+radius = 3.19823
+height = 20.0
+
+[node name="CSGBox3D" type="CSGBox3D" parent="Map/CSGCylinder3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.69459, -8.75, 0)
+operation = 2
+size = Vector3(1.5, 2.5, 2)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.5, 18.25, 0)
+size = Vector3(9, 0.5, 9)
+
 [node name="Player" type="CharacterBody3D" parent="."]
 script = ExtResource("1_vwaj1")
 
