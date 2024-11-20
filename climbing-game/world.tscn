@@ -159,6 +159,7 @@ size = Vector3(1.5, 2.5, 2)
 
 [node name="CSGBox3D2" type="CSGBox3D" parent="Map"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.5, 18.25, 0)
+use_collision = true
 size = Vector3(9, 0.5, 9)
 
 [node name="Player" type="CharacterBody3D" parent="."]
@@ -199,7 +200,7 @@ mesh = SubResource("SphereMesh_1wjrs")
 [node name="PinJoint3D" type="PinJoint3D" parent="Player/lefthand"]
 
 [node name="bad_hand_left" parent="Player/lefthand" instance=ExtResource("10_rudq1")]
-transform = Transform3D(-0.17, -1.48619e-08, 6.49633e-16, 0, -7.43094e-09, -0.17, 1.48619e-08, -0.17, 7.43094e-09, 0, 0.0058099, 0.000165343)
+transform = Transform3D(-0.2, -3.01992e-08, 1.32005e-15, 0, -8.74228e-09, -0.2, 3.01992e-08, -0.2, 8.74228e-09, 0, 0.0058099, 0.000165343)
 
 [node name="righthand" type="RigidBody3D" parent="Player"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 1.2, -0.6)
@@ -218,7 +219,7 @@ mesh = SubResource("SphereMesh_wc6pi")
 [node name="PinJoint3D" type="PinJoint3D" parent="Player/righthand"]
 
 [node name="bad_hand_right" parent="Player/righthand" instance=ExtResource("9_gmq14")]
-transform = Transform3D(0.17, 0, 0, 0, -7.43094e-09, 0.17, 0, -0.17, -7.43094e-09, 0, -0.0149806, 0.00420296)
+transform = Transform3D(0.2, 0, 0, 0, -8.74228e-09, 0.2, 0, -0.2, -8.74228e-09, 0, -0.0149806, 0.00420296)
 
 [node name="GridMap" type="GridMap" parent="."]
 transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 0, 0)

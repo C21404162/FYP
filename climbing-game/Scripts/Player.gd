@@ -135,14 +135,13 @@ func handle_movement(delta):
 	
 	if direction:
 		if is_on_floor():
-			velocity.x = direction.x * speed
-			velocity.z = direction.z * speed
-		else:
-			velocity.x = lerp(velocity.x, direction.x * speed, delta * 0.25)
-			velocity.z = lerp(velocity.z, direction.z * speed, delta * 0.25)
-	elif is_on_floor():
-		velocity.x = lerp(velocity.x, 0.0, delta * 7.0)
-		velocity.z = lerp(velocity.z, 0.0, delta * 7.0)
+			# Gradually accelerate instead of instant speed
+			velocity.x = lerp(velocity.x, direction.x * speed, delta * 12.0)
+			velocity.z = lerp(velocity.z, direction.z * speed, delta * 12.0)
+	else:
+		# Gradual deceleration when no input
+		velocity.x = lerp(velocity.x, 0.0, delta * 10.0)
+		velocity.z = lerp(velocity.z, 0.0, delta * 10.0)
 
 func handle_climbing(delta):
 	var hang_point: Vector3
