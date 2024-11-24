@@ -17,7 +17,8 @@ albedo_texture = ExtResource("3_umbod")
 texture_filter = 0
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_v853q"]
-sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+sky_top_color = Color(0.0875817, 0.121094, 0.0859752, 1)
+sky_horizon_color = Color(0.235534, 0.261719, 0.239313, 1)
 ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
 
 [sub_resource type="Sky" id="Sky_0r71q"]
@@ -30,10 +31,19 @@ ambient_light_color = Color(1, 0.98395, 0.638086, 1)
 ambient_light_sky_contribution = 0.0
 ambient_light_energy = 0.02
 tonemap_mode = 2
+ssao_enabled = true
+ssil_enabled = true
+sdfgi_enabled = true
 glow_enabled = true
-fog_light_color = Color(1, 0.98395, 0.638086, 1)
+fog_light_color = Color(0.990259, 1, 0.888142, 1)
 fog_light_energy = 0.02
 fog_density = 0.1
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.0605
+volumetric_fog_albedo = Color(0.450592, 0.5, 0.447592, 1)
+volumetric_fog_emission = Color(0.110451, 0.148438, 0.111251, 1)
+volumetric_fog_detail_spread = 0.675938
+volumetric_fog_ambient_inject = 1.74
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_yxgdt"]
 albedo_texture = ExtResource("1_rpqyh")
@@ -197,8 +207,6 @@ transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0)
 visible = false
 mesh = SubResource("SphereMesh_1wjrs")
 
-[node name="PinJoint3D" type="PinJoint3D" parent="Player/lefthand"]
-
 [node name="bad_hand_left" parent="Player/lefthand" instance=ExtResource("10_rudq1")]
 transform = Transform3D(-0.2, -3.01992e-08, 1.32005e-15, 0, -8.74228e-09, -0.2, 3.01992e-08, -0.2, 8.74228e-09, 0, 0.0058099, 0.000165343)
 
@@ -215,8 +223,6 @@ shape = SubResource("SphereShape3D_3c451")
 transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0)
 visible = false
 mesh = SubResource("SphereMesh_wc6pi")
-
-[node name="PinJoint3D" type="PinJoint3D" parent="Player/righthand"]
 
 [node name="bad_hand_right" parent="Player/righthand" instance=ExtResource("9_gmq14")]
 transform = Transform3D(0.2, 0, 0, 0, -8.74228e-09, 0.2, 0, -0.2, -8.74228e-09, 0, -0.0149806, 0.00420296)
