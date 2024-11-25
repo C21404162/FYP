@@ -117,13 +117,11 @@ func handle_movement(delta):
 	if not is_on_floor():
 		velocity.y -= gravity * delta
 		
-		# Improved air control
 		var input_dir = Input.get_vector("left", "right", "up", "down")
 		var direction = (head.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 		var speed = SPRINT_SPEED if Input.is_action_pressed("sprint") else WALK_SPEED
 		
 		if direction:
-			# Smoother air control with reduced influence
 			velocity.x = lerp(velocity.x, direction.x * speed, delta * 2.0)
 			velocity.z = lerp(velocity.z, direction.z * speed, delta * 2.0)
 	elif Input.is_action_just_pressed("jump"):
