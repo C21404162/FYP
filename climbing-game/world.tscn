@@ -206,6 +206,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 1.2, -0.6)
 collision_layer = 2
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Player/lefthand"]
+visible = false
 shape = SubResource("SphereShape3D_uj484")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Player/lefthand"]
@@ -222,6 +223,7 @@ collision_layer = 2
 physics_material_override = SubResource("PhysicsMaterial_jj8ub")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Player/righthand"]
+visible = false
 shape = SubResource("SphereShape3D_3c451")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Player/righthand"]
