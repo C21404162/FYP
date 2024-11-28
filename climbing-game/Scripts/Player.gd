@@ -1,43 +1,47 @@
 extends CharacterBody3D
 
-# Movement constants
+#movement
 const WALK_SPEED = 3.5
 const SPRINT_SPEED = 5.0
 const JUMP_VELOCITY = 4.5
 const SENSITIVITY = 0.005
+const MAX_JUMP_CHARGE_TIME = 1.0 
+const MIN_CHARGE_FOR_BOOST = 0.3
+const MAX_JUMP_BOOST = 1.5 
 
-# Physics & climbing settings
+#collision layers
+const LAYER_WORLD = 1
+const LAYER_HANDS = 2
+const LAYER_PLAYER = 4
+
+#physics stuff
 @export var hand_smoothing = 35.0
 @export var reach_distance = 0.7
 @export var reach_speed = 12.5
 @export var climb_force = 7.0
 @export var hang_offset = Vector3(0, -1.8, 0)
 
-# Collision layers
-const LAYER_WORLD = 1
-const LAYER_HANDS = 2
-const LAYER_PLAYER = 4
-
-# Node references
+#nodes
 @onready var head = $Head
 @onready var camera = $Head/Camera3D
 @onready var left_hand = $lefthand
 @onready var right_hand = $righthand
 
-# Store initial hand positions
+#climb variables
 var left_hand_initial_offset: Vector3
 var right_hand_initial_offset: Vector3
-
-# Hand states
 var left_hand_reaching = false
 var right_hand_reaching = false
 var left_hand_grabbing = false
 var right_hand_grabbing = false
 var grab_point_left: Vector3
 var grab_point_right: Vector3
-
-# Noclip state
+var is_charging_jump = false
+var jump_charge_time = 0.0
 var noclip_enabled = false
+
+var grab_cooldown_timer = 0.0
+const GRAB_COOLDOWN_DURATION = 0.3
 
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
@@ -45,15 +49,12 @@ func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	setup_hands()
 	
-	# Store initial hand offsets
 	left_hand_initial_offset = left_hand.global_position - camera.global_position
 	right_hand_initial_offset = right_hand.global_position - camera.global_position
 
 func setup_hands():
 	left_hand.gravity_scale = 0
 	right_hand.gravity_scale = 0
-	
-	# Set up collision layers
 	left_hand.collision_layer = LAYER_HANDS
 	left_hand.collision_mask = LAYER_WORLD
 	right_hand.collision_layer = LAYER_HANDS
@@ -61,7 +62,6 @@ func setup_hands():
 	collision_layer = LAYER_PLAYER
 	collision_mask = LAYER_WORLD
 	
-	# Enable contact monitoring
 	left_hand.contact_monitor = true
 	right_hand.contact_monitor = true
 	left_hand.max_contacts_reported = 1
@@ -82,7 +82,7 @@ func _unhandled_input(event):
 				right_hand_reaching = event.pressed
 				if !event.pressed: right_hand_grabbing = false
 	
-	# Noclip toggle
+	#noclip toggle
 	if event.is_action_pressed("noclip"):
 		noclip_enabled = !noclip_enabled
 		if noclip_enabled:
@@ -91,7 +91,7 @@ func _unhandled_input(event):
 			collision_mask = LAYER_WORLD
 
 func _physics_process(delta):
-	check_grab_state()
+	check_grab()
 	
 	if noclip_enabled:
 		handle_noclip(delta)
@@ -106,10 +106,8 @@ func _physics_process(delta):
 func handle_noclip(delta):
 	var input_dir = Input.get_vector("left", "right", "up", "down")
 	var direction = (head.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
-	
 	var noclip_speed = SPRINT_SPEED * 2
 	var vertical_input = Input.get_action_strength("jump") - Input.get_action_strength("crouch")
-	
 	velocity = direction * noclip_speed
 	velocity.y = vertical_input * noclip_speed
 
@@ -139,7 +137,12 @@ func handle_movement(delta):
 		velocity.x = lerp(velocity.x, 0.0, delta * 10.0)
 		velocity.z = lerp(velocity.z, 0.0, delta * 10.0)
 
+
 func handle_climbing(delta):
+	
+	if grab_cooldown_timer > 0:
+		grab_cooldown_timer -= delta
+		
 	var hang_point: Vector3
 	var forward_dir = camera.global_transform.basis.z
 
@@ -148,16 +151,29 @@ func handle_climbing(delta):
 	else:
 		hang_point = grab_point_left if left_hand_grabbing else grab_point_right
 	
+	#put sound in here
 	var target_pos = hang_point + hang_offset
 	velocity = velocity.lerp((target_pos - global_position) * climb_force, delta * 10.0)
 	
-	if Input.is_action_just_pressed("jump"):
-		left_hand_grabbing = false
-		right_hand_grabbing = false
-		velocity = -forward_dir * SPRINT_SPEED
-		velocity.y = JUMP_VELOCITY
+	#jump charge
+	if Input.is_action_pressed("jump"):
+		is_charging_jump = true
+		jump_charge_time += delta
+		jump_charge_time = min(jump_charge_time, MAX_JUMP_CHARGE_TIME)
+	if Input.is_action_just_released("jump"):
+		if is_charging_jump:
+			var charge_ratio = jump_charge_time / MAX_JUMP_CHARGE_TIME
+			var jump_boost = 1.0 + (charge_ratio * (MAX_JUMP_BOOST - 1.0))
+			if jump_charge_time >= MIN_CHARGE_FOR_BOOST:
+				left_hand_grabbing = false
+				right_hand_grabbing = false
+				velocity = -forward_dir * (SPRINT_SPEED * jump_boost)
+				velocity.y = JUMP_VELOCITY * jump_boost
+			
+			is_charging_jump = false
+			jump_charge_time = 0.0
 
-func check_grab_state():
+func check_grab():
 	if left_hand_reaching and left_hand.get_contact_count() > 0 and !left_hand_grabbing:
 		grab_point_left = left_hand.global_position
 		left_hand_grabbing = true
@@ -168,8 +184,6 @@ func check_grab_state():
 
 func update_hands(delta):
 	var cam_basis = camera.global_transform.basis
-	
-	# Position update (same as before)
 	var left_target = grab_point_left if left_hand_grabbing else \
 		camera.global_position + cam_basis * left_hand_initial_offset + \
 		(-cam_basis.z * reach_distance if left_hand_reaching else Vector3.ZERO)
@@ -178,22 +192,19 @@ func update_hands(delta):
 		camera.global_position + cam_basis * right_hand_initial_offset + \
 		(-cam_basis.z * reach_distance if right_hand_reaching else Vector3.ZERO)
 	
-	# Position lerping (same as before)
 	left_hand.global_position = left_hand.global_position.lerp(
 		left_target,
 		delta * (reach_speed if left_hand_reaching else hand_smoothing)
 	)
-	
 	right_hand.global_position = right_hand.global_position.lerp(
 		right_target,
 		delta * (reach_speed if right_hand_reaching else hand_smoothing)
 	)
 	
-	# Base rotations for non-grabbing state
 	var left_adjustment = Basis().rotated(Vector3.FORWARD, deg_to_rad(180))
 	var right_adjustment = Basis().rotated(Vector3.FORWARD, deg_to_rad(180))
 	
-	# Handle left hand rotation
+	#hand rotation
 	if left_hand_grabbing:
 		var grab_dir = (grab_point_left - camera.global_position).normalized()
 		var target_basis = Basis.looking_at(grab_dir, Vector3.UP)
@@ -202,13 +213,11 @@ func update_hands(delta):
 			delta * hand_smoothing
 		)
 	else:
-		# Always follow camera when not grabbing
 		left_hand.global_transform.basis = left_hand.global_transform.basis.slerp(
 			cam_basis * left_adjustment,
 			delta * hand_smoothing
 		)
 	
-	# Handle right hand rotation independently
 	if right_hand_grabbing:
 		var grab_dir = (grab_point_right - camera.global_position).normalized()
 		var target_basis = Basis.looking_at(grab_dir, Vector3.UP)
@@ -217,8 +226,11 @@ func update_hands(delta):
 			delta * hand_smoothing
 		)
 	else:
-		# Always follow camera when not grabbing
 		right_hand.global_transform.basis = right_hand.global_transform.basis.slerp(
 			cam_basis * right_adjustment,
 			delta * hand_smoothing
 		)
+
+func handle_landing():
+	#put sounds, fx
+	velocity.y = 0

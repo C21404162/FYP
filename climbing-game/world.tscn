@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3 uid="uid://daea0cguij4h2"]
+[gd_scene load_steps=31 format=3 uid="uid://daea0cguij4h2"]
 
 [ext_resource type="Material" uid="uid://rt8kwy52hryb" path="res://Materials/highlight.tres" id="1_lgiqj"]
 [ext_resource type="Texture2D" uid="uid://cbywlgvjn8emc" path="res://Textures/696.jpg" id="1_rpqyh"]
@@ -46,7 +46,7 @@ volumetric_fog_emission = Color(0.110451, 0.148438, 0.111251, 1)
 volumetric_fog_detail_spread = 0.675938
 volumetric_fog_ambient_inject = 1.74
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_yxgdt"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_g6l77"]
 albedo_texture = ExtResource("1_rpqyh")
 uv1_triplanar = true
 
@@ -56,8 +56,18 @@ albedo_texture = ExtResource("3_umbod")
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_201aj"]
 albedo_texture = ExtResource("4_05muq")
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_e2myu"]
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gtese"]
 albedo_texture = ExtResource("3_umr55")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2nb5y"]
+albedo_texture = ExtResource("3_umbod")
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bi1nw"]
+albedo_texture = ExtResource("4_05muq")
+uv1_triplanar = true
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_vxuxf"]
 radius = 0.3
@@ -104,9 +114,9 @@ shadow_enabled = true
 
 [node name="CSGBox3D" type="CSGBox3D" parent="Map"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.000499994, 0)
-material_override = SubResource("StandardMaterial3D_yxgdt")
 use_collision = true
 size = Vector3(100, 0.001, 100)
+material = SubResource("StandardMaterial3D_g6l77")
 
 [node name="CSGBox3D5" type="CSGBox3D" parent="Map"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.25, -9.5)
@@ -129,6 +139,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.249, 2, 10.5)
 material_override = SubResource("StandardMaterial3D_201aj")
 use_collision = true
 size = Vector3(0.5, 5, 7)
+material = SubResource("StandardMaterial3D_e2myu")
 
 [node name="CSGBox3D10" type="CSGBox3D" parent="Map"]
 transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 13.5, 2.25, 13.749)
@@ -174,6 +185,19 @@ size = Vector3(1.5, 2.5, 2)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.5, 18.25, 0)
 use_collision = true
 size = Vector3(9, 0.5, 9)
+
+[node name="CSGBox3D6" type="CSGBox3D" parent="Map"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -11, 2.5, -3.25)
+use_collision = true
+size = Vector3(5, 5, 0.5)
+material = SubResource("StandardMaterial3D_2nb5y")
+
+[node name="CSGCylinder3D2" type="CSGCylinder3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 2, 2.5)
+use_collision = true
+radius = 0.370613
+height = 5.0
+material = SubResource("StandardMaterial3D_bi1nw")
 
 [node name="Player" type="CharacterBody3D" parent="."]
 script = ExtResource("1_vwaj1")
