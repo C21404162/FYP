@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3 uid="uid://daea0cguij4h2"]
+[gd_scene load_steps=28 format=3 uid="uid://daea0cguij4h2"]
 
 [ext_resource type="Material" uid="uid://rt8kwy52hryb" path="res://Materials/highlight.tres" id="1_lgiqj"]
 [ext_resource type="Texture2D" uid="uid://cbywlgvjn8emc" path="res://Textures/696.jpg" id="1_rpqyh"]
@@ -9,6 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://diq7n02p7gbs4" path="res://Models/wooden_plank_model_wood_bark.png" id="4_05muq"]
 [ext_resource type="PackedScene" uid="uid://8qoj8306fs56" path="res://Models/well_model.glb" id="5_07b2l"]
 [ext_resource type="PackedScene" uid="uid://dx11h6ui0c2mi" path="res://Models/wooden_plank_model.glb" id="6_imwlo"]
+[ext_resource type="Script" path="res://interactray.gd" id="9_bfa6a"]
 [ext_resource type="PackedScene" uid="uid://jjevgaxgt0p5" path="res://Models/bad_hand_right.glb" id="9_gmq14"]
 [ext_resource type="PackedScene" uid="uid://bn52fufkkj352" path="res://Models/bad_hand_left.glb" id="10_rudq1"]
 
@@ -97,6 +98,8 @@ environment = SubResource("Environment_jna2u")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="Map"]
 transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
+light_energy = 2.371
+light_volumetric_fog_energy = 0.0
 shadow_enabled = true
 
 [node name="CSGBox3D" type="CSGBox3D" parent="Map"]
@@ -194,12 +197,15 @@ light_color = Color(1, 0.98395, 0.638086, 1)
 spot_range = 7.5
 spot_angle = 65.082
 
+[node name="interactray" type="RayCast3D" parent="Player/Head/Camera3D"]
+target_position = Vector3(0, 0, -1.5)
+script = ExtResource("9_bfa6a")
+
 [node name="lefthand" type="RigidBody3D" parent="Player"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 1.2, -0.6)
 collision_layer = 2
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Player/lefthand"]
-visible = false
 shape = SubResource("SphereShape3D_uj484")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Player/lefthand"]
@@ -216,7 +222,6 @@ collision_layer = 2
 physics_material_override = SubResource("PhysicsMaterial_jj8ub")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Player/righthand"]
-visible = false
 shape = SubResource("SphereShape3D_3c451")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Player/righthand"]

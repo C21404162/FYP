@@ -10,7 +10,7 @@ const SENSITIVITY = 0.005
 @export var hand_smoothing = 35.0
 @export var reach_distance = 0.7
 @export var reach_speed = 12.5
-@export var climb_force = 10.0
+@export var climb_force = 7.0
 @export var hang_offset = Vector3(0, -1.8, 0)
 
 # Collision layers
@@ -86,9 +86,9 @@ func _unhandled_input(event):
 	if event.is_action_pressed("noclip"):
 		noclip_enabled = !noclip_enabled
 		if noclip_enabled:
-			collision_mask = 0  # Disable collision
+			collision_mask = 0 
 		else:
-			collision_mask = LAYER_WORLD  # Restore world collision
+			collision_mask = LAYER_WORLD
 
 func _physics_process(delta):
 	check_grab_state()
@@ -107,7 +107,7 @@ func handle_noclip(delta):
 	var input_dir = Input.get_vector("left", "right", "up", "down")
 	var direction = (head.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 	
-	var noclip_speed = SPRINT_SPEED * 2  # Faster movement in noclip
+	var noclip_speed = SPRINT_SPEED * 2
 	var vertical_input = Input.get_action_strength("jump") - Input.get_action_strength("crouch")
 	
 	velocity = direction * noclip_speed
@@ -133,11 +133,9 @@ func handle_movement(delta):
 	
 	if direction:
 		if is_on_floor():
-			# Gradually accelerate instead of instant speed
 			velocity.x = lerp(velocity.x, direction.x * speed, delta * 12.0)
 			velocity.z = lerp(velocity.z, direction.z * speed, delta * 12.0)
 	else:
-		# Gradual deceleration when no input
 		velocity.x = lerp(velocity.x, 0.0, delta * 10.0)
 		velocity.z = lerp(velocity.z, 0.0, delta * 10.0)
 
@@ -151,7 +149,7 @@ func handle_climbing(delta):
 		hang_point = grab_point_left if left_hand_grabbing else grab_point_right
 	
 	var target_pos = hang_point + hang_offset
-	velocity = velocity.lerp((target_pos - global_position) * climb_force, delta * 10.0)  # Added lerp for smoother movement
+	velocity = velocity.lerp((target_pos - global_position) * climb_force, delta * 10.0)
 	
 	if Input.is_action_just_pressed("jump"):
 		left_hand_grabbing = false
