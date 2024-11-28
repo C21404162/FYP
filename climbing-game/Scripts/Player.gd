@@ -40,9 +40,6 @@ var is_charging_jump = false
 var jump_charge_time = 0.0
 var noclip_enabled = false
 
-var grab_cooldown_timer = 0.0
-const GRAB_COOLDOWN_DURATION = 0.3
-
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 func _ready():
@@ -129,6 +126,9 @@ func handle_movement(delta):
 	var input_dir = Input.get_vector("left", "right", "up", "down")
 	var direction = (head.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 	
+	if Input.is_action_pressed("crouch"):
+		speed *= 0.6
+	
 	if direction:
 		if is_on_floor():
 			velocity.x = lerp(velocity.x, direction.x * speed, delta * 12.0)
@@ -139,10 +139,6 @@ func handle_movement(delta):
 
 
 func handle_climbing(delta):
-	
-	if grab_cooldown_timer > 0:
-		grab_cooldown_timer -= delta
-		
 	var hang_point: Vector3
 	var forward_dir = camera.global_transform.basis.z
 
