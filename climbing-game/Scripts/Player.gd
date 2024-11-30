@@ -127,7 +127,7 @@ func handle_movement(delta):
 	var direction = (head.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 	
 	if Input.is_action_pressed("crouch"):
-		speed *= 0.6
+		speed*= 0.6
 	
 	if direction:
 		if is_on_floor():
@@ -170,28 +170,39 @@ func handle_climbing(delta):
 			jump_charge_time = 0.0
 
 func check_grab():
+	#if hand reaching+made contact+not grabbing anything else
 	if left_hand_reaching and left_hand.get_contact_count() > 0 and !left_hand_grabbing:
 		grab_point_left = left_hand.global_position
 		left_hand_grabbing = true
-	
+		
+	#if hand reaching+made contact+not grabbing anything else
 	if right_hand_reaching and right_hand.get_contact_count() > 0 and !right_hand_grabbing:
 		grab_point_right = right_hand.global_position
 		right_hand_grabbing = true
 
 func update_hands(delta):
 	var cam_basis = camera.global_transform.basis
+	
+	#if grab move to grab point
+	#if reaching extend from camera
+	#if not grab return to default
 	var left_target = grab_point_left if left_hand_grabbing else \
 		camera.global_position + cam_basis * left_hand_initial_offset + \
 		(-cam_basis.z * reach_distance if left_hand_reaching else Vector3.ZERO)
 	
+	#if grab move to grab point
+	#if reaching extend from camera
+	#if not grab return to default
 	var right_target = grab_point_right if right_hand_grabbing else \
 		camera.global_position + cam_basis * right_hand_initial_offset + \
 		(-cam_basis.z * reach_distance if right_hand_reaching else Vector3.ZERO)
 	
+	#hand movement left
 	left_hand.global_position = left_hand.global_position.lerp(
 		left_target,
 		delta * (reach_speed if left_hand_reaching else hand_smoothing)
 	)
+	#hand movement right
 	right_hand.global_position = right_hand.global_position.lerp(
 		right_target,
 		delta * (reach_speed if right_hand_reaching else hand_smoothing)
