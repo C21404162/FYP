@@ -26,6 +26,8 @@ const LAYER_PLAYER = 4
 @onready var camera = $Head/Camera3D
 @onready var left_hand = $lefthand
 @onready var right_hand = $righthand
+@onready var grab_sound = $"../grabsound"
+
 
 #climb variables
 var left_hand_initial_offset: Vector3
@@ -175,11 +177,15 @@ func check_grab():
 		grab_point_left = left_hand.global_position
 		left_hand_grabbing = true
 		
+		grab_sound.play()
+		
 	#if hand reaching+made contact+not grabbing anything else
 	if right_hand_reaching and right_hand.get_contact_count() > 0 and !right_hand_grabbing:
 		grab_point_right = right_hand.global_position
 		right_hand_grabbing = true
-
+		
+		grab_sound.play()
+	
 func update_hands(delta):
 	var cam_basis = camera.global_transform.basis
 	
