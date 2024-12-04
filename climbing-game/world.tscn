@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=3 uid="uid://daea0cguij4h2"]
+[gd_scene load_steps=36 format=3 uid="uid://daea0cguij4h2"]
 
 [ext_resource type="Material" uid="uid://rt8kwy52hryb" path="res://Materials/highlight.tres" id="1_lgiqj"]
 [ext_resource type="Texture2D" uid="uid://cbywlgvjn8emc" path="res://Textures/696.jpg" id="1_rpqyh"]
@@ -61,6 +61,10 @@ albedo_texture = ExtResource("4_05muq")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gtese"]
 albedo_texture = ExtResource("3_umr55")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gx5kp"]
+albedo_texture = ExtResource("3_umr55")
+uv1_triplanar = true
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2nb5y"]
 albedo_texture = ExtResource("3_umbod")
@@ -186,6 +190,7 @@ transform = Transform3D(0.18, 0, 0, 0, 0.18, 0, 0, 0, 0.18, 13.5, 4.5, 10)
 
 [node name="CSGCylinder3D" type="CSGCylinder3D" parent="Map"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 10, 0)
+material_override = SubResource("StandardMaterial3D_gx5kp")
 use_collision = true
 radius = 3.5
 height = 20.0
@@ -221,8 +226,9 @@ material = SubResource("StandardMaterial3D_bi1nw")
 
 [node name="GPUParticles3D" type="GPUParticles3D" parent="Map"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, 1.5, 0)
+emitting = false
 amount = 12
-lifetime = 0.6
+one_shot = true
 explosiveness = 1.0
 fixed_fps = 60
 process_material = SubResource("ParticleProcessMaterial_qdk05")

@@ -27,6 +27,7 @@ const LAYER_PLAYER = 4
 @onready var left_hand = $lefthand
 @onready var right_hand = $righthand
 @onready var grab_sound = $"../grabsound"
+@onready var hand_fx = $"../Map/GPUParticles3D"
 
 
 #climb variables
@@ -177,6 +178,7 @@ func check_grab():
 		grab_point_left = left_hand.global_position
 		left_hand_grabbing = true
 		
+		particles_hand(grab_point_left)
 		grab_sound.play()
 		
 	#if hand reaching+made contact+not grabbing anything else
@@ -184,6 +186,7 @@ func check_grab():
 		grab_point_right = right_hand.global_position
 		right_hand_grabbing = true
 		
+		particles_hand(grab_point_right)
 		grab_sound.play()
 	
 func update_hands(delta):
@@ -247,3 +250,11 @@ func update_hands(delta):
 func handle_landing():
 	#put sounds, fx
 	velocity.y = 0
+
+
+func particles_hand(contact_point):
+	# Position the particles at the contact point
+	hand_fx.global_position = contact_point
+	
+	# Start emitting the particles
+	hand_fx.emitting = true
