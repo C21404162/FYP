@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=3 uid="uid://daea0cguij4h2"]
+[gd_scene load_steps=35 format=3 uid="uid://daea0cguij4h2"]
 
 [ext_resource type="Material" uid="uid://rt8kwy52hryb" path="res://Materials/highlight.tres" id="1_lgiqj"]
 [ext_resource type="Texture2D" uid="uid://cbywlgvjn8emc" path="res://Textures/696.jpg" id="1_rpqyh"]
@@ -12,6 +12,7 @@
 [ext_resource type="Script" path="res://interactray.gd" id="9_bfa6a"]
 [ext_resource type="PackedScene" uid="uid://jjevgaxgt0p5" path="res://Models/bad_hand_right.glb" id="9_gmq14"]
 [ext_resource type="PackedScene" uid="uid://bn52fufkkj352" path="res://Models/bad_hand_left.glb" id="10_rudq1"]
+[ext_resource type="AudioStream" uid="uid://n1368xkcp0oa" path="res://Sounds/SFX/grab.wav" id="13_dftgj"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5qhtx"]
 albedo_texture = ExtResource("3_umbod")
@@ -68,6 +69,25 @@ uv1_triplanar = true
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bi1nw"]
 albedo_texture = ExtResource("4_05muq")
 uv1_triplanar = true
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_qdk05"]
+emission_shape = 1
+emission_sphere_radius = 1.0
+direction = Vector3(0, -1, 0)
+spread = 90.0
+initial_velocity_min = 2.0
+initial_velocity_max = 4.0
+gravity = Vector3(0, -4, 0)
+scale_min = 0.25
+scale_max = 0.3
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kgh6e"]
+albedo_color = Color(0.363281, 0.363281, 0.363281, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_nxoee"]
+material = SubResource("StandardMaterial3D_kgh6e")
+radial_segments = 8
+rings = 4
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_vxuxf"]
 radius = 0.3
@@ -199,6 +219,15 @@ radius = 0.370613
 height = 5.0
 material = SubResource("StandardMaterial3D_bi1nw")
 
+[node name="GPUParticles3D" type="GPUParticles3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, 1.5, 0)
+amount = 12
+lifetime = 0.6
+explosiveness = 1.0
+fixed_fps = 60
+process_material = SubResource("ParticleProcessMaterial_qdk05")
+draw_pass_1 = SubResource("SphereMesh_nxoee")
+
 [node name="Player" type="CharacterBody3D" parent="."]
 script = ExtResource("1_vwaj1")
 
@@ -269,3 +298,6 @@ data = {
 
 [node name="Node3D" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 1.2, -0.6)
+
+[node name="grabsound" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource("13_dftgj")
