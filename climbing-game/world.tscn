@@ -53,6 +53,7 @@ uv1_triplanar = true
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hx26c"]
 albedo_texture = ExtResource("3_umbod")
+uv1_triplanar = true
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_201aj"]
 albedo_texture = ExtResource("4_05muq")
