@@ -46,9 +46,10 @@ var noclip_enabled = false
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 func _ready():
+	
+	#cam setup
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	setup_hands()
-	
 	left_hand_initial_offset = left_hand.global_position - camera.global_position
 	right_hand_initial_offset = right_hand.global_position - camera.global_position
 
@@ -68,6 +69,7 @@ func setup_hands():
 	right_hand.max_contacts_reported = 1
 
 func _unhandled_input(event):
+	
 	if event is InputEventMouseMotion:
 		head.rotate_y(-event.relative.x * SENSITIVITY)
 		camera.rotate_x(-event.relative.y * SENSITIVITY)
@@ -129,9 +131,11 @@ func handle_movement(delta):
 	var input_dir = Input.get_vector("left", "right", "up", "down")
 	var direction = (head.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 	
+	#crouch
 	if Input.is_action_pressed("crouch"):
 		speed*= 0.6
 	
+	#lerp
 	if direction:
 		if is_on_floor():
 			velocity.x = lerp(velocity.x, direction.x * speed, delta * 12.0)
@@ -178,6 +182,7 @@ func check_grab():
 		grab_point_left = left_hand.global_position
 		left_hand_grabbing = true
 		
+		#particles and sound
 		particles_hand(grab_point_left)
 		grab_sound.play()
 		
@@ -186,6 +191,7 @@ func check_grab():
 		grab_point_right = right_hand.global_position
 		right_hand_grabbing = true
 		
+		#particles and sound
 		particles_hand(grab_point_right)
 		grab_sound.play()
 	
@@ -250,7 +256,6 @@ func update_hands(delta):
 func handle_landing():
 	#put sounds, fx
 	velocity.y = 0
-
 
 func particles_hand(contact_point):
 	# Position the particles at the contact point
