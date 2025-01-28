@@ -45,7 +45,25 @@ var noclip_enabled = false
 
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
+@export var pause_menu_scene_path: String = "res://pause.tscn"
+var pause_menu_instance: Control = null
+
 func _ready():
+	
+	# Load the pause menu scene
+	var pause_menu_scene = load(pause_menu_scene_path)
+	if pause_menu_scene:
+		print("Pause menu scene loaded successfully.")
+		pause_menu_instance = pause_menu_scene.instantiate()
+		if pause_menu_instance:
+			print("Pause menu instance created successfully.")
+			# Add the pause menu instance to the scene tree
+			add_child(pause_menu_instance)
+			pause_menu_instance.hide()
+		else:
+			print("Failed to instantiate pause menu scene.")
+	else:
+		print("Failed to load pause menu scene.")
 	
 	#cam setup
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
@@ -54,6 +72,7 @@ func _ready():
 	right_hand_initial_offset = right_hand.global_position - camera.global_position
 
 func setup_hands():
+	
 	left_hand.gravity_scale = 0
 	right_hand.gravity_scale = 0
 	left_hand.collision_layer = LAYER_HANDS
@@ -69,6 +88,16 @@ func setup_hands():
 	right_hand.max_contacts_reported = 1
 
 func _unhandled_input(event):
+	
+	if event.is_action_pressed("esc"):
+		if pause_menu_instance:
+			# Ensure the pause menu is part of the scene tree
+			if pause_menu_instance.is_inside_tree():
+				pause_menu_instance.toggle_pause()
+			else:
+				print("Pause menu instance is not part of the SceneTree!")
+		else:
+			print("Pause menu instance not found!")
 	
 	if event is InputEventMouseMotion:
 		head.rotate_y(-event.relative.x * SENSITIVITY)
