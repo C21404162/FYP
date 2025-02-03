@@ -50,6 +50,7 @@ var pause_menu_instance: Control = null
 
 func _ready():
 	
+	
 	# Load the pause menu scene
 	var pause_menu_scene = load(pause_menu_scene_path)
 	if pause_menu_scene:
