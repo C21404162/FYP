@@ -48,8 +48,9 @@ var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 @export var pause_menu_scene_path: String = "res://pause.tscn"
 var pause_menu_instance: Control = null
 
+@onready var game_manager = get_node("/root/GameManager")
+
 func _ready():
-	
 	
 	# Load the pause menu scene
 	var pause_menu_scene = load(pause_menu_scene_path)
@@ -71,6 +72,16 @@ func _ready():
 	setup_hands()
 	left_hand_initial_offset = left_hand.global_position - camera.global_position
 	right_hand_initial_offset = right_hand.global_position - camera.global_position
+	setup_game_manager_connection()
+
+func _on_player_position_updated(position: Vector3):
+	global_position = position
+	
+func setup_game_manager_connection():
+	if game_manager:
+		game_manager.connect("player_position_updated", _on_player_position_updated)
+	else:
+		print("Error: Game Manager node not found.")
 
 func setup_hands():
 	
@@ -124,6 +135,8 @@ func _unhandled_input(event):
 
 func _physics_process(delta):
 	check_grab()
+	
+	GameManager.update_player_position(global_transform.origin)
 	
 	if noclip_enabled:
 		handle_noclip(delta)

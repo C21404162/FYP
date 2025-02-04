@@ -3,6 +3,7 @@ extends Control
 @onready var pause_panel = $pause_panel
 @onready var options_panel = $options_panel
 @onready var saveload_panel = $saveload_panel
+@onready var game_manager = GameManager
 
 # Reference to the player character (you'll need to set this)
 @export var player: Node3D
@@ -14,6 +15,12 @@ func _ready():
 	saveload_panel.hide()
 	# Ensure pause mode is set to process so the menu can work when the game is paused
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	
+	game_manager = get_tree().root.get_node_or_null("GameManager")
+	
+	# Add a null check to prevent errors
+	if game_manager == null:
+		print("Warning: GameManager not found in scene tree!")
 
 func toggle_pause():
 	# Toggle visibility and pause state
@@ -33,47 +40,12 @@ func toggle_pause():
 		# Hide the mouse cursor (optional, depending on your game)
 		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
-# Save game function
-func _on_save_pressed():
-	# Create a new SaveGame resource
-	var save_game = SaveGame.new()
-	
-	# Populate save data
-	if player:
-		save_game.player_position = player.global_position
-		save_game.player_rotation = player.rotation_degrees
-	
-	# Optional: Add more save data like health, inventory, etc.
-	# save_game.health = player.health
-	# save_game.inventory = player.inventory
-	
-	# Save the game
-	save_game.write_savegame()
-	print("Game saved successfully!")
+func onsave_pressed():
+	GameManager.save_game_data()
 
-# Load game function
-func _on_load_pressed():
-	# Attempt to load the saved game
-	var loaded_save = SaveGame.load_savegame()
-	
-	if loaded_save:
-		# Restore player position and rotation
-		if player:
-			player.global_position = loaded_save.player_position
-			player.rotation_degrees = loaded_save.player_rotation
-		
-		# Optional: Restore other game state
-		# player.health = loaded_save.health
-		# player.inventory = loaded_save.inventory
-		
-		# Unpause the game after loading
-		get_tree().paused = false
-		visible = false
-		print("Game loaded successfully!")
-	else:
-		print("No save game found!")
+func onload_pressed():
+	GameManager.load_game_data()
 
-# Existing pause menu functions remain the same
 func _on_resume_pressed():
 	toggle_pause()
 
