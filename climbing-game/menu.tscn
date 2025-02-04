@@ -56,15 +56,18 @@ grow_vertical = 0
 layout_mode = 2
 focus_neighbor_top = NodePath("../exit")
 text = "start"
+flat = true
 
 [node name="options" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 text = "options"
+flat = true
 
 [node name="exit" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 focus_neighbor_bottom = NodePath("../start")
 text = "exit"
+flat = true
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.5, 0)
