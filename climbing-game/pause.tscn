@@ -97,6 +97,6 @@ text = "back"
 [connection signal="pressed" from="pause_panel/VBoxContainer/save_load" to="." method="_on_saveload_pressed"]
 [connection signal="pressed" from="pause_panel/VBoxContainer/exit" to="." method="_on_exit_pressed"]
 [connection signal="pressed" from="options_panel/VBoxContainer/back" to="." method="_on_back_pressed"]
-[connection signal="pressed" from="saveload_panel/VBoxContainer/save" to="." method="_on_save_pressed"]
-[connection signal="pressed" from="saveload_panel/VBoxContainer/load" to="." method="_on_load_pressed"]
+[connection signal="pressed" from="saveload_panel/VBoxContainer/save" to="." method="onsave_pressed"]
+[connection signal="pressed" from="saveload_panel/VBoxContainer/load" to="." method="onload_pressed"]
 [connection signal="pressed" from="saveload_panel/VBoxContainer/back" to="." method="_on_back_pressed"]

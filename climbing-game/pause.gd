@@ -21,6 +21,7 @@ func _ready():
 	# Add a null check to prevent errors
 	if game_manager == null:
 		print("Warning: GameManager not found in scene tree!")
+		
 
 func toggle_pause():
 	# Toggle visibility and pause state
@@ -41,9 +42,11 @@ func toggle_pause():
 		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
 func onsave_pressed():
+	print("Save button pressed!")
 	GameManager.save_game_data()
 
 func onload_pressed():
+	print("Load button pressed!")
 	GameManager.load_game_data()
 
 func _on_resume_pressed():
