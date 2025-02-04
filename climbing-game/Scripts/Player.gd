@@ -52,14 +52,12 @@ var pause_menu_instance: Control = null
 
 func _ready():
 	
-	# Load the pause menu scene
 	var pause_menu_scene = load(pause_menu_scene_path)
 	if pause_menu_scene:
 		print("Pause menu scene loaded successfully.")
 		pause_menu_instance = pause_menu_scene.instantiate()
 		if pause_menu_instance:
 			print("Pause menu instance created successfully.")
-			# Add the pause menu instance to the scene tree
 			add_child(pause_menu_instance)
 			pause_menu_instance.hide()
 		else:
@@ -76,10 +74,15 @@ func _ready():
 
 func _on_player_position_updated(position: Vector3):
 	global_position = position
+
+func _on_player_rotation_updated(rotation: Basis):
+	print("Applying loaded rotation: ", rotation)
+	$Head.global_transform.basis = rotation
 	
 func setup_game_manager_connection():
 	if game_manager:
 		game_manager.connect("player_position_updated", _on_player_position_updated)
+		game_manager.connect("player_rotation_updated", _on_player_rotation_updated)
 	else:
 		print("Error: Game Manager node not found.")
 
@@ -103,7 +106,6 @@ func _unhandled_input(event):
 	
 	if event.is_action_pressed("esc"):
 		if pause_menu_instance:
-			# Ensure the pause menu is part of the scene tree
 			if pause_menu_instance.is_inside_tree():
 				pause_menu_instance.toggle_pause()
 			else:
@@ -137,6 +139,10 @@ func _physics_process(delta):
 	check_grab()
 	
 	GameManager.update_player_position(global_transform.origin)
+	var camera_rotation = $Head.global_transform.basis
+	print("Current camera rotation: ", camera_rotation)
+	GameManager.update_player_position(global_transform.origin)
+	GameManager.update_player_rotation(camera_rotation)
 	
 	if noclip_enabled:
 		handle_noclip(delta)

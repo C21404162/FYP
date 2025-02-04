@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://b4ndfyw2ceoxp"]
+
+[ext_resource type="Script" path="res://gamemanager.gd" id="1_j1o1u"]
+
+[node name="Node" type="Node"]
+script = ExtResource("1_j1o1u")
+
+[connection signal="player_position_updated" from="." to="." method="_on_player_position_updated"]

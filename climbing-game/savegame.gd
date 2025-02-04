@@ -1,13 +1,14 @@
-# SaveGame.gd
 class_name SaveGame
 extends Resource
 
 @export var player_position: Vector3 = Vector3.ZERO
+@export var player_rotation: Basis = Basis() 
 const SAVE_GAME_PATH := "user://savegame.tres"
 
 func write_savegame() -> bool:
 	print("Attempting to save game data...")
 	print("Position to save: ", player_position)
+	print("Rotation to save: ", player_rotation) 
 	var save_result = ResourceSaver.save(self, SAVE_GAME_PATH)
 	if save_result == OK:
 		print("Game saved successfully!")
@@ -25,6 +26,7 @@ static func load_savegame() -> SaveGame:
 	if loaded_resource is SaveGame:
 		print("Successfully loaded save game!")
 		print("Loaded Position: ", loaded_resource.player_position)
+		print("Loaded Rotation: ", loaded_resource.player_rotation) 
 		return loaded_resource
 	else:
 		print("ERROR: Loaded resource is not a valid SaveGame!")
