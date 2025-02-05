@@ -76,7 +76,7 @@ func _on_player_position_updated(position: Vector3):
 	global_position = position
 
 func _on_player_rotation_updated(rotation: Basis):
-	print("Applying loaded rotation: ", rotation)
+	#print("Applying loaded rotation: ", rotation)
 	$Head.global_transform.basis = rotation
 	
 func setup_game_manager_connection():
@@ -140,7 +140,7 @@ func _physics_process(delta):
 	
 	GameManager.update_player_position(global_transform.origin)
 	var camera_rotation = $Head.global_transform.basis
-	print("Current camera rotation: ", camera_rotation)
+	#print("Current camera rotation: ", camera_rotation)
 	GameManager.update_player_position(global_transform.origin)
 	GameManager.update_player_rotation(camera_rotation)
 	
