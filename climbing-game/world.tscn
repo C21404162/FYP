@@ -1,4 +1,4 @@
-[gd_scene load_steps=40 format=3 uid="uid://daea0cguij4h2"]
+[gd_scene load_steps=43 format=3 uid="uid://daea0cguij4h2"]
 
 [ext_resource type="Material" uid="uid://rt8kwy52hryb" path="res://Materials/highlight.tres" id="1_lgiqj"]
 [ext_resource type="Script" path="res://world.gd" id="1_q6rjl"]
@@ -92,6 +92,25 @@ albedo_color = Color(0.363281, 0.363281, 0.363281, 1)
 
 [sub_resource type="SphereMesh" id="SphereMesh_nxoee"]
 material = SubResource("StandardMaterial3D_kgh6e")
+radial_segments = 8
+rings = 4
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_56mve"]
+emission_shape = 1
+emission_sphere_radius = 1.0
+direction = Vector3(0, -1, 0)
+spread = 90.0
+initial_velocity_min = 2.0
+initial_velocity_max = 4.0
+gravity = Vector3(0, -1, 0)
+scale_min = 0.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_e1rop"]
+transparency = 1
+vertex_color_use_as_albedo = true
+
+[sub_resource type="SphereMesh" id="SphereMesh_icc2d"]
+material = SubResource("StandardMaterial3D_e1rop")
 radial_segments = 8
 rings = 4
 
@@ -228,27 +247,22 @@ transform = Transform3D(-0.0465874, 0, -0.173867, 0, 0.18, 0, 0.173867, 0, -0.04
 transform = Transform3D(0.18, 0, 0, 0, 0.18, 0, 0, 0, 0.18, 13.5, 4.5, 10)
 
 [node name="CSGCylinder3D" type="CSGCylinder3D" parent="Map"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 10, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10, 0)
 material_override = SubResource("StandardMaterial3D_gx5kp")
 use_collision = true
 radius = 3.5
-height = 20.0
+height = 119.0
 sides = 13
 
 [node name="CSGCylinder3D" type="CSGCylinder3D" parent="Map/CSGCylinder3D"]
 operation = 2
 radius = 3.19823
-height = 20.0
+height = 119.0
 
 [node name="CSGBox3D" type="CSGBox3D" parent="Map/CSGCylinder3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.69459, -8.75, 0)
 operation = 2
 size = Vector3(1.5, 2.5, 2)
-
-[node name="CSGBox3D2" type="CSGBox3D" parent="Map"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.5, 18.25, 0)
-use_collision = true
-size = Vector3(9, 0.5, 9)
 
 [node name="CSGBox3D6" type="CSGBox3D" parent="Map"]
 transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -11, 2.5, -3.25)
@@ -274,7 +288,15 @@ process_material = SubResource("ParticleProcessMaterial_qdk05")
 draw_pass_1 = SubResource("SphereMesh_nxoee")
 
 [node name="SpawnPoint" type="Marker3D" parent="Map"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 26, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 39.2114, 0)
+
+[node name="LandingParticles" type="GPUParticles3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1)
+amount = 12
+explosiveness = 1.0
+fixed_fps = 60
+process_material = SubResource("ParticleProcessMaterial_56mve")
+draw_pass_1 = SubResource("SphereMesh_icc2d")
 
 [node name="Player" type="CharacterBody3D" parent="."]
 script = ExtResource("1_vwaj1")

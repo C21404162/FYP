@@ -43,6 +43,10 @@ var is_charging_jump = false
 var jump_charge_time = 0.0
 var noclip_enabled = false
 
+#landing 
+var was_in_air = false
+@onready var landing_particles = $LandingParticles
+
 # Gravity
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
@@ -78,12 +82,8 @@ func _ready():
 	spawn_falling()
 	
 func spawn_falling():
-	# Set the player's initial position to the spawn point
-	var spawn_point = get_parent().get_node("Map/SpawnPoint")  # Correct path
-	global_transform.origin = spawn_point.global_transform.origin
+	global_transform.origin = $"/root/World/Map/SpawnPoint".global_transform.origin
 	
-
-
 func _on_player_position_updated(position: Vector3):
 	global_position = position
 
@@ -99,7 +99,6 @@ func setup_game_manager_connection():
 		print("Error: Game Manager node not found.")
 
 func setup_hands():
-	
 	left_hand.gravity_scale = 0
 	right_hand.gravity_scale = 0
 	left_hand.collision_layer = LAYER_HANDS
@@ -116,6 +115,7 @@ func setup_hands():
 
 func _unhandled_input(event):
 	
+	#Pause
 	if event.is_action_pressed("esc"):
 		if pause_menu_instance:
 			if pause_menu_instance.is_inside_tree():
@@ -125,6 +125,7 @@ func _unhandled_input(event):
 		else:
 			print("Pause menu instance not found!")
 	
+	#Mouse movement
 	if event is InputEventMouseMotion:
 		head.rotate_y(-event.relative.x * SENSITIVITY)
 		camera.rotate_x(-event.relative.y * SENSITIVITY)
@@ -148,8 +149,10 @@ func _unhandled_input(event):
 			collision_mask = LAYER_WORLD
 
 func _physics_process(delta):
+	
 	check_grab()
 	
+	#Game manager updates
 	GameManager.update_player_position(global_transform.origin)
 	var camera_rotation = $Head.global_transform.basis
 	#print("Current camera rotation: ", camera_rotation)
@@ -165,6 +168,19 @@ func _physics_process(delta):
 	
 	update_hands(delta)
 	move_and_slide()
+	
+	#Landing logic
+	if !was_in_air and is_on_floor():
+		emit_landing_particles()
+	was_in_air = !is_on_floor()
+	
+func emit_landing_particles():
+	if landing_particles:
+		# Position the particles at the player's feet
+		landing_particles.global_transform.origin = global_transform.origin
+		
+		# Emit the particles
+		landing_particles.emitting = true
 
 func handle_noclip(delta):
 	var input_dir = Input.get_vector("left", "right", "up", "down")
