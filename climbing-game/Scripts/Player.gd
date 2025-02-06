@@ -43,11 +43,14 @@ var is_charging_jump = false
 var jump_charge_time = 0.0
 var noclip_enabled = false
 
+# Gravity
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
+# Pause menu
 @export var pause_menu_scene_path: String = "res://pause.tscn"
 var pause_menu_instance: Control = null
 
+# Game manager
 @onready var game_manager = get_node("/root/GameManager")
 
 func _ready():
@@ -71,6 +74,15 @@ func _ready():
 	left_hand_initial_offset = left_hand.global_position - camera.global_position
 	right_hand_initial_offset = right_hand.global_position - camera.global_position
 	setup_game_manager_connection()
+	
+	spawn_falling()
+	
+func spawn_falling():
+	# Set the player's initial position to the spawn point
+	var spawn_point = get_parent().get_node("Map/SpawnPoint")  # Correct path
+	global_transform.origin = spawn_point.global_transform.origin
+	
+
 
 func _on_player_position_updated(position: Vector3):
 	global_position = position
