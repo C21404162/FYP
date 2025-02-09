@@ -155,7 +155,6 @@ func _physics_process(delta):
 	#Game manager updates
 	GameManager.update_player_position(global_transform.origin)
 	var camera_rotation = $Head.global_transform.basis
-	#print("Current camera rotation: ", camera_rotation)
 	GameManager.update_player_position(global_transform.origin)
 	GameManager.update_player_rotation(camera_rotation)
 	
