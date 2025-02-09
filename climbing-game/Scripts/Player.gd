@@ -253,23 +253,23 @@ func handle_climbing(delta):
 			jump_charge_time = 0.0
 
 func check_grab():
-	#if hand reaching+made contact+not grabbing anything else
+	# Left hand
 	if left_hand_reaching and left_hand.get_contact_count() > 0 and !left_hand_grabbing:
-		grab_point_left = left_hand.global_position
-		left_hand_grabbing = true
-		
-		#particles and sound
-		particles_hand(grab_point_left)
-		grab_sound.play()
-		
-	#if hand reaching+made contact+not grabbing anything else
+		var contact = left_hand.get_collider()
+		if contact and contact.has_meta("climbable") and contact.get_meta("climbable") == true:
+			grab_point_left = left_hand.global_position
+			left_hand_grabbing = true
+			particles_hand(grab_point_left)
+			grab_sound.play()
+	
+	# Right hand
 	if right_hand_reaching and right_hand.get_contact_count() > 0 and !right_hand_grabbing:
-		grab_point_right = right_hand.global_position
-		right_hand_grabbing = true
-		
-		#particles and sound
-		particles_hand(grab_point_right)
-		grab_sound.play()
+		var contact = right_hand.get_collider()
+		if contact and contact.has_meta("climbable") and contact.get_meta("climbable") == true:
+			grab_point_right = right_hand.global_position
+			right_hand_grabbing = true
+			particles_hand(grab_point_right)
+			grab_sound.play()
 	
 func update_hands(delta):
 	var cam_basis = camera.global_transform.basis
