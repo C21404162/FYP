@@ -1,4 +1,4 @@
-[gd_scene load_steps=43 format=3 uid="uid://daea0cguij4h2"]
+[gd_scene load_steps=47 format=3 uid="uid://daea0cguij4h2"]
 
 [ext_resource type="Material" uid="uid://rt8kwy52hryb" path="res://Materials/highlight.tres" id="1_lgiqj"]
 [ext_resource type="Script" path="res://world.gd" id="1_q6rjl"]
@@ -95,25 +95,6 @@ material = SubResource("StandardMaterial3D_kgh6e")
 radial_segments = 8
 rings = 4
 
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_56mve"]
-emission_shape = 1
-emission_sphere_radius = 1.0
-direction = Vector3(0, -1, 0)
-spread = 90.0
-initial_velocity_min = 2.0
-initial_velocity_max = 4.0
-gravity = Vector3(0, -1, 0)
-scale_min = 0.5
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_e1rop"]
-transparency = 1
-vertex_color_use_as_albedo = true
-
-[sub_resource type="SphereMesh" id="SphereMesh_icc2d"]
-material = SubResource("StandardMaterial3D_e1rop")
-radial_segments = 8
-rings = 4
-
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_vxuxf"]
 radius = 0.3
 
@@ -131,6 +112,42 @@ radius = 0.200363
 radius = 0.199912
 
 [sub_resource type="SphereMesh" id="SphereMesh_wc6pi"]
+
+[sub_resource type="Gradient" id="Gradient_r4ykm"]
+colors = PackedColorArray(0.222656, 0.222656, 0.222656, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_8aa5c"]
+gradient = SubResource("Gradient_r4ykm")
+
+[sub_resource type="Curve" id="Curve_7hc4r"]
+_data = [Vector2(0, 0.0922954), 0.0, 0.0, 0, 0, Vector2(0.181467, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_ln1cx"]
+curve = SubResource("Curve_7hc4r")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_56mve"]
+emission_shape = 1
+emission_sphere_radius = 1.0
+direction = Vector3(0, -1, 0)
+spread = 90.0
+initial_velocity_min = 2.0
+initial_velocity_max = 4.0
+gravity = Vector3(0, -1, 0)
+scale_min = 0.2
+scale_max = 0.6
+scale_curve = SubResource("CurveTexture_ln1cx")
+color = Color(0.472656, 0.472656, 0.472656, 1)
+color_ramp = SubResource("GradientTexture1D_8aa5c")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_e1rop"]
+transparency = 1
+vertex_color_use_as_albedo = true
+
+[sub_resource type="SphereMesh" id="SphereMesh_icc2d"]
+material = SubResource("StandardMaterial3D_e1rop")
+radial_segments = 8
+rings = 4
 
 [sub_resource type="Animation" id="Animation_0pw4k"]
 length = 0.001
@@ -290,14 +307,6 @@ draw_pass_1 = SubResource("SphereMesh_nxoee")
 [node name="SpawnPoint" type="Marker3D" parent="Map"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 39.2114, 0)
 
-[node name="LandingParticles" type="GPUParticles3D" parent="Map"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1)
-amount = 12
-explosiveness = 1.0
-fixed_fps = 60
-process_material = SubResource("ParticleProcessMaterial_56mve")
-draw_pass_1 = SubResource("SphereMesh_icc2d")
-
 [node name="Player" type="CharacterBody3D" parent="."]
 script = ExtResource("1_vwaj1")
 
@@ -356,6 +365,16 @@ mesh = SubResource("SphereMesh_wc6pi")
 
 [node name="bad_hand_right" parent="Player/righthand" instance=ExtResource("9_gmq14")]
 transform = Transform3D(-0.2, 7.64274e-16, -1.74846e-08, 1.74846e-08, 8.74228e-09, -0.2, 0, -0.2, -8.74228e-09, 0, -0.0149806, 0.00420296)
+
+[node name="LandingParticles" type="GPUParticles3D" parent="Player"]
+emitting = false
+lifetime = 0.8
+one_shot = true
+speed_scale = 0.7
+explosiveness = 1.0
+fixed_fps = 60
+process_material = SubResource("ParticleProcessMaterial_56mve")
+draw_pass_1 = SubResource("SphereMesh_icc2d")
 
 [node name="GridMap" type="GridMap" parent="."]
 transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 0, 0)
