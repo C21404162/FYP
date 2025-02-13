@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://beetiutedhsjl"]
+[gd_scene load_steps=3 format=3 uid="uid://beetiutedhsjl"]
 
 [ext_resource type="Script" path="res://pause.gd" id="1_xly8l"]
+[ext_resource type="Script" path="res://h_slider.gd" id="2_f8qr4"]
 
 [node name="Pause" type="Control"]
 layout_mode = 3
@@ -55,6 +56,21 @@ offset_top = 3.0
 offset_right = 168.0
 offset_bottom = 196.0
 
+[node name="HBoxContainer" type="HBoxContainer" parent="options_panel/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="options_panel/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "FOV"
+
+[node name="FOVSlider" type="HSlider" parent="options_panel/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+min_value = 60.0
+max_value = 120.0
+value = 60.0
+script = ExtResource("2_f8qr4")
+
 [node name="Button" type="Button" parent="options_panel/VBoxContainer"]
 layout_mode = 2
 text = "placeholder"
@@ -96,6 +112,7 @@ text = "back"
 [connection signal="pressed" from="pause_panel/VBoxContainer/options" to="." method="_on_options_pressed"]
 [connection signal="pressed" from="pause_panel/VBoxContainer/save_load" to="." method="_on_saveload_pressed"]
 [connection signal="pressed" from="pause_panel/VBoxContainer/exit" to="." method="_on_exit_pressed"]
+[connection signal="value_changed" from="options_panel/VBoxContainer/HBoxContainer/FOVSlider" to="." method="_on_fov_slider_value_changed"]
 [connection signal="pressed" from="options_panel/VBoxContainer/back" to="." method="_on_back_pressed"]
 [connection signal="pressed" from="saveload_panel/VBoxContainer/save" to="." method="onsave_pressed"]
 [connection signal="pressed" from="saveload_panel/VBoxContainer/load" to="." method="onload_pressed"]
