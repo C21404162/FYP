@@ -10,19 +10,30 @@ extends Control
 @onready var fov_slider = $options_panel/VBoxContainer/HBoxContainer/FOVSlider
 
 func _ready():
-	# Hide the pause menu and options panel when the scene starts
-	pause_panel.hide()
-	options_panel.hide()
-	saveload_panel.hide()
-	process_mode = Node.PROCESS_MODE_ALWAYS
+	# Debug: Check if game_manager is null
+	if game_manager == null:
+		print("ERROR: game_manager is null! Ensure it's properly initialized.")
+	else:
+		print("game_manager is properly initialized.")
+	
+	# Debug: Check if fov_slider is null
+	if fov_slider == null:
+		print("ERROR: fov_slider is null! Check the node path.")
+	else:
+		print("fov_slider is properly initialized.")
 	
 	# Load the saved FOV value (if any)
 	fov_slider.value = game_manager.fov
+	
+	# Connect the FOV slider's value_changed signal
 	fov_slider.connect("value_changed", Callable(self, "_on_fov_changed"))
 
 func _on_fov_changed(value: float):
 	# Update the FOV in GameManager
 	game_manager.set_fov(value)
+	
+	# Save the game data to persist the FOV setting
+	game_manager.save_game_data()
 
 func toggle_pause():
 	visible = !visible
