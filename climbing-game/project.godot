@@ -27,6 +27,10 @@ GameManager="*res://gamemanager.gd"
 
 enabled=PackedStringArray("res://addons/gut/plugin.cfg")
 
+[global_group]
+
+Climbable=""
+
 [input]
 
 up={

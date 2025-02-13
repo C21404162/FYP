@@ -29,6 +29,9 @@ const LAYER_PLAYER = 4
 @onready var grab_sound = $"../grabsound"
 @onready var hand_fx = $"../Map/GPUParticles3D"
 
+#raycasts
+@onready var left_hand_raycast = $lefthand/left_hand_raycast
+@onready var right_hand_raycast = $righthand/right_hand_raycast
 
 #climb variables
 var left_hand_initial_offset: Vector3
@@ -253,27 +256,31 @@ func handle_climbing(delta):
 			jump_charge_time = 0.0
 
 func check_grab():
-	# Left hand
-	if left_hand_reaching and !left_hand_grabbing:
-		var colliding_bodies = left_hand.get_colliding_bodies()
-		for body in colliding_bodies:
-			if body.has_meta("climbable") and body.get_meta("climbable") == true:
-				grab_point_left = left_hand.global_position
+	# Left hand grab logic
+	if left_hand_reaching and not left_hand_grabbing:
+		if left_hand_raycast.is_colliding():
+			var collider = left_hand_raycast.get_collider()
+			if collider and collider.is_in_group("Climbable"):
+				grab_point_left = left_hand_raycast.get_collision_point()
 				left_hand_grabbing = true
+				print("Left hand grabbed: ", collider.name)
+				
+				# Particles and sound
 				particles_hand(grab_point_left)
 				grab_sound.play()
-				break  # Stop checking after finding the first climbable object
-	
-	# Right hand
-	if right_hand_reaching and !right_hand_grabbing:
-		var colliding_bodies = right_hand.get_colliding_bodies()
-		for body in colliding_bodies:
-			if body.has_meta("climbable") and body.get_meta("climbable") == true:
-				grab_point_right = right_hand.global_position
+
+	# Right hand grab logic
+	if right_hand_reaching and not right_hand_grabbing:
+		if right_hand_raycast.is_colliding():
+			var collider = right_hand_raycast.get_collider()
+			if collider and collider.is_in_group("Climbable"):
+				grab_point_right = right_hand_raycast.get_collision_point()
 				right_hand_grabbing = true
+				print("Right hand grabbed: ", collider.name)
+				
+				# Particles and sound
 				particles_hand(grab_point_right)
 				grab_sound.play()
-				break  # Stop checking after finding the first climbable object
 	
 func update_hands(delta):
 	var cam_basis = camera.global_transform.basis

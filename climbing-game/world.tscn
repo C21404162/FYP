@@ -273,7 +273,7 @@ use_collision = true
 radius = 3.5
 height = 119.0
 sides = 13
-metadata/climbable = true
+metadata/climbable = false
 
 [node name="CSGCylinder3D" type="CSGCylinder3D" parent="Map/CSGCylinder3D"]
 operation = 2
@@ -311,6 +311,38 @@ draw_pass_1 = SubResource("SphereMesh_nxoee")
 [node name="SpawnPoint" type="Marker3D" parent="Map"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 39.2114, 0)
 
+[node name="CSGPolygon3D" type="CSGPolygon3D" parent="Map" groups=["Climbable"]]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 3, 3.5)
+use_collision = true
+mode = 1
+spin_degrees = 360.0
+spin_sides = 8
+metadata/climbable = true
+
+[node name="CSGPolygon3D2" type="CSGPolygon3D" parent="Map" groups=["Climbable"]]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, -1.5, 10.5, 2.72862)
+use_collision = true
+mode = 1
+spin_degrees = 360.0
+spin_sides = 8
+metadata/Climbable = true
+
+[node name="CSGPolygon3D3" type="CSGPolygon3D" parent="Map" groups=["Climbable"]]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, -1, 4.5, 3.23777)
+use_collision = true
+mode = 1
+spin_degrees = 360.0
+spin_sides = 8
+metadata/Climbable = true
+
+[node name="CSGPolygon3D4" type="CSGPolygon3D" parent="Map" groups=["Climbable"]]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 7, 3.5)
+use_collision = true
+mode = 1
+spin_degrees = 360.0
+spin_sides = 8
+metadata/Climbable = true
+
 [node name="Player" type="CharacterBody3D" parent="."]
 script = ExtResource("1_vwaj1")
 
@@ -334,7 +366,7 @@ spot_range = 7.5
 spot_angle = 65.082
 
 [node name="interactray" type="RayCast3D" parent="Player/Head/Camera3D"]
-target_position = Vector3(0, 0, -1.5)
+target_position = Vector3(0, 0, -1.1)
 script = ExtResource("9_bfa6a")
 
 [node name="lefthand" type="RigidBody3D" parent="Player"]
@@ -353,6 +385,9 @@ mesh = SubResource("SphereMesh_1wjrs")
 [node name="bad_hand_left" parent="Player/lefthand" instance=ExtResource("10_rudq1")]
 transform = Transform3D(0.2, 3.01992e-08, -1.74846e-08, 1.74846e-08, 8.74228e-09, 0.2, 3.01992e-08, -0.2, 8.74228e-09, 0, 0.0058099, 0.000165343)
 
+[node name="left_hand_raycast" type="RayCast3D" parent="Player/lefthand"]
+target_position = Vector3(0, 0, -0.75)
+
 [node name="righthand" type="RigidBody3D" parent="Player"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 1.2, -0.6)
 collision_layer = 2
@@ -369,6 +404,9 @@ mesh = SubResource("SphereMesh_wc6pi")
 
 [node name="bad_hand_right" parent="Player/righthand" instance=ExtResource("9_gmq14")]
 transform = Transform3D(-0.2, 7.64274e-16, -1.74846e-08, 1.74846e-08, 8.74228e-09, -0.2, 0, -0.2, -8.74228e-09, 0, -0.0149806, 0.00420296)
+
+[node name="right_hand_raycast" type="RayCast3D" parent="Player/righthand"]
+target_position = Vector3(0, 0, -0.75)
 
 [node name="LandingParticles" type="GPUParticles3D" parent="Player"]
 emitting = false
