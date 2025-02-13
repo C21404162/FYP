@@ -62,6 +62,9 @@ var pause_menu_instance: Control = null
 
 func _ready():
 	
+	camera.fov = GameManager.fov
+	GameManager.connect("fov_updated", Callable(self, "_on_fov_updated"))
+	
 	var pause_menu_scene = load(pause_menu_scene_path)
 	if pause_menu_scene:
 		print("Pause menu scene loaded successfully.")
@@ -84,8 +87,14 @@ func _ready():
 	
 	spawn_falling()
 	
+	
 func spawn_falling():
 	global_transform.origin = $"/root/World/Map/SpawnPoint".global_transform.origin
+	
+	
+func _on_fov_updated(new_fov: float):
+	# Update the camera's FOV
+	camera.fov = new_fov
 	
 func _on_player_position_updated(position: Vector3):
 	global_position = position
