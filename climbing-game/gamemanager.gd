@@ -1,9 +1,8 @@
-# GameManager.gd
 extends Node
 
 signal player_position_updated(position)
 signal player_rotation_updated(rotation)
-signal fov_updated(fov_value)  # New signal for FOV changes
+signal fov_updated(fov_value)  # Signal for FOV changes
 
 var player_position: Vector3 = Vector3.ZERO
 var player_rotation: Basis = Basis()
