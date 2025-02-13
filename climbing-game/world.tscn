@@ -252,13 +252,16 @@ use_collision = true
 size = Vector3(0.5, 1, 7)
 
 [node name="wooden_plank_model" parent="Map" instance=ExtResource("6_imwlo")]
-transform = Transform3D(0.173867, 0, -0.0465874, 0, 0.18, 0, 0.0465874, 0, 0.173867, 12, 2.5, 8.5)
+transform = Transform3D(0.173867, 0, -0.0465874, 0, 0.18, 0, 0.0465874, 0, 0.173867, 2, 2.5, -1.5)
+metadata/climbable = true
 
 [node name="wooden_plank_model2" parent="Map" instance=ExtResource("6_imwlo")]
-transform = Transform3D(-0.155885, 0, -0.09, 0, 0.18, 0, 0.09, 0, -0.155885, 13.5, 3.5, 13)
+transform = Transform3D(-0.155885, 0, -0.09, 0, 0.18, 0, 0.09, 0, -0.155885, -1.5, 4.5, -1.5)
+metadata/Climbable = true
 
 [node name="wooden_plank_model3" parent="Map" instance=ExtResource("6_imwlo")]
-transform = Transform3D(-0.0465874, 0, -0.173867, 0, 0.18, 0, 0.173867, 0, -0.0465874, 15.0602, 6, 11)
+transform = Transform3D(-0.0465874, 0, -0.173867, 0, 0.18, 0, 0.173867, 0, -0.0465874, 2.0602, 6, 1)
+metadata/climbable = true
 
 [node name="well_model" parent="Map" instance=ExtResource("5_07b2l")]
 transform = Transform3D(0.18, 0, 0, 0, 0.18, 0, 0, 0, 0.18, 13.5, 4.5, 10)
@@ -270,6 +273,7 @@ use_collision = true
 radius = 3.5
 height = 119.0
 sides = 13
+metadata/climbable = true
 
 [node name="CSGCylinder3D" type="CSGCylinder3D" parent="Map/CSGCylinder3D"]
 operation = 2

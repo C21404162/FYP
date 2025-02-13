@@ -254,22 +254,26 @@ func handle_climbing(delta):
 
 func check_grab():
 	# Left hand
-	if left_hand_reaching and left_hand.get_contact_count() > 0 and !left_hand_grabbing:
-		var contact = left_hand.get_collider()
-		if contact and contact.has_meta("climbable") and contact.get_meta("climbable") == true:
-			grab_point_left = left_hand.global_position
-			left_hand_grabbing = true
-			particles_hand(grab_point_left)
-			grab_sound.play()
+	if left_hand_reaching and !left_hand_grabbing:
+		var colliding_bodies = left_hand.get_colliding_bodies()
+		for body in colliding_bodies:
+			if body.has_meta("climbable") and body.get_meta("climbable") == true:
+				grab_point_left = left_hand.global_position
+				left_hand_grabbing = true
+				particles_hand(grab_point_left)
+				grab_sound.play()
+				break  # Stop checking after finding the first climbable object
 	
 	# Right hand
-	if right_hand_reaching and right_hand.get_contact_count() > 0 and !right_hand_grabbing:
-		var contact = right_hand.get_collider()
-		if contact and contact.has_meta("climbable") and contact.get_meta("climbable") == true:
-			grab_point_right = right_hand.global_position
-			right_hand_grabbing = true
-			particles_hand(grab_point_right)
-			grab_sound.play()
+	if right_hand_reaching and !right_hand_grabbing:
+		var colliding_bodies = right_hand.get_colliding_bodies()
+		for body in colliding_bodies:
+			if body.has_meta("climbable") and body.get_meta("climbable") == true:
+				grab_point_right = right_hand.global_position
+				right_hand_grabbing = true
+				particles_hand(grab_point_right)
+				grab_sound.play()
+				break  # Stop checking after finding the first climbable object
 	
 func update_hands(delta):
 	var cam_basis = camera.global_transform.basis
