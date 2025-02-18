@@ -1,4 +1,4 @@
-[gd_scene load_steps=47 format=3 uid="uid://daea0cguij4h2"]
+[gd_scene load_steps=49 format=3 uid="uid://daea0cguij4h2"]
 
 [ext_resource type="Material" uid="uid://rt8kwy52hryb" path="res://Materials/highlight.tres" id="1_lgiqj"]
 [ext_resource type="Script" path="res://world.gd" id="1_q6rjl"]
@@ -13,7 +13,9 @@
 [ext_resource type="Script" path="res://interactray.gd" id="9_bfa6a"]
 [ext_resource type="PackedScene" uid="uid://jjevgaxgt0p5" path="res://Models/bad_hand_right.glb" id="9_gmq14"]
 [ext_resource type="PackedScene" uid="uid://bn52fufkkj352" path="res://Models/bad_hand_left.glb" id="10_rudq1"]
+[ext_resource type="PackedScene" uid="uid://bsr064cghwhkg" path="res://Models/hand_left.glb" id="12_xv8ak"]
 [ext_resource type="AudioStream" uid="uid://n1368xkcp0oa" path="res://Sounds/SFX/grab.wav" id="13_dftgj"]
+[ext_resource type="PackedScene" uid="uid://1sfp2ihf2nds" path="res://Models/hand_right.glb" id="14_apo2k"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5qhtx"]
 albedo_texture = ExtResource("3_umbod")
@@ -384,9 +386,13 @@ mesh = SubResource("SphereMesh_1wjrs")
 
 [node name="bad_hand_left" parent="Player/lefthand" instance=ExtResource("10_rudq1")]
 transform = Transform3D(0.2, 3.01992e-08, -1.74846e-08, 1.74846e-08, 8.74228e-09, 0.2, 3.01992e-08, -0.2, 8.74228e-09, 0, 0.0058099, 0.000165343)
+visible = false
 
 [node name="left_hand_raycast" type="RayCast3D" parent="Player/lefthand"]
 target_position = Vector3(0, 0, -0.75)
+
+[node name="hand_left" parent="Player/lefthand" instance=ExtResource("12_xv8ak")]
+transform = Transform3D(2.18557e-09, 4.37114e-09, 0.05, 1.91069e-16, -0.05, 4.37114e-09, 0.05, 0, -2.18557e-09, 0, 0, 0)
 
 [node name="righthand" type="RigidBody3D" parent="Player"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 1.2, -0.6)
@@ -404,9 +410,13 @@ mesh = SubResource("SphereMesh_wc6pi")
 
 [node name="bad_hand_right" parent="Player/righthand" instance=ExtResource("9_gmq14")]
 transform = Transform3D(-0.2, 7.64274e-16, -1.74846e-08, 1.74846e-08, 8.74228e-09, -0.2, 0, -0.2, -8.74228e-09, 0, -0.0149806, 0.00420296)
+visible = false
 
 [node name="right_hand_raycast" type="RayCast3D" parent="Player/righthand"]
 target_position = Vector3(0, 0, -0.75)
+
+[node name="hand_right" parent="Player/righthand" instance=ExtResource("14_apo2k")]
+transform = Transform3D(2.18557e-09, 5.58794e-09, 0.05, 1.19045e-16, -0.05, 5.58794e-09, 0.05, -3.07979e-18, -2.18557e-09, 0, 0, 0)
 
 [node name="LandingParticles" type="GPUParticles3D" parent="Player"]
 emitting = false
@@ -417,8 +427,6 @@ explosiveness = 1.0
 fixed_fps = 60
 process_material = SubResource("ParticleProcessMaterial_56mve")
 draw_pass_1 = SubResource("SphereMesh_icc2d")
-
-[node name="Timer" type="Timer" parent="Player"]
 
 [node name="GridMap" type="GridMap" parent="."]
 transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 0, 0)
@@ -452,5 +460,3 @@ root_node = NodePath("../..")
 libraries = {
 "": SubResource("AnimationLibrary_aj4yq")
 }
-
-[connection signal="timeout" from="Player/Timer" to="." method="_on_StartMovementTimer_timeout"]
