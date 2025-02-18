@@ -66,6 +66,15 @@ var pause_menu_instance: Control = null
 
 func _ready():
 	
+	# Configure joint properties using set_param
+	grab_joint_left.set_param(PinJoint3D.PARAM_BIAS, 1.0)  # Adjust stiffness (0.0 to 1.0)
+	grab_joint_left.set_param(PinJoint3D.PARAM_DAMPING, 0.2)  # Adjust damping (0.0 to 1.0)
+	grab_joint_left.set_param(PinJoint3D.PARAM_IMPULSE_CLAMP, 5.0)  # Maximum impulse the joint can apply
+	
+	grab_joint_right.set_param(PinJoint3D.PARAM_BIAS, 0.5)  # Adjust stiffness (0.0 to 1.0)
+	grab_joint_right.set_param(PinJoint3D.PARAM_DAMPING, 0.8)  # Adjust damping (0.0 to 1.0)
+	grab_joint_right.set_param(PinJoint3D.PARAM_IMPULSE_CLAMP, 10.0)  # Maximum impulse the joint can apply
+	
 	camera.fov = GameManager.fov
 	GameManager.connect("fov_updated", Callable(self, "_on_fov_updated"))
 	
