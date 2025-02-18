@@ -418,6 +418,8 @@ fixed_fps = 60
 process_material = SubResource("ParticleProcessMaterial_56mve")
 draw_pass_1 = SubResource("SphereMesh_icc2d")
 
+[node name="Timer" type="Timer" parent="Player"]
+
 [node name="GridMap" type="GridMap" parent="."]
 transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 0, 0)
 mesh_library = ExtResource("3_onxy0")
@@ -450,3 +452,5 @@ root_node = NodePath("../..")
 libraries = {
 "": SubResource("AnimationLibrary_aj4yq")
 }
+
+[connection signal="timeout" from="Player/Timer" to="." method="_on_StartMovementTimer_timeout"]
