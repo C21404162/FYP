@@ -6,7 +6,7 @@ signal fov_updated(fov_value)  # Signal for FOV changes
 
 var player_position: Vector3 = Vector3.ZERO
 var player_rotation: Basis = Basis()
-var fov: float = 75.0  # Default FOV value
+var fov: float = 90.0  # Default FOV value
 
 func update_player_position(new_position: Vector3):
 	player_position = new_position
