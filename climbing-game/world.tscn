@@ -217,12 +217,12 @@ use_collision = true
 size = Vector3(100, 0.001, 100)
 material = SubResource("StandardMaterial3D_g6l77")
 
-[node name="CSGBox3D5" type="CSGBox3D" parent="Map"]
+[node name="CSGBox3D5" type="CSGBox3D" parent="Map" groups=["Climbable"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.25, -9.5)
 use_collision = true
 size = Vector3(1, 8.5, 1)
 
-[node name="CSGBox3D7" type="CSGBox3D" parent="Map"]
+[node name="CSGBox3D7" type="CSGBox3D" parent="Map" groups=["Climbable"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8, -13.25)
 use_collision = true
 size = Vector3(1, 1, 7.5)
@@ -251,15 +251,15 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.75, 4, 10.5)
 use_collision = true
 size = Vector3(0.5, 1, 7)
 
-[node name="wooden_plank_model" parent="Map" instance=ExtResource("6_imwlo")]
+[node name="wooden_plank_model" parent="Map" groups=["Climbable"] instance=ExtResource("6_imwlo")]
 transform = Transform3D(0.173867, 0, -0.0465874, 0, 0.18, 0, 0.0465874, 0, 0.173867, 2, 2.5, -1.5)
 metadata/climbable = true
 
-[node name="wooden_plank_model2" parent="Map" instance=ExtResource("6_imwlo")]
+[node name="wooden_plank_model2" parent="Map" groups=["Climbable"] instance=ExtResource("6_imwlo")]
 transform = Transform3D(-0.155885, 0, -0.09, 0, 0.18, 0, 0.09, 0, -0.155885, -1.5, 4.5, -1.5)
 metadata/Climbable = true
 
-[node name="wooden_plank_model3" parent="Map" instance=ExtResource("6_imwlo")]
+[node name="wooden_plank_model3" parent="Map" groups=["Climbable"] instance=ExtResource("6_imwlo")]
 transform = Transform3D(-0.0465874, 0, -0.173867, 0, 0.18, 0, 0.173867, 0, -0.0465874, 2.0602, 6, 1)
 metadata/climbable = true
 
@@ -343,6 +343,18 @@ spin_degrees = 360.0
 spin_sides = 8
 metadata/Climbable = true
 
+[node name="CSGSphere3D" type="CSGSphere3D" parent="Map" groups=["Climbable"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, -3.5)
+use_collision = true
+
+[node name="CSGSphere3D2" type="CSGSphere3D" parent="Map" groups=["Climbable"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 4.5, -3)
+use_collision = true
+
+[node name="CSGSphere3D3" type="CSGSphere3D" parent="Map" groups=["Climbable"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.5, -3.5)
+use_collision = true
+
 [node name="Player" type="CharacterBody3D" parent="."]
 script = ExtResource("1_vwaj1")
 
@@ -374,7 +386,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 1.2, -0.6)
 collision_layer = 2
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Player/lefthand"]
-visible = false
 shape = SubResource("SphereShape3D_uj484")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Player/lefthand"]
@@ -383,10 +394,10 @@ visible = false
 mesh = SubResource("SphereMesh_1wjrs")
 
 [node name="left_hand_raycast" type="RayCast3D" parent="Player/lefthand"]
-target_position = Vector3(0, 0, -0.75)
+target_position = Vector3(0, 0, -0.35)
 
 [node name="hand_left" parent="Player/lefthand" instance=ExtResource("12_xv8ak")]
-transform = Transform3D(2.18557e-09, 4.37114e-09, 0.05, 1.91069e-16, -0.05, 4.37114e-09, 0.05, 0, -2.18557e-09, 0, 0, 0)
+transform = Transform3D(2.18557e-09, 4.37114e-09, 0.05, 1.91069e-16, -0.05, 4.37114e-09, 0.05, 0, -2.18557e-09, 0, 0, 0.2)
 
 [node name="PinJoint3D_Left" type="PinJoint3D" parent="Player/lefthand"]
 
@@ -405,10 +416,10 @@ visible = false
 mesh = SubResource("SphereMesh_wc6pi")
 
 [node name="right_hand_raycast" type="RayCast3D" parent="Player/righthand"]
-target_position = Vector3(0, 0, -0.75)
+target_position = Vector3(0, 0, -0.35)
 
 [node name="hand_right" parent="Player/righthand" instance=ExtResource("14_apo2k")]
-transform = Transform3D(2.18557e-09, 5.58794e-09, 0.05, 1.19045e-16, -0.05, 5.58794e-09, 0.05, -3.07979e-18, -2.18557e-09, 0, 0, 0)
+transform = Transform3D(2.18557e-09, 5.58794e-09, 0.05, 1.19045e-16, -0.05, 5.58794e-09, 0.05, -3.07979e-18, -2.18557e-09, 0, 0, 0.2)
 
 [node name="PinJoint3D_Right" type="PinJoint3D" parent="Player/righthand"]
 
