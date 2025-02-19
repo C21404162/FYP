@@ -121,6 +121,11 @@ func configure_6dof_joint(joint: Generic6DOFJoint3D):
 	joint.set_param_z(Generic6DOFJoint3D.PARAM_LINEAR_SPRING_STIFFNESS, 100.0)  # Higher = stiffer
 	joint.set_param_z(Generic6DOFJoint3D.PARAM_LINEAR_SPRING_DAMPING, 10.0)  # Higher = less oscillation
 	
+	# Debug prints
+	print("Joint stiffness:", joint.get_param_z(Generic6DOFJoint3D.PARAM_LINEAR_SPRING_STIFFNESS))
+	print("Joint damping:", joint.get_param_z(Generic6DOFJoint3D.PARAM_LINEAR_SPRING_DAMPING))
+	print("Joint linear spring enabled:", joint.get_flag_z(Generic6DOFJoint3D.FLAG_ENABLE_LINEAR_SPRING))
+	
 func spawn_falling():
 	global_transform.origin = $"/root/World/Map/SpawnPoint".global_transform.origin
 
@@ -328,6 +333,8 @@ func grab_object(hand_raycast: RayCast3D, is_left_hand: bool):
 			right_hand_grabbing = true
 		
 		print("Grabbed with", "left" if is_left_hand else "right", "hand at:", grab_point)
+		print("Node A:", grab_joint.node_a)
+		print("Node B:", grab_joint.node_b)
 
 func release_grab(is_left_hand: bool):
 	var grab_joint = grab_joint_left if is_left_hand else grab_joint_right
