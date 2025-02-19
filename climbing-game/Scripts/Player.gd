@@ -18,7 +18,7 @@ const LAYER_PLAYER = 4
 @export var hand_smoothing = 35.0
 @export var reach_distance = 0.7
 @export var reach_speed = 12.5
-@export var climb_force = 7.0
+@export var climb_force = 5.0
 @export var hang_offset = Vector3(0, -1.8, 0)
 
 # Nodes
@@ -34,8 +34,8 @@ const LAYER_PLAYER = 4
 @onready var right_hand_raycast = $righthand/right_hand_raycast
 
 # Joints for climbing
-@onready var grab_joint_left = $lefthand/PinJoint3D_Left
-@onready var grab_joint_right = $righthand/PinJoint3D_Right
+@onready var grab_joint_left = $lefthand/Generic6DOFJoint3D
+@onready var grab_joint_right = $righthand/Generic6DOFJoint3D
 
 # Climb variables
 var left_hand_initial_offset: Vector3
@@ -66,14 +66,11 @@ var pause_menu_instance: Control = null
 
 func _ready():
 	
-	# Configure joint properties using set_param
-	grab_joint_left.set_param(PinJoint3D.PARAM_BIAS, 1.0)  # Adjust stiffness (0.0 to 1.0)
-	grab_joint_left.set_param(PinJoint3D.PARAM_DAMPING, 0.2)  # Adjust damping (0.0 to 1.0)
-	grab_joint_left.set_param(PinJoint3D.PARAM_IMPULSE_CLAMP, 200.0)  # Maximum impulse the joint can apply
+	# Configure left joint
+	configure_6dof_joint(grab_joint_left)
 	
-	grab_joint_right.set_param(PinJoint3D.PARAM_BIAS, 0.5)  # Adjust stiffness (0.0 to 1.0)
-	grab_joint_right.set_param(PinJoint3D.PARAM_DAMPING, 0.8)  # Adjust damping (0.0 to 1.0)
-	grab_joint_right.set_param(PinJoint3D.PARAM_IMPULSE_CLAMP, 10.0)  # Maximum impulse the joint can apply
+	# Configure right joint
+	configure_6dof_joint(grab_joint_right)
 	
 	camera.fov = GameManager.fov
 	GameManager.connect("fov_updated", Callable(self, "_on_fov_updated"))
@@ -100,6 +97,30 @@ func _ready():
 	
 	spawn_falling()
 
+func configure_6dof_joint(joint: Generic6DOFJoint3D):
+	# Lock rotation on all axes
+	joint.set_param_x(Generic6DOFJoint3D.PARAM_ANGULAR_LOWER_LIMIT, 0.0)
+	joint.set_param_x(Generic6DOFJoint3D.PARAM_ANGULAR_UPPER_LIMIT, 0.0)
+	joint.set_param_y(Generic6DOFJoint3D.PARAM_ANGULAR_LOWER_LIMIT, 0.0)
+	joint.set_param_y(Generic6DOFJoint3D.PARAM_ANGULAR_UPPER_LIMIT, 0.0)
+	joint.set_param_z(Generic6DOFJoint3D.PARAM_ANGULAR_LOWER_LIMIT, 0.0)
+	joint.set_param_z(Generic6DOFJoint3D.PARAM_ANGULAR_UPPER_LIMIT, 0.0)
+	
+	# Lock translation on X and Y axes
+	joint.set_param_x(Generic6DOFJoint3D.PARAM_LINEAR_LOWER_LIMIT, 0.0)
+	joint.set_param_x(Generic6DOFJoint3D.PARAM_LINEAR_UPPER_LIMIT, 0.0)
+	joint.set_param_y(Generic6DOFJoint3D.PARAM_LINEAR_LOWER_LIMIT, 0.0)
+	joint.set_param_y(Generic6DOFJoint3D.PARAM_LINEAR_UPPER_LIMIT, 0.0)
+	
+	# Allow translation on Z-axis (arm length)
+	joint.set_param_z(Generic6DOFJoint3D.PARAM_LINEAR_LOWER_LIMIT, -reach_distance)
+	joint.set_param_z(Generic6DOFJoint3D.PARAM_LINEAR_UPPER_LIMIT, reach_distance)
+	
+	# Enable linear spring for Z-axis
+	joint.set_flag_z(Generic6DOFJoint3D.FLAG_ENABLE_LINEAR_SPRING, true)
+	joint.set_param_z(Generic6DOFJoint3D.PARAM_LINEAR_SPRING_STIFFNESS, 100.0)  # Higher = stiffer
+	joint.set_param_z(Generic6DOFJoint3D.PARAM_LINEAR_SPRING_DAMPING, 10.0)  # Higher = less oscillation
+	
 func spawn_falling():
 	global_transform.origin = $"/root/World/Map/SpawnPoint".global_transform.origin
 
@@ -323,7 +344,6 @@ func release_grab(is_left_hand: bool):
 	velocity = velocity
 	
 	print("Released", "left" if is_left_hand else "right", "hand")
-
 func update_hands(delta):
 	var cam_basis = camera.global_transform.basis
 	

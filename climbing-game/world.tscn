@@ -399,7 +399,8 @@ target_position = Vector3(0, 0, -0.35)
 [node name="hand_left" parent="Player/lefthand" instance=ExtResource("12_xv8ak")]
 transform = Transform3D(2.18557e-09, 4.37114e-09, 0.05, 1.91069e-16, -0.05, 4.37114e-09, 0.05, 0, -2.18557e-09, 0, 0, 0.2)
 
-[node name="PinJoint3D_Left" type="PinJoint3D" parent="Player/lefthand"]
+[node name="Generic6DOFJoint3D" type="Generic6DOFJoint3D" parent="Player/lefthand"]
+node_a = NodePath("../..")
 
 [node name="righthand" type="RigidBody3D" parent="Player"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 1.2, -0.6)
@@ -421,7 +422,8 @@ target_position = Vector3(0, 0, -0.35)
 [node name="hand_right" parent="Player/righthand" instance=ExtResource("14_apo2k")]
 transform = Transform3D(2.18557e-09, 5.58794e-09, 0.05, 1.19045e-16, -0.05, 5.58794e-09, 0.05, -3.07979e-18, -2.18557e-09, 0, 0, 0.2)
 
-[node name="PinJoint3D_Right" type="PinJoint3D" parent="Player/righthand"]
+[node name="Generic6DOFJoint3D" type="Generic6DOFJoint3D" parent="Player/righthand"]
+node_a = NodePath("../..")
 
 [node name="LandingParticles" type="GPUParticles3D" parent="Player"]
 emitting = false
