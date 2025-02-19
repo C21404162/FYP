@@ -69,7 +69,7 @@ func _ready():
 	# Configure joint properties using set_param
 	grab_joint_left.set_param(PinJoint3D.PARAM_BIAS, 1.0)  # Adjust stiffness (0.0 to 1.0)
 	grab_joint_left.set_param(PinJoint3D.PARAM_DAMPING, 0.2)  # Adjust damping (0.0 to 1.0)
-	grab_joint_left.set_param(PinJoint3D.PARAM_IMPULSE_CLAMP, 5.0)  # Maximum impulse the joint can apply
+	grab_joint_left.set_param(PinJoint3D.PARAM_IMPULSE_CLAMP, 200.0)  # Maximum impulse the joint can apply
 	
 	grab_joint_right.set_param(PinJoint3D.PARAM_BIAS, 0.5)  # Adjust stiffness (0.0 to 1.0)
 	grab_joint_right.set_param(PinJoint3D.PARAM_DAMPING, 0.8)  # Adjust damping (0.0 to 1.0)
@@ -327,26 +327,62 @@ func release_grab(is_left_hand: bool):
 func update_hands(delta):
 	var cam_basis = camera.global_transform.basis
 	
-	# If grab move to grab point, if reaching extend from camera, if not grab return to default
+	# Left hand position
 	var left_target = grab_point_left if left_hand_grabbing else \
 		camera.global_position + cam_basis * left_hand_initial_offset + \
 		(-cam_basis.z * reach_distance if left_hand_reaching else Vector3.ZERO)
 	
+	# Right hand position
 	var right_target = grab_point_right if right_hand_grabbing else \
 		camera.global_position + cam_basis * right_hand_initial_offset + \
 		(-cam_basis.z * reach_distance if right_hand_reaching else Vector3.ZERO)
 	
-	# Hand movement left
+	# Smoothly move hands to their target positions
 	left_hand.global_position = left_hand.global_position.lerp(
 		left_target,
-		delta * (reach_speed if left_hand_reaching else hand_smoothing)
-	)
-	# Hand movement right
+		delta * (reach_speed if left_hand_reaching else hand_smoothing))
+	
 	right_hand.global_position = right_hand.global_position.lerp(
 		right_target,
-		delta * (reach_speed if right_hand_reaching else hand_smoothing)
-	)
+		delta * (reach_speed if right_hand_reaching else hand_smoothing))
+		
+		
+func _process(delta):
+	update_hand_rotations(delta)
 
+func update_hand_rotations(delta):
+	var cam_basis = camera.global_transform.basis
+	
+	# Left hand rotation
+	var left_adjustment = Basis().rotated(Vector3.FORWARD, deg_to_rad(180))
+	if left_hand_grabbing:
+		var grab_dir = (grab_point_left - camera.global_position).normalized()
+		var target_basis = Basis.looking_at(grab_dir, Vector3.UP)
+		left_hand.global_transform.basis = left_hand.global_transform.basis.slerp(
+			target_basis, 
+			delta * hand_smoothing
+		)
+	else:
+		left_hand.global_transform.basis = left_hand.global_transform.basis.slerp(
+			cam_basis * left_adjustment,
+			delta * hand_smoothing
+		)
+	
+	# Right hand rotation
+	var right_adjustment = Basis().rotated(Vector3.FORWARD, deg_to_rad(180))
+	if right_hand_grabbing:
+		var grab_dir = (grab_point_right - camera.global_position).normalized()
+		var target_basis = Basis.looking_at(grab_dir, Vector3.UP)
+		right_hand.global_transform.basis = right_hand.global_transform.basis.slerp(
+			target_basis, 
+			delta * hand_smoothing
+		)
+	else:
+		right_hand.global_transform.basis = right_hand.global_transform.basis.slerp(
+			cam_basis * right_adjustment,
+			delta * hand_smoothing
+		)
+		
 func particles_hand(contact_point):
 	hand_fx.global_position = contact_point
 	hand_fx.emitting = true
