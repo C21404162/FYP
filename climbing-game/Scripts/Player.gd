@@ -8,6 +8,7 @@ const SENSITIVITY = 0.005
 const MAX_JUMP_CHARGE_TIME = 1.0 
 const MIN_CHARGE_FOR_BOOST = 0.3
 const MAX_JUMP_BOOST = 1.5 
+const MAX_GRAB_DISTANCE = 2.65 # Adjust this value to match the desired arm's length
 
 # Collision layers
 const LAYER_WORLD = 1
@@ -16,7 +17,7 @@ const LAYER_PLAYER = 4
 
 # Physics stuff
 @export var hand_smoothing = 35.0
-@export var reach_distance = 0.7
+@export var reach_distance = 0.6
 @export var reach_speed = 12.5
 @export var climb_force = 5.0
 @export var hang_offset = Vector3(0, -1.8, 0)
@@ -34,8 +35,8 @@ const LAYER_PLAYER = 4
 @onready var right_hand_raycast = $righthand/right_hand_raycast
 
 # Joints for climbing
-@onready var grab_joint_left = $lefthand/Generic6DOFJoint3D
-@onready var grab_joint_right = $righthand/Generic6DOFJoint3D
+@onready var grab_joint_left = $HingeJoint3D_Left
+@onready var grab_joint_right = $HingeJoint3D_Right
 
 # Climb variables
 var left_hand_initial_offset: Vector3
@@ -57,6 +58,7 @@ var was_in_air = false
 # Gravity
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
+
 # Pause menu
 @export var pause_menu_scene_path: String = "res://pause.tscn"
 var pause_menu_instance: Control = null
@@ -67,10 +69,10 @@ var pause_menu_instance: Control = null
 func _ready():
 	
 	# Configure left joint
-	configure_6dof_joint(grab_joint_left)
+	configure_hinge_joint(grab_joint_left)
 	
 	# Configure right joint
-	configure_6dof_joint(grab_joint_right)
+	configure_hinge_joint(grab_joint_right)
 	
 	camera.fov = GameManager.fov
 	GameManager.connect("fov_updated", Callable(self, "_on_fov_updated"))
@@ -97,34 +99,23 @@ func _ready():
 	
 	spawn_falling()
 
-func configure_6dof_joint(joint: Generic6DOFJoint3D):
-	# Lock rotation on all axes
-	joint.set_param_x(Generic6DOFJoint3D.PARAM_ANGULAR_LOWER_LIMIT, 0.0)
-	joint.set_param_x(Generic6DOFJoint3D.PARAM_ANGULAR_UPPER_LIMIT, 0.0)
-	joint.set_param_y(Generic6DOFJoint3D.PARAM_ANGULAR_LOWER_LIMIT, 0.0)
-	joint.set_param_y(Generic6DOFJoint3D.PARAM_ANGULAR_UPPER_LIMIT, 0.0)
-	joint.set_param_z(Generic6DOFJoint3D.PARAM_ANGULAR_LOWER_LIMIT, 0.0)
-	joint.set_param_z(Generic6DOFJoint3D.PARAM_ANGULAR_UPPER_LIMIT, 0.0)
+func configure_hinge_joint(joint: HingeJoint3D):
+	# Enable angular limits
+	joint.set_flag(HingeJoint3D.FLAG_USE_LIMIT, true)
 	
-	# Lock translation on X and Y axes
-	joint.set_param_x(Generic6DOFJoint3D.PARAM_LINEAR_LOWER_LIMIT, 0.0)
-	joint.set_param_x(Generic6DOFJoint3D.PARAM_LINEAR_UPPER_LIMIT, 0.0)
-	joint.set_param_y(Generic6DOFJoint3D.PARAM_LINEAR_LOWER_LIMIT, 0.0)
-	joint.set_param_y(Generic6DOFJoint3D.PARAM_LINEAR_UPPER_LIMIT, 0.0)
+	# Set angular limits (lower and upper bounds)
+	joint.set_param(HingeJoint3D.PARAM_LIMIT_LOWER, -0.1)  # Slight lower limit
+	joint.set_param(HingeJoint3D.PARAM_LIMIT_UPPER, 0.1)  # Slight upper limit
 	
-	# Allow translation on Z-axis (arm length)
-	joint.set_param_z(Generic6DOFJoint3D.PARAM_LINEAR_LOWER_LIMIT, -reach_distance)
-	joint.set_param_z(Generic6DOFJoint3D.PARAM_LINEAR_UPPER_LIMIT, reach_distance)
+	# Set bias and relaxation for stiffness
+	joint.set_param(HingeJoint3D.PARAM_LIMIT_BIAS, 10)  # Increase bias for stiffness
+	joint.set_param(HingeJoint3D.PARAM_LIMIT_RELAXATION, 0.1)  # Reduce relaxation
 	
-	# Enable linear spring for Z-axis
-	joint.set_flag_z(Generic6DOFJoint3D.FLAG_ENABLE_LINEAR_SPRING, true)
-	joint.set_param_z(Generic6DOFJoint3D.PARAM_LINEAR_SPRING_STIFFNESS, 100.0)  # Higher = stiffer
-	joint.set_param_z(Generic6DOFJoint3D.PARAM_LINEAR_SPRING_DAMPING, 10.0)  # Higher = less oscillation
-	
-	# Debug prints
-	print("Joint stiffness:", joint.get_param_z(Generic6DOFJoint3D.PARAM_LINEAR_SPRING_STIFFNESS))
-	print("Joint damping:", joint.get_param_z(Generic6DOFJoint3D.PARAM_LINEAR_SPRING_DAMPING))
-	print("Joint linear spring enabled:", joint.get_flag_z(Generic6DOFJoint3D.FLAG_ENABLE_LINEAR_SPRING))
+	# Debug prints to verify parameters
+	print("Hinge joint lower limit:", joint.get_param(HingeJoint3D.PARAM_LIMIT_LOWER))
+	print("Hinge joint upper limit:", joint.get_param(HingeJoint3D.PARAM_LIMIT_UPPER))
+	print("Hinge joint bias:", joint.get_param(HingeJoint3D.PARAM_LIMIT_BIAS))
+	print("Hinge joint relaxation:", joint.get_param(HingeJoint3D.PARAM_LIMIT_RELAXATION))
 	
 func spawn_falling():
 	global_transform.origin = $"/root/World/Map/SpawnPoint".global_transform.origin
@@ -159,6 +150,12 @@ func setup_hands():
 	right_hand.contact_monitor = true
 	left_hand.max_contacts_reported = 1
 	right_hand.max_contacts_reported = 1
+	
+	# Set mass and inertia for hands
+	left_hand.mass = 1.0
+	right_hand.mass = 1.0
+	left_hand.inertia = Vector3(1, 1, 1)
+	right_hand.inertia = Vector3(1, 1, 1)
 
 func _unhandled_input(event):
 	# Pause
@@ -274,12 +271,22 @@ func handle_climbing(delta):
 	if left_hand_grabbing:
 		var dir_to_grab = (grab_point_left - global_position).normalized()
 		var distance_to_grab = global_position.distance_to(grab_point_left)
+		if distance_to_grab > MAX_GRAB_DISTANCE:
+			# Adjust player position to stay within arm's length
+			var overreach = distance_to_grab - MAX_GRAB_DISTANCE
+			global_position += dir_to_grab * overreach
+			distance_to_grab = MAX_GRAB_DISTANCE
 		if distance_to_grab > reach_distance:
 			pull_force += dir_to_grab * (distance_to_grab - reach_distance) * climb_force
 	
 	if right_hand_grabbing:
 		var dir_to_grab = (grab_point_right - global_position).normalized()
 		var distance_to_grab = global_position.distance_to(grab_point_right)
+		if distance_to_grab > MAX_GRAB_DISTANCE:
+			# Adjust player position to stay within arm's length
+			var overreach = distance_to_grab - MAX_GRAB_DISTANCE
+			global_position += dir_to_grab * overreach
+			distance_to_grab = MAX_GRAB_DISTANCE
 		if distance_to_grab > reach_distance:
 			pull_force += dir_to_grab * (distance_to_grab - reach_distance) * climb_force
 	
@@ -292,24 +299,30 @@ func check_grab():
 		if left_hand_raycast.is_colliding():
 			var collider = left_hand_raycast.get_collider()
 			if collider and collider.is_in_group("Climbable"):
-				grab_object(left_hand_raycast, true)
-				print("Left hand grabbed: ", collider.name)
-				
-				# Particles and sound
-				particles_hand(grab_point_left)
-				grab_sound.play()
+				var grab_point = left_hand_raycast.get_collision_point()
+				var distance_to_grab = global_position.distance_to(grab_point)
+				if distance_to_grab <= MAX_GRAB_DISTANCE:
+					grab_object(left_hand_raycast, true)
+					print("Left hand grabbed: ", collider.name)
+					
+					# Particles and sound
+					particles_hand(grab_point)
+					grab_sound.play()
 
 	# Right hand grab logic
 	if right_hand_reaching and not right_hand_grabbing:
 		if right_hand_raycast.is_colliding():
 			var collider = right_hand_raycast.get_collider()
 			if collider and collider.is_in_group("Climbable"):
-				grab_object(right_hand_raycast, false)
-				print("Right hand grabbed: ", collider.name)
-				
-				# Particles and sound
-				particles_hand(grab_point_right)
-				grab_sound.play()
+				var grab_point = right_hand_raycast.get_collision_point()
+				var distance_to_grab = global_position.distance_to(grab_point)
+				if distance_to_grab <= MAX_GRAB_DISTANCE:
+					grab_object(right_hand_raycast, false)
+					print("Right hand grabbed: ", collider.name)
+					
+					# Particles and sound
+					particles_hand(grab_point)
+					grab_sound.play()
 
 func grab_object(hand_raycast: RayCast3D, is_left_hand: bool):
 	if hand_raycast.is_colliding():
@@ -323,6 +336,9 @@ func grab_object(hand_raycast: RayCast3D, is_left_hand: bool):
 		# Enable the joint by connecting it to the player and the collider
 		grab_joint.node_a = self.get_path()  # Player is node_a
 		grab_joint.node_b = collider.get_path()  # Collider is node_b
+		
+		# Configure joint properties AFTER connecting
+		configure_hinge_joint(grab_joint)
 		
 		# Store grab point for reference
 		if is_left_hand:
@@ -351,6 +367,9 @@ func release_grab(is_left_hand: bool):
 	velocity = velocity
 	
 	print("Released", "left" if is_left_hand else "right", "hand")
+	
+	print("Released", "left" if is_left_hand else "right", "hand")
+
 func update_hands(delta):
 	var cam_basis = camera.global_transform.basis
 	
