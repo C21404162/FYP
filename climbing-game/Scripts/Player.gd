@@ -263,35 +263,60 @@ func handle_movement(delta):
 func handle_climbing(delta):
 	# Apply gravity even while climbing
 	velocity.y -= gravity * delta
+	var swing_strength = 10.0  # Adjust this value to control the strength of the swing
 	
-	# Calculate pull force based on input
+	# Get input and camera orientation
 	var input_dir = Input.get_vector("left", "right", "up", "down")
-	var pull_force = Vector3.ZERO
+	var cam_basis = camera.global_transform.basis
 	
-	if left_hand_grabbing:
-		var dir_to_grab = (grab_point_left - global_position).normalized()
-		var distance_to_grab = global_position.distance_to(grab_point_left)
-		if distance_to_grab > MAX_GRAB_DISTANCE:
-			# Adjust player position to stay within arm's length
-			var overreach = distance_to_grab - MAX_GRAB_DISTANCE
-			global_position += dir_to_grab * overreach
-			distance_to_grab = MAX_GRAB_DISTANCE
-		if distance_to_grab > reach_distance:
-			pull_force += dir_to_grab * (distance_to_grab - reach_distance) * climb_force
+	# Calculate movement direction based on camera orientation
+	var move_direction = Vector3.ZERO
+	move_direction += cam_basis.x * input_dir.x     # Horizontal movement (left/right)
+	move_direction += -cam_basis.z * input_dir.y    # Forward/backward movement (up/down keys)
+	move_direction = move_direction.normalized()
 	
-	if right_hand_grabbing:
-		var dir_to_grab = (grab_point_right - global_position).normalized()
-		var distance_to_grab = global_position.distance_to(grab_point_right)
-		if distance_to_grab > MAX_GRAB_DISTANCE:
-			# Adjust player position to stay within arm's length
-			var overreach = distance_to_grab - MAX_GRAB_DISTANCE
-			global_position += dir_to_grab * overreach
-			distance_to_grab = MAX_GRAB_DISTANCE
-		if distance_to_grab > reach_distance:
-			pull_force += dir_to_grab * (distance_to_grab - reach_distance) * climb_force
+	# Base climbing speed
+	var climb_speed = 5.0
 	
-	# Apply pull force to velocity
-	velocity += pull_force * delta
+	# Apply movement
+	if left_hand_grabbing or right_hand_grabbing:
+		# Add movement velocity
+		velocity += move_direction * climb_speed * delta
+		
+		# Handle pulling force towards grab points
+		var pull_force = Vector3.ZERO
+		var swing_force = Vector3.ZERO
+		
+		if left_hand_grabbing:
+			var dir_to_grab = (grab_point_left - global_position).normalized()
+			var distance_to_grab = global_position.distance_to(grab_point_left)
+			if distance_to_grab > MAX_GRAB_DISTANCE:
+				var overreach = distance_to_grab - MAX_GRAB_DISTANCE
+				global_position += dir_to_grab * overreach
+				distance_to_grab = MAX_GRAB_DISTANCE
+			if distance_to_grab > reach_distance:
+				pull_force += dir_to_grab * (distance_to_grab - reach_distance) * climb_force
+			
+			# Calculate swing force (perpendicular to the direction to the grab point)
+			var swing_dir = velocity.cross(dir_to_grab).normalized()
+			swing_force += swing_dir * velocity.length() * swing_strength
+		
+		if right_hand_grabbing:
+			var dir_to_grab = (grab_point_right - global_position).normalized()
+			var distance_to_grab = global_position.distance_to(grab_point_right)
+			if distance_to_grab > MAX_GRAB_DISTANCE:
+				var overreach = distance_to_grab - MAX_GRAB_DISTANCE
+				global_position += dir_to_grab * overreach
+				distance_to_grab = MAX_GRAB_DISTANCE
+			if distance_to_grab > reach_distance:
+				pull_force += dir_to_grab * (distance_to_grab - reach_distance) * climb_force
+			
+			# Calculate swing force (perpendicular to the direction to the grab point)
+			var swing_dir = velocity.cross(dir_to_grab).normalized()
+			swing_force += swing_dir * velocity.length() * swing_strength
+		
+		# Apply pull force and swing force
+		velocity += (pull_force + swing_force) * delta
 
 func check_grab():
 	# Left hand grab logic
