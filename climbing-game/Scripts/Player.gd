@@ -364,8 +364,6 @@ func grab_object(hand_raycast: RayCast3D, is_left_hand: bool):
 			right_hand_grabbing = true
 		
 		print("Grabbed with", "left" if is_left_hand else "right", "hand at:", grab_point)
-		print("Node A:", grab_joint.node_a)
-		print("Node B:", grab_joint.node_b)
 
 func release_grab(is_left_hand: bool):
 	var grab_joint = grab_joint_left if is_left_hand else grab_joint_right
@@ -395,24 +393,34 @@ func update_hands(delta):
 	var cam_basis = camera.global_transform.basis
 	
 	# Left hand position
-	var left_target = grab_point_left if left_hand_grabbing else \
-		camera.global_position + cam_basis * left_hand_initial_offset + \
-		(-cam_basis.z * reach_distance if left_hand_reaching else Vector3.ZERO)
+	if left_hand_grabbing:
+		# Freeze the hand at the grab point
+		left_hand.global_position = grab_point_left
+		# Freeze rotation by aligning the hand with the grab point
+		var grab_dir = (grab_point_left - left_hand.global_position).normalized()
+		left_hand.look_at(grab_point_left, Vector3.UP)
+	else:
+		# Move the hand normally
+		var left_target = camera.global_position + cam_basis * left_hand_initial_offset + \
+			(-cam_basis.z * reach_distance if left_hand_reaching else Vector3.ZERO)
+		left_hand.global_position = left_hand.global_position.lerp(
+			left_target,
+			delta * (reach_speed if left_hand_reaching else hand_smoothing))
 	
 	# Right hand position
-	var right_target = grab_point_right if right_hand_grabbing else \
-		camera.global_position + cam_basis * right_hand_initial_offset + \
-		(-cam_basis.z * reach_distance if right_hand_reaching else Vector3.ZERO)
-	
-	# Smoothly move hands to their target positions
-	left_hand.global_position = left_hand.global_position.lerp(
-		left_target,
-		delta * (reach_speed if left_hand_reaching else hand_smoothing))
-	
-	right_hand.global_position = right_hand.global_position.lerp(
-		right_target,
-		delta * (reach_speed if right_hand_reaching else hand_smoothing))
-		
+	if right_hand_grabbing:
+		# Freeze the hand at the grab point
+		right_hand.global_position = grab_point_right
+		# Freeze rotation by aligning the hand with the grab point
+		var grab_dir = (grab_point_right - right_hand.global_position).normalized()
+		right_hand.look_at(grab_point_right, Vector3.UP)
+	else:
+		# Move the hand normally
+		var right_target = camera.global_position + cam_basis * right_hand_initial_offset + \
+			(-cam_basis.z * reach_distance if right_hand_reaching else Vector3.ZERO)
+		right_hand.global_position = right_hand.global_position.lerp(
+			right_target,
+			delta * (reach_speed if right_hand_reaching else hand_smoothing))
 		
 func _process(delta):
 	update_hand_rotations(delta)
