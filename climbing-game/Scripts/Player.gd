@@ -263,7 +263,6 @@ func handle_movement(delta):
 func handle_climbing(delta):
 	# Apply gravity even while climbing
 	velocity.y -= gravity * delta
-	var swing_strength = 10.0  # Adjust this value to control the strength of the swing
 	
 	# Get input and camera orientation
 	var input_dir = Input.get_vector("left", "right", "up", "down")
@@ -272,7 +271,7 @@ func handle_climbing(delta):
 	# Calculate movement direction based on camera orientation
 	var move_direction = Vector3.ZERO
 	move_direction += cam_basis.x * input_dir.x     # Horizontal movement (left/right)
-	move_direction += -cam_basis.z * input_dir.y    # Forward/backward movement (up/down keys)
+	move_direction += cam_basis.z * input_dir.y    # Forward/backward movement (up/down keys)
 	move_direction = move_direction.normalized()
 	
 	# Base climbing speed
@@ -285,7 +284,6 @@ func handle_climbing(delta):
 		
 		# Handle pulling force towards grab points
 		var pull_force = Vector3.ZERO
-		var swing_force = Vector3.ZERO
 		
 		if left_hand_grabbing:
 			var dir_to_grab = (grab_point_left - global_position).normalized()
@@ -296,10 +294,6 @@ func handle_climbing(delta):
 				distance_to_grab = MAX_GRAB_DISTANCE
 			if distance_to_grab > reach_distance:
 				pull_force += dir_to_grab * (distance_to_grab - reach_distance) * climb_force
-			
-			# Calculate swing force (perpendicular to the direction to the grab point)
-			var swing_dir = velocity.cross(dir_to_grab).normalized()
-			swing_force += swing_dir * velocity.length() * swing_strength
 		
 		if right_hand_grabbing:
 			var dir_to_grab = (grab_point_right - global_position).normalized()
@@ -310,13 +304,9 @@ func handle_climbing(delta):
 				distance_to_grab = MAX_GRAB_DISTANCE
 			if distance_to_grab > reach_distance:
 				pull_force += dir_to_grab * (distance_to_grab - reach_distance) * climb_force
-			
-			# Calculate swing force (perpendicular to the direction to the grab point)
-			var swing_dir = velocity.cross(dir_to_grab).normalized()
-			swing_force += swing_dir * velocity.length() * swing_strength
 		
-		# Apply pull force and swing force
-		velocity += (pull_force + swing_force) * delta
+		# Apply pull force
+		velocity += pull_force * delta
 
 func check_grab():
 	# Left hand grab logic
@@ -380,6 +370,17 @@ func grab_object(hand_raycast: RayCast3D, is_left_hand: bool):
 func release_grab(is_left_hand: bool):
 	var grab_joint = grab_joint_left if is_left_hand else grab_joint_right
 	
+	# Calculate the player's current velocity relative to the grab point
+	var grab_point = grab_point_left if is_left_hand else grab_point_right
+	var direction_to_grab = (grab_point - global_position).normalized()
+	var current_velocity = velocity
+	
+	# Calculate the tangential velocity (momentum from swinging)
+	var tangential_velocity = current_velocity - direction_to_grab * current_velocity.dot(direction_to_grab)
+	
+	# Apply the tangential velocity to the player's velocity
+	velocity = tangential_velocity
+	
 	# Disable the joint by clearing node_b
 	grab_joint.node_b = NodePath("")
 	
@@ -388,12 +389,7 @@ func release_grab(is_left_hand: bool):
 	else:
 		right_hand_grabbing = false
 	
-	# Preserve momentum
-	velocity = velocity
-	
-	print("Released", "left" if is_left_hand else "right", "hand")
-	
-	print("Released", "left" if is_left_hand else "right", "hand")
+	print("Released", "left" if is_left_hand else "right", "hand with velocity:", velocity)
 
 func update_hands(delta):
 	var cam_basis = camera.global_transform.basis
