@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://cw5ty64yjmos8"]
+[gd_scene load_steps=8 format=3 uid="uid://cw5ty64yjmos8"]
 
 [ext_resource type="Script" path="res://Scripts/menu.gd" id="1_3ru06"]
 [ext_resource type="PackedScene" uid="uid://8qoj8306fs56" path="res://Models/well_model.glb" id="2_3qr0f"]
+[ext_resource type="Texture2D" uid="uid://d334hub33k2fn" path="res://Textures/IMG_2019.jpg" id="2_wnj5a"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_iw7r8"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -20,6 +21,8 @@ fog_density = 0.03
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_epqux"]
 albedo_color = Color(0.3125, 0.242007, 0.0569091, 1)
+albedo_texture = ExtResource("2_wnj5a")
+uv1_triplanar = true
 proximity_fade_distance = 130.35
 
 [node name="menu" type="Control"]
