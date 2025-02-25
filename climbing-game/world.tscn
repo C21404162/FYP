@@ -2,12 +2,12 @@
 
 [ext_resource type="Material" uid="uid://rt8kwy52hryb" path="res://Materials/highlight.tres" id="1_lgiqj"]
 [ext_resource type="Script" path="res://world.gd" id="1_q6rjl"]
-[ext_resource type="Texture2D" uid="uid://cbywlgvjn8emc" path="res://Textures/696.jpg" id="1_rpqyh"]
 [ext_resource type="Script" path="res://Scripts/Player.gd" id="1_vwaj1"]
 [ext_resource type="MeshLibrary" uid="uid://i8i83p4gpb4c" path="res://tileset.tres" id="3_onxy0"]
 [ext_resource type="Texture2D" uid="uid://c2ote7bbhccsr" path="res://Textures/cobble_wall.png" id="3_umbod"]
 [ext_resource type="Texture2D" uid="uid://dl4ehmpcpnc3u" path="res://Textures/IMG_2034.jpg" id="3_umr55"]
 [ext_resource type="Texture2D" uid="uid://diq7n02p7gbs4" path="res://Models/wooden_plank_model_wood_bark.png" id="4_05muq"]
+[ext_resource type="Texture2D" uid="uid://d334hub33k2fn" path="res://Textures/IMG_2019.jpg" id="4_a512g"]
 [ext_resource type="PackedScene" uid="uid://8qoj8306fs56" path="res://Models/well_model.glb" id="5_07b2l"]
 [ext_resource type="PackedScene" uid="uid://dx11h6ui0c2mi" path="res://Models/wooden_plank_model.glb" id="6_imwlo"]
 [ext_resource type="Script" path="res://interactray.gd" id="9_bfa6a"]
@@ -49,7 +49,7 @@ volumetric_fog_detail_spread = 0.675938
 volumetric_fog_ambient_inject = 1.74
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_g6l77"]
-albedo_texture = ExtResource("1_rpqyh")
+albedo_texture = ExtResource("4_a512g")
 uv1_triplanar = true
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hx26c"]
