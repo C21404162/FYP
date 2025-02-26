@@ -1,4 +1,4 @@
-[gd_scene load_steps=49 format=3 uid="uid://daea0cguij4h2"]
+[gd_scene load_steps=51 format=3 uid="uid://daea0cguij4h2"]
 
 [ext_resource type="Material" uid="uid://rt8kwy52hryb" path="res://Materials/highlight.tres" id="1_lgiqj"]
 [ext_resource type="Script" path="res://world.gd" id="1_q6rjl"]
@@ -8,6 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://diq7n02p7gbs4" path="res://Models/wooden_plank_model_wood_bark.png" id="4_05muq"]
 [ext_resource type="Texture2D" uid="uid://d334hub33k2fn" path="res://Textures/IMG_2019.jpg" id="4_a512g"]
 [ext_resource type="PackedScene" uid="uid://dx11h6ui0c2mi" path="res://Models/wooden_plank_model.glb" id="6_imwlo"]
+[ext_resource type="Texture2D" uid="uid://c8lm8hg8qpmyg" path="res://Models/well_model_cobble_wall.png" id="8_irqvw"]
 [ext_resource type="Script" path="res://interactray.gd" id="9_bfa6a"]
 [ext_resource type="PackedScene" uid="uid://bsr064cghwhkg" path="res://Models/hand_left.glb" id="12_xv8ak"]
 [ext_resource type="AudioStream" uid="uid://n1368xkcp0oa" path="res://Sounds/SFX/grab.wav" id="13_dftgj"]
@@ -65,6 +66,9 @@ albedo_texture = ExtResource("3_umr55")
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gx5kp"]
 albedo_texture = ExtResource("3_umr55")
 uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ups6o"]
+albedo_texture = ExtResource("8_irqvw")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2nb5y"]
 albedo_texture = ExtResource("3_umbod")
@@ -221,6 +225,7 @@ environment = SubResource("Environment_jna2u")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="Map"]
 transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
+visible = false
 light_energy = 2.371
 light_volumetric_fog_energy = 0.0
 shadow_enabled = true
@@ -265,10 +270,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.75, 4, 10.5)
 use_collision = true
 size = Vector3(0.5, 1, 7)
 
-[node name="wooden_plank_model" parent="Map" groups=["Climbable"] instance=ExtResource("6_imwlo")]
-transform = Transform3D(0.173867, 0, -0.0465874, 0, 0.18, 0, 0.0465874, 0, 0.173867, 2, 2.5, -1.5)
-metadata/climbable = true
-
 [node name="wooden_plank_model2" parent="Map" groups=["Climbable"] instance=ExtResource("6_imwlo")]
 transform = Transform3D(-0.155885, 0, -0.09, 0, 0.18, 0, 0.09, 0, -0.155885, -1.5, 4.5, -1.5)
 metadata/Climbable = true
@@ -292,9 +293,31 @@ radius = 3.19823
 height = 119.0
 
 [node name="CSGBox3D" type="CSGBox3D" parent="Map/CSGCylinder3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.69459, -8.75, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.84115, 16, -0.021145)
 operation = 2
-size = Vector3(1.5, 2.5, 2)
+size = Vector3(2, 3, 2)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="Map/CSGCylinder3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.499, 14.25, 0.00158691)
+size = Vector3(3, 0.5, 2.09009)
+material = SubResource("StandardMaterial3D_ups6o")
+
+[node name="CSGBox3D6" type="CSGBox3D" parent="Map/CSGCylinder3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.499, 17.75, 0.00158691)
+size = Vector3(3, 0.5, 2.09009)
+material = SubResource("StandardMaterial3D_ups6o")
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="Map/CSGCylinder3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.23873, 16.25, -0.0102539)
+size = Vector3(0.5, 3.5, 2.0459)
+
+[node name="CSGBox3D4" type="CSGBox3D" parent="Map/CSGCylinder3D"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -4.23873, 16.25, 1.10851)
+size = Vector3(0.262482, 3.5, 2.0459)
+
+[node name="CSGBox3D5" type="CSGBox3D" parent="Map/CSGCylinder3D"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -4.23873, 16.25, -1.14466)
+size = Vector3(0.231186, 3.5, 2.0459)
 
 [node name="CSGBox3D6" type="CSGBox3D" parent="Map"]
 transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -11, 2.5, -3.25)
@@ -377,6 +400,32 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.567925, 18.7162, 3.16274)
 use_collision = true
 material = SubResource("StandardMaterial3D_ulsda")
 
+[node name="CSGSphere3D12" type="CSGSphere3D" parent="Map" groups=["Climbable"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.74903, 21.2162, 1.66274)
+use_collision = true
+material = SubResource("StandardMaterial3D_ulsda")
+
+[node name="CSGSphere3D13" type="CSGSphere3D" parent="Map" groups=["Climbable"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.24903, 24.0289, 2.89142)
+use_collision = true
+material = SubResource("StandardMaterial3D_ulsda")
+
+[node name="CSGSphere3D15" type="CSGSphere3D" parent="Map" groups=["Climbable"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.18766, 26.4106, 3.0217)
+use_collision = true
+material = SubResource("StandardMaterial3D_ulsda")
+
+[node name="CSGSphere3D16" type="CSGSphere3D" parent="Map" groups=["Climbable"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.11596, 27.5673, 0.886672)
+use_collision = true
+radius = 0.301674
+material = SubResource("StandardMaterial3D_ulsda")
+
+[node name="CSGSphere3D14" type="CSGSphere3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2.5)
+radial_segments = 6
+rings = 3
+
 [node name="Player" type="CharacterBody3D" parent="."]
 script = ExtResource("1_vwaj1")
 
@@ -396,7 +445,7 @@ fov = 90.0
 
 [node name="SpotLight3D" type="SpotLight3D" parent="Player/Head/Camera3D"]
 light_color = Color(1, 0.98395, 0.638086, 1)
-spot_range = 7.5
+spot_range = 4.0
 spot_angle = 65.082
 
 [node name="interactray" type="RayCast3D" parent="Player/Head/Camera3D"]
