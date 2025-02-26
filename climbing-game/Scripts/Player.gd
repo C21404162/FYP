@@ -8,7 +8,7 @@ const SENSITIVITY = 0.005
 const MAX_JUMP_CHARGE_TIME = 1.0 
 const MIN_CHARGE_FOR_BOOST = 0.3
 const MAX_JUMP_BOOST = 1.5 
-const MAX_GRAB_DISTANCE = 2.65 # Adjust this value to match the desired arm's length
+const MAX_GRAB_DISTANCE = 2.65 
 
 # Collision layers
 const LAYER_WORLD = 1
@@ -100,18 +100,17 @@ func _ready():
 	spawn_falling()
 
 func configure_hinge_joint(joint: HingeJoint3D):
-	# Enable angular limits
+	#Enable angular limits
 	joint.set_flag(HingeJoint3D.FLAG_USE_LIMIT, true)
 	
-	# Set angular limits (lower and upper bounds)
+	#set angular limits
 	joint.set_param(HingeJoint3D.PARAM_LIMIT_LOWER, -0.1)  # Slight lower limit
 	joint.set_param(HingeJoint3D.PARAM_LIMIT_UPPER, 0.1)  # Slight upper limit
 	
-	# Set bias and relaxation for stiffness
+	#Set bias and relaxation for stiffness
 	joint.set_param(HingeJoint3D.PARAM_LIMIT_BIAS, 10)  # Increase bias for stiffness
 	joint.set_param(HingeJoint3D.PARAM_LIMIT_RELAXATION, 0.1)  # Reduce relaxation
 	
-	# Debug prints to verify parameters
 	print("Hinge joint lower limit:", joint.get_param(HingeJoint3D.PARAM_LIMIT_LOWER))
 	print("Hinge joint upper limit:", joint.get_param(HingeJoint3D.PARAM_LIMIT_UPPER))
 	print("Hinge joint bias:", joint.get_param(HingeJoint3D.PARAM_LIMIT_BIAS))
@@ -151,7 +150,6 @@ func setup_hands():
 	left_hand.max_contacts_reported = 1
 	right_hand.max_contacts_reported = 1
 	
-	# Set mass and inertia for hands
 	left_hand.mass = 1.0
 	right_hand.mass = 1.0
 	left_hand.inertia = Vector3(1, 1, 1)
@@ -211,7 +209,7 @@ func _physics_process(delta):
 	update_hands(delta)
 	move_and_slide()
 	
-	# Landing logic
+	#Landing 
 	if !was_in_air and is_on_floor():
 		emit_landing_particles()
 	was_in_air = !is_on_floor()
@@ -247,11 +245,10 @@ func handle_movement(delta):
 	var input_dir = Input.get_vector("left", "right", "up", "down")
 	var direction = (head.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 	
-	# Crouch
+	#Crouch
 	if Input.is_action_pressed("crouch"):
 		speed *= 0.6
 	
-	# Lerp
 	if direction:
 		if is_on_floor():
 			velocity.x = lerp(velocity.x, direction.x * speed, delta * 12.0)
@@ -261,14 +258,13 @@ func handle_movement(delta):
 		velocity.z = lerp(velocity.z, 0.0, delta * 10.0)
 
 func handle_climbing(delta):
-	# Apply gravity even while climbing
 	velocity.y -= gravity * delta
 	
-	# Get input and camera orientation
+	#Get input and camera orientation
 	var input_dir = Input.get_vector("left", "right", "up", "down")
 	var cam_basis = camera.global_transform.basis
 	
-	# Calculate movement direction based on camera orientation
+	#Calculate movement direction based on camera orientation
 	var move_direction = Vector3.ZERO
 	move_direction += cam_basis.x * input_dir.x     # Horizontal movement (left/right)
 	move_direction += cam_basis.z * input_dir.y    # Forward/backward movement (up/down keys)
@@ -277,12 +273,10 @@ func handle_climbing(delta):
 	# Base climbing speed
 	var climb_speed = 5.0
 	
-	# Apply movement
+	#Apply movement
 	if left_hand_grabbing or right_hand_grabbing:
-		# Add movement velocity
 		velocity += move_direction * climb_speed * delta
 		
-		# Handle pulling force towards grab points
 		var pull_force = Vector3.ZERO
 		
 		if left_hand_grabbing:
@@ -305,7 +299,6 @@ func handle_climbing(delta):
 			if distance_to_grab > reach_distance:
 				pull_force += dir_to_grab * (distance_to_grab - reach_distance) * climb_force
 		
-		# Apply pull force
 		velocity += pull_force * delta
 
 func check_grab():
@@ -320,7 +313,7 @@ func check_grab():
 					grab_object(left_hand_raycast, true)
 					print("Left hand grabbed: ", collider.name)
 					
-					# Particles and sound
+					#Particle and sound
 					particles_hand(grab_point)
 					grab_sound.play()
 
@@ -335,7 +328,7 @@ func check_grab():
 					grab_object(right_hand_raycast, false)
 					print("Right hand grabbed: ", collider.name)
 					
-					# Particles and sound
+					#Particle and sound
 					particles_hand(grab_point)
 					grab_sound.play()
 
@@ -344,18 +337,14 @@ func grab_object(hand_raycast: RayCast3D, is_left_hand: bool):
 		var grab_point = hand_raycast.get_collision_point()
 		var grab_joint = grab_joint_left if is_left_hand else grab_joint_right
 		var collider = hand_raycast.get_collider()
-		
-		# Position the joint at the grab point
+
 		grab_joint.global_transform.origin = grab_point
-		
-		# Enable the joint by connecting it to the player and the collider
+
 		grab_joint.node_a = self.get_path()  # Player is node_a
 		grab_joint.node_b = collider.get_path()  # Collider is node_b
 		
-		# Configure joint properties AFTER connecting
 		configure_hinge_joint(grab_joint)
 		
-		# Store grab point for reference
 		if is_left_hand:
 			grab_point_left = grab_point
 			left_hand_grabbing = true
@@ -370,18 +359,18 @@ func grab_object(hand_raycast: RayCast3D, is_left_hand: bool):
 func release_grab(is_left_hand: bool):
 	var grab_joint = grab_joint_left if is_left_hand else grab_joint_right
 	
-	# Calculate the player's current velocity relative to the grab point
+	#Calculatecurrent velocity relative to grab point
 	var grab_point = grab_point_left if is_left_hand else grab_point_right
 	var direction_to_grab = (grab_point - global_position).normalized()
 	var current_velocity = velocity
 	
-	# Calculate the tangential velocity (momentum from swinging)
+	# Calculate the momentum from swinging
 	var tangential_velocity = current_velocity - direction_to_grab * current_velocity.dot(direction_to_grab)
 	
-	# Apply the tangential velocity to the player's velocity
+	#tangential velocity to the player's velocity
 	velocity = tangential_velocity
 	
-	# Disable the joint by clearing node_b
+	#Disable the joint
 	grab_joint.node_b = NodePath("")
 	
 	if is_left_hand:
@@ -404,7 +393,7 @@ func update_hands(delta):
 		camera.global_position + cam_basis * right_hand_initial_offset + \
 		(-cam_basis.z * reach_distance if right_hand_reaching else Vector3.ZERO)
 	
-	# Smoothly move hands to their target positions
+	#move hands to their target positions
 	left_hand.global_position = left_hand.global_position.lerp(
 		left_target,
 		delta * (reach_speed if left_hand_reaching else hand_smoothing))

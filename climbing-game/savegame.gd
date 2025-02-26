@@ -3,7 +3,7 @@ extends Resource
 
 @export var player_position: Vector3 = Vector3.ZERO
 @export var player_rotation: Basis = Basis()
-@export var fov: float = 75.0  # Ensure FOV is included
+@export var fov: float = 75.0
 
 const SAVE_GAME_PATH := "user://savegame.tres"
 

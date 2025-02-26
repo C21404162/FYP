@@ -6,7 +6,7 @@ signal fov_updated(fov_value)  # Signal for FOV changes
 
 var player_position: Vector3 = Vector3.ZERO
 var player_rotation: Basis = Basis()
-var fov: float = 90.0  # Default FOV value
+var fov: float = 90.0  # Default FOV 
 
 func update_player_position(new_position: Vector3):
 	player_position = new_position
@@ -18,7 +18,7 @@ func update_player_rotation(new_rotation: Basis):
 
 func set_fov(new_fov: float):
 	fov = new_fov
-	emit_signal("fov_updated", fov)  # Notify listeners of FOV change
+	emit_signal("fov_updated", fov)
 
 func save_game_data():
 	print("Saving game data... Player position: ", player_position)
