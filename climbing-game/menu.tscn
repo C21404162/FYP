@@ -1,8 +1,10 @@
-[gd_scene load_steps=10 format=3 uid="uid://cw5ty64yjmos8"]
+[gd_scene load_steps=13 format=3 uid="uid://cw5ty64yjmos8"]
 
 [ext_resource type="Script" path="res://Scripts/menu.gd" id="1_3ru06"]
 [ext_resource type="PackedScene" uid="uid://8qoj8306fs56" path="res://Models/well_model.glb" id="2_3qr0f"]
+[ext_resource type="FontFile" uid="uid://nly7k1yk8vc1" path="res://addons/NotoSansOgham-Regular.ttf" id="2_gdm1x"]
 [ext_resource type="Texture2D" uid="uid://d334hub33k2fn" path="res://Textures/IMG_2019.jpg" id="2_wnj5a"]
+[ext_resource type="Script" path="res://Scripts/start.gd" id="3_af8js"]
 [ext_resource type="Texture2D" uid="uid://diq7n02p7gbs4" path="res://Models/wooden_plank_model_wood_bark.png" id="4_55s7h"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_iw7r8"]
@@ -19,6 +21,8 @@ tonemap_mode = 2
 fog_enabled = true
 fog_light_color = Color(0.545796, 0.582674, 0.640625, 1)
 fog_density = 0.03
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8eq2r"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_epqux"]
 albedo_color = Color(0.3125, 0.242007, 0.0569091, 1)
@@ -54,27 +58,61 @@ layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_top = -2.0
-offset_right = 67.0
+offset_top = -136.0
+offset_right = 225.0
 offset_bottom = 99.0
 grow_vertical = 0
 
 [node name="start" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 focus_neighbor_top = NodePath("../exit")
-text = "start"
+theme_override_fonts/font = ExtResource("2_gdm1x")
+theme_override_font_sizes/font_size = 30
+theme_override_styles/hover = SubResource("StyleBoxEmpty_8eq2r")
+text = "Start"
 flat = true
+script = ExtResource("3_af8js")
+
+[node name="ogham_label_start" type="Label" parent="VBoxContainer/start"]
+layout_mode = 0
+offset_left = 37.0
+offset_top = -2.0
+offset_right = 197.0
+offset_bottom = 53.0
+theme_override_fonts/font = ExtResource("2_gdm1x")
+theme_override_font_sizes/font_size = 40
+text = "᚛ᚄᚈᚐᚏᚈ᚜"
 
 [node name="options" type="Button" parent="VBoxContainer"]
 layout_mode = 2
-text = "options"
+text = "Options"
 flat = true
+
+[node name="ogham_label_options" type="Label" parent="VBoxContainer/options"]
+layout_mode = 0
+offset_left = 6.0
+offset_top = -15.0
+offset_right = 225.0
+offset_bottom = 40.0
+theme_override_fonts/font = ExtResource("2_gdm1x")
+theme_override_font_sizes/font_size = 40
+text = "᚛ᚑᚚᚈᚔᚑᚅᚄ᚜"
 
 [node name="exit" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 focus_neighbor_bottom = NodePath("../start")
-text = "exit"
+text = "Exit"
 flat = true
+
+[node name="ogham_label_exit" type="Label" parent="VBoxContainer/exit"]
+layout_mode = 0
+offset_left = 46.0
+offset_top = -14.0
+offset_right = 182.0
+offset_bottom = 41.0
+theme_override_fonts/font = ExtResource("2_gdm1x")
+theme_override_font_sizes/font_size = 40
+text = "᚛ᚓᚕᚔᚈ᚜"
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.5, 0)
@@ -122,5 +160,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.5, 4.5, -23)
 height = 9.0
 material = SubResource("StandardMaterial3D_vligo")
 
+[connection signal="mouse_entered" from="VBoxContainer/start" to="." method="_on_mouse_entered_start"]
 [connection signal="pressed" from="VBoxContainer/start" to="." method="_on_start_pressed"]
+[connection signal="mouse_entered" from="VBoxContainer/options" to="." method="_on_mouse_entered_options"]
+[connection signal="mouse_entered" from="VBoxContainer/exit" to="." method="_on_mouse_entered_exit"]
 [connection signal="pressed" from="VBoxContainer/exit" to="." method="_on_exit_pressed"]
