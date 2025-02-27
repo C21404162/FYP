@@ -67,16 +67,17 @@ var pause_menu_instance: Control = null
 @onready var game_manager = get_node("/root/GameManager")
 
 func _ready():
-	
 	# Configure left joint
 	configure_hinge_joint(grab_joint_left)
 	
 	# Configure right joint
 	configure_hinge_joint(grab_joint_right)
 	
+	# Set FOV from GameManager
 	camera.fov = GameManager.fov
 	GameManager.connect("fov_updated", Callable(self, "_on_fov_updated"))
 	
+	# Load pause menu
 	var pause_menu_scene = load(pause_menu_scene_path)
 	if pause_menu_scene:
 		print("Pause menu scene loaded successfully.")
@@ -97,7 +98,13 @@ func _ready():
 	right_hand_initial_offset = right_hand.global_position - camera.global_position
 	setup_game_manager_connection()
 	
-	spawn_falling()
+	# Only spawn falling if no saved position exists
+	if GameManager.player_position == Vector3.ZERO:
+		spawn_falling()
+	else:
+		# Apply saved position and rotation
+		global_transform.origin = GameManager.player_position
+		$Head.global_transform.basis = GameManager.player_rotation
 
 func configure_hinge_joint(joint: HingeJoint3D):
 	#Enable angular limits

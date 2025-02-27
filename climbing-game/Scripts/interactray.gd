@@ -8,5 +8,6 @@ func _ready() -> void:
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	pass
-	#if is_colliding():
-		#print("collided")
+	
+	if is_colliding() and is_in_group("Interactable"):
+		print("LOOK")

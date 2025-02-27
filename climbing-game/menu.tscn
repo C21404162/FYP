@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://cw5ty64yjmos8"]
+[gd_scene load_steps=12 format=3 uid="uid://cw5ty64yjmos8"]
 
 [ext_resource type="Script" path="res://Scripts/menu.gd" id="1_3ru06"]
 [ext_resource type="PackedScene" uid="uid://8qoj8306fs56" path="res://Models/well_model.glb" id="2_3qr0f"]
@@ -21,8 +21,6 @@ tonemap_mode = 2
 fog_enabled = true
 fog_light_color = Color(0.545796, 0.582674, 0.640625, 1)
 fog_density = 0.03
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8eq2r"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_epqux"]
 albedo_color = Color(0.3125, 0.242007, 0.0569091, 1)
@@ -64,13 +62,48 @@ offset_right = 361.0
 offset_bottom = 56.0
 grow_vertical = 0
 
-[node name="start" type="Button" parent="VBoxContainer"]
-custom_minimum_size = Vector2(200, 50)
+[node name="continue" type="Button" parent="VBoxContainer"]
+custom_minimum_size = Vector2(200, 90)
 layout_mode = 2
 focus_neighbor_top = NodePath("../exit")
+flat = true
+
+[node name="ogham_label_continue" type="Label" parent="VBoxContainer/continue"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -11.5
+offset_right = 20.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_fonts/font = ExtResource("2_gdm1x")
-theme_override_font_sizes/font_size = 30
-theme_override_styles/hover = SubResource("StyleBoxEmpty_8eq2r")
+theme_override_font_sizes/font_size = 38
+text = "᚛ᚉᚑᚅᚈᚔᚅᚒᚓ᚜"
+
+[node name="english_label_continue" type="Label" parent="VBoxContainer/continue"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -35.5
+offset_top = -11.5
+offset_right = 35.5
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 38
+text = "Continue"
+
+[node name="start" type="Button" parent="VBoxContainer"]
+custom_minimum_size = Vector2(200, 90)
+layout_mode = 2
 flat = true
 script = ExtResource("3_af8js")
 
@@ -108,7 +141,7 @@ theme_override_font_sizes/font_size = 38
 text = "Start"
 
 [node name="options" type="Button" parent="VBoxContainer"]
-custom_minimum_size = Vector2(200, 50)
+custom_minimum_size = Vector2(200, 90)
 layout_mode = 2
 flat = true
 
@@ -146,7 +179,7 @@ theme_override_font_sizes/font_size = 38
 text = "Options"
 
 [node name="exit" type="Button" parent="VBoxContainer"]
-custom_minimum_size = Vector2(200, 50)
+custom_minimum_size = Vector2(200, 90)
 layout_mode = 2
 focus_neighbor_bottom = NodePath("../start")
 flat = true
@@ -230,6 +263,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.5, 4.5, -23)
 height = 9.0
 material = SubResource("StandardMaterial3D_vligo")
 
+[connection signal="mouse_entered" from="VBoxContainer/continue" to="." method="_on_mouse_entered_continue"]
+[connection signal="pressed" from="VBoxContainer/continue" to="." method="_on_continue_pressed"]
 [connection signal="mouse_entered" from="VBoxContainer/start" to="." method="_on_mouse_entered_start"]
 [connection signal="pressed" from="VBoxContainer/start" to="." method="_on_start_pressed"]
 [connection signal="mouse_entered" from="VBoxContainer/options" to="." method="_on_mouse_entered_options"]
