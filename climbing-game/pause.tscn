@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://beetiutedhsjl"]
 
-[ext_resource type="Script" path="res://pause.gd" id="1_xly8l"]
-[ext_resource type="Script" path="res://h_slider.gd" id="2_f8qr4"]
+[ext_resource type="Script" path="res://Scripts/pause.gd" id="1_xly8l"]
+[ext_resource type="Script" path="res://Scripts/h_slider.gd" id="2_f8qr4"]
 
 [node name="Pause" type="Control"]
 layout_mode = 3

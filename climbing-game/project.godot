@@ -21,7 +21,12 @@ buses/default_bus_layout="res://Sounds/Music/default_bus_layout.tres"
 
 [autoload]
 
-GameManager="*res://gamemanager.gd"
+GameManager="*res://Scripts/gamemanager.gd"
+
+[display]
+
+window/size/viewport_width=1920
+window/size/viewport_height=1080
 
 [editor_plugins]
 
