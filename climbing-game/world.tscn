@@ -1,4 +1,4 @@
-[gd_scene load_steps=51 format=3 uid="uid://daea0cguij4h2"]
+[gd_scene load_steps=52 format=3 uid="uid://daea0cguij4h2"]
 
 [ext_resource type="Material" uid="uid://rt8kwy52hryb" path="res://Materials/highlight.tres" id="1_lgiqj"]
 [ext_resource type="Script" path="res://Scripts/world.gd" id="1_q6rjl"]
@@ -12,6 +12,7 @@
 [ext_resource type="Script" path="res://Scripts/interactray.gd" id="9_bfa6a"]
 [ext_resource type="PackedScene" uid="uid://bsr064cghwhkg" path="res://Models/hand_left.glb" id="12_xv8ak"]
 [ext_resource type="AudioStream" uid="uid://n1368xkcp0oa" path="res://Sounds/SFX/grab.wav" id="13_dftgj"]
+[ext_resource type="Texture2D" uid="uid://p4e38kfwdxfq" path="res://icon.svg" id="14_3x2jh"]
 [ext_resource type="PackedScene" uid="uid://1sfp2ihf2nds" path="res://Models/hand_right.glb" id="14_apo2k"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5qhtx"]
@@ -530,3 +531,18 @@ root_node = NodePath("../..")
 libraries = {
 "": SubResource("AnimationLibrary_aj4yq")
 }
+
+[node name="interaction_icon" type="TextureRect" parent="."]
+modulate = Color(1, 1, 1, 0)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -64.0
+offset_top = -64.0
+offset_right = 64.0
+offset_bottom = 64.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("14_3x2jh")
