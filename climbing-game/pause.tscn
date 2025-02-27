@@ -13,18 +13,34 @@ grow_vertical = 2
 script = ExtResource("1_xly8l")
 
 [node name="pause_panel" type="Panel" parent="."]
-layout_mode = 0
-offset_left = 496.0
-offset_top = 215.0
-offset_right = 663.0
-offset_bottom = 409.0
+custom_minimum_size = Vector2(400, 400)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -83.5
+offset_top = -97.0
+offset_right = 83.5
+offset_bottom = 97.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="pause_panel"]
-layout_mode = 0
-offset_left = 39.0
-offset_top = 23.0
-offset_right = 127.0
-offset_bottom = 159.0
+custom_minimum_size = Vector2(380, 380)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -44.0
+offset_top = -68.0
+offset_right = 44.0
+offset_bottom = 68.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="resume" type="Button" parent="pause_panel/VBoxContainer"]
 layout_mode = 2
@@ -43,18 +59,34 @@ layout_mode = 2
 text = "Exit"
 
 [node name="options_panel" type="Panel" parent="."]
-layout_mode = 0
-offset_left = 494.0
-offset_top = 213.0
-offset_right = 663.0
-offset_bottom = 407.0
+custom_minimum_size = Vector2(400, 400)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -84.5
+offset_top = -97.0
+offset_right = 84.5
+offset_bottom = 97.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="options_panel"]
-layout_mode = 0
-offset_left = -2.0
-offset_top = 3.0
-offset_right = 168.0
-offset_bottom = 196.0
+custom_minimum_size = Vector2(380, 380)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -118.0
+offset_top = -96.5
+offset_right = 118.0
+offset_bottom = 96.5
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="options_panel/VBoxContainer"]
 layout_mode = 2
@@ -71,11 +103,11 @@ max_value = 120.0
 value = 60.0
 script = ExtResource("2_f8qr4")
 
-[node name="Button" type="Button" parent="options_panel/VBoxContainer"]
+[node name="placeholder1" type="Button" parent="options_panel/VBoxContainer"]
 layout_mode = 2
 text = "placeholder"
 
-[node name="Button2" type="Button" parent="options_panel/VBoxContainer"]
+[node name="placeholder2" type="Button" parent="options_panel/VBoxContainer"]
 layout_mode = 2
 text = "placeholder"
 
@@ -84,17 +116,34 @@ layout_mode = 2
 text = "back"
 
 [node name="saveload_panel" type="Panel" parent="."]
-layout_mode = 0
-offset_left = 493.0
-offset_top = 215.0
-offset_right = 663.0
-offset_bottom = 405.0
+custom_minimum_size = Vector2(400, 400)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -85.0
+offset_top = -95.0
+offset_right = 85.0
+offset_bottom = 95.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="saveload_panel"]
-layout_mode = 0
-offset_left = 3.0
-offset_right = 167.0
-offset_bottom = 188.0
+custom_minimum_size = Vector2(380, 380)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -82.0
+offset_top = -94.0
+offset_right = 82.0
+offset_bottom = 94.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="save" type="Button" parent="saveload_panel/VBoxContainer"]
 layout_mode = 2
