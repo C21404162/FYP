@@ -120,8 +120,8 @@ radius = 0.3
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_4n5t3"]
 radius = 0.3
 
-[sub_resource type="SphereShape3D" id="SphereShape3D_uj484"]
-radius = 0.200363
+[sub_resource type="SphereShape3D" id="SphereShape3D_w5iaf"]
+radius = 0.2
 
 [sub_resource type="SphereMesh" id="SphereMesh_1wjrs"]
 
@@ -461,7 +461,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 1.2, -0.6)
 collision_layer = 2
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Player/lefthand"]
-shape = SubResource("SphereShape3D_uj484")
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, -0.0285009)
+shape = SubResource("SphereShape3D_w5iaf")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Player/lefthand"]
 transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0)
@@ -480,7 +481,6 @@ collision_layer = 2
 physics_material_override = SubResource("PhysicsMaterial_jj8ub")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Player/righthand"]
-visible = false
 shape = SubResource("SphereShape3D_3c451")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Player/righthand"]
@@ -565,4 +565,3 @@ grow_vertical = 0
 layout_mode = 1
 offset_right = 45.0
 offset_bottom = 23.0
-text = "Hello!"
