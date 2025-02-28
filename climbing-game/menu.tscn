@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://Scripts/menu.gd" id="1_3ru06"]
 [ext_resource type="PackedScene" uid="uid://8qoj8306fs56" path="res://Models/well_model.glb" id="2_3qr0f"]
-[ext_resource type="FontFile" uid="uid://nly7k1yk8vc1" path="res://addons/NotoSansOgham-Regular.ttf" id="2_gdm1x"]
+[ext_resource type="FontFile" uid="uid://nly7k1yk8vc1" path="res://Fonts/NotoSansOgham-Regular.ttf" id="2_gdm1x"]
 [ext_resource type="Texture2D" uid="uid://d334hub33k2fn" path="res://Textures/IMG_2019.jpg" id="2_wnj5a"]
 [ext_resource type="Script" path="res://Scripts/start.gd" id="3_af8js"]
 [ext_resource type="Texture2D" uid="uid://diq7n02p7gbs4" path="res://Models/wooden_plank_model_wood_bark.png" id="4_55s7h"]

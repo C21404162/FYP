@@ -3,12 +3,12 @@
 importer="font_data_dynamic"
 type="FontFile"
 uid="uid://nly7k1yk8vc1"
-path="res://.godot/imported/NotoSansOgham-Regular.ttf-115af4643827e80ed37cae3fe3e422db.fontdata"
+path="res://.godot/imported/NotoSansOgham-Regular.ttf-99c160c64df97d3d38578e958fe157dd.fontdata"
 
 [deps]
 
-source_file="res://addons/NotoSansOgham-Regular.ttf"
-dest_files=["res://.godot/imported/NotoSansOgham-Regular.ttf-115af4643827e80ed37cae3fe3e422db.fontdata"]
+source_file="res://Fonts/NotoSansOgham-Regular.ttf"
+dest_files=["res://.godot/imported/NotoSansOgham-Regular.ttf-99c160c64df97d3d38578e958fe157dd.fontdata"]
 
 [params]
 
