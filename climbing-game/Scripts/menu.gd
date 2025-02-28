@@ -1,5 +1,8 @@
 extends Control
 
+#cam
+@onready var Camera: Camera3D = $Camera3D
+
 #gamemanager
 @onready var game_manager = GameManager
 
@@ -20,6 +23,7 @@ extends Control
 @onready var english_label_exit: Label = $VBoxContainer/exit/english_label_exit
 
 func _ready() -> void:
+	
 	#Visiblity
 	ogham_label_continue.modulate = Color(1, 1, 1, 1)  
 	english_label_continue.modulate = Color(1, 1, 1, 0)  
