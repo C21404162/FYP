@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="Dialogue" load_steps=2 format=3 uid="uid://bphao74irjvvx"]
+
+[ext_resource type="Script" path="res://dialogue_resource.gd" id="1_6gif2"]
+
+[resource]
+script = ExtResource("1_6gif2")
+dialogue_lines = Array[Dictionary]([{
+"speaker": "NPC 1",
+"text": "Hello, climber! Ready for the challenge?"
+}, {
+"speaker": "NPC 1",
+"text": "The route ahead is dangerous, so be careful!"
+}, {
+"speaker": "NPC 1",
+"text": "If you need help, just let me know."
+}])

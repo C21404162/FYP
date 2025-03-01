@@ -2,10 +2,22 @@ extends RayCast3D
 
 @onready var interaction_icon: TextureRect = $"../../../../Fade_interact/interaction_icon"
 @onready var dialogue_label: Label = $"../../../../Dialogue/Panel/dialogue_label"
+@onready var dialogue_panel: Panel = $"../../../../Dialogue/Panel"
+
+@onready var player: CharacterBody3D = $"../../.."
+
+const DialogueResource = preload("res://dialogue_resource.gd")
+
+var current_dialogue: DialogueResource
+var current_line = 0
+var is_dialogue_active = false
+var is_processing_interaction = false
+var is_advancing_dialogue = false
+var cooldown = false
 
 func _ready() -> void:
 	create_tween().tween_property(interaction_icon, "modulate", Color(1, 1, 1, 0), 0.1)
-	dialogue_label.visible = false
+	dialogue_panel.visible = false
 
 func _process(delta: float) -> void:
 	if is_colliding():
@@ -14,11 +26,63 @@ func _process(delta: float) -> void:
 			create_tween().tween_property(interaction_icon, "modulate", Color(1, 1, 1, 1), 0.1)
 
 			if Input.is_action_just_pressed("interact"):
-				dialogue_label.text = "You interacted with the object!"
-				dialogue_label.visible = true
+				if not is_dialogue_active and not cooldown: 
+					is_processing_interaction = true
+					var dialogue_path = "res://Dialogue/%s_dialogue.tres" % collider.name
+					print("INTERACTED")
+					print("Dialogue path: ", dialogue_path)
+					if ResourceLoader.exists(dialogue_path):
+						current_dialogue = load(dialogue_path)
+						print("Dialogue loaded: ", current_dialogue)
+						print("Dialogue lines: ", current_dialogue.dialogue_lines)
+						start_dialogue()
+					else:
+						print("Dialogue resource not found: ", dialogue_path)
+					await get_tree().create_timer(0.2).timeout
+					is_processing_interaction = false
 		else:
 			create_tween().tween_property(interaction_icon, "modulate", Color(1, 1, 1, 0), 0.1)
-			dialogue_label.visible = false
+			dialogue_panel.visible = false
 	else:
 		create_tween().tween_property(interaction_icon, "modulate", Color(1, 1, 1, 0), 0.1)
-		dialogue_label.visible = false
+		dialogue_panel.visible = false
+
+	if is_dialogue_active:
+		if Input.is_action_just_pressed("interact") and not is_advancing_dialogue: 
+			is_advancing_dialogue = true
+			print("INTERACTED_CONT")
+			next_line()
+			await get_tree().create_timer(0.2).timeout
+			is_advancing_dialogue = false
+
+func start_dialogue() -> void:
+	if current_dialogue and current_dialogue.dialogue_lines.size() > 0:
+		current_line = 0
+		is_dialogue_active = true
+		dialogue_panel.visible = true
+		show_dialogue_line()
+		if player and player.has_method("set_can_move"):
+			player.set_can_move(false)
+
+func show_dialogue_line() -> void:
+	if current_line < current_dialogue.dialogue_lines.size():
+		var line = current_dialogue.dialogue_lines[current_line]
+		print("SHOWINGLINE: ", line)
+		dialogue_label.text = "%s: %s" % [line["speaker"], line["text"]]
+	else:
+		print("DIALOGUEEND")
+		end_dialogue()
+
+func next_line() -> void:
+	print("NEXTLINE")
+	current_line += 1
+	show_dialogue_line()
+
+func end_dialogue() -> void:
+	is_dialogue_active = false
+	dialogue_panel.visible = false
+	current_dialogue = null
+	current_line = 0
+	if player and player.has_method("set_can_move"):
+		player.set_can_move(true)
+	print("Dialogue ended. Ready for new interaction.")
