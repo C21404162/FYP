@@ -13,11 +13,13 @@ var current_line = 0
 var is_dialogue_active = false
 var is_processing_interaction = false
 var is_advancing_dialogue = false
+var is_animating_text = false  
+var skip_animation = false 
 var cooldown = false
 
 func _ready() -> void:
 	create_tween().tween_property(interaction_icon, "modulate", Color(1, 1, 1, 0), 0.1)
-	dialogue_panel.visible = false
+	dialogue_panel.visible = false  
 
 func _process(delta: float) -> void:
 	if is_colliding():
@@ -48,11 +50,14 @@ func _process(delta: float) -> void:
 
 	if is_dialogue_active:
 		if Input.is_action_just_pressed("interact") and not is_advancing_dialogue: 
-			is_advancing_dialogue = true
-			print("INTERACTED_CONT")
-			next_line()
-			await get_tree().create_timer(0.2).timeout
-			is_advancing_dialogue = false
+			if is_animating_text:
+				skip_animation = true  
+			else:
+				is_advancing_dialogue = true
+				print("INTERACTED_CONT")
+				next_line()
+				await get_tree().create_timer(0.2).timeout
+				is_advancing_dialogue = false
 
 func start_dialogue() -> void:
 	if current_dialogue and current_dialogue.dialogue_lines.size() > 0:
@@ -67,7 +72,21 @@ func show_dialogue_line() -> void:
 	if current_line < current_dialogue.dialogue_lines.size():
 		var line = current_dialogue.dialogue_lines[current_line]
 		print("SHOWINGLINE: ", line)
-		dialogue_label.text = "%s: %s" % [line["speaker"], line["text"]]
+		dialogue_label.text = "" 
+		dialogue_panel.visible = true
+		is_animating_text = true  
+		skip_animation = false 
+		
+		# Animate the text
+		var full_text = "%s: %s" % [line["speaker"], line["text"]]
+		for i in range(full_text.length() + 1):
+			if skip_animation: 
+				dialogue_label.text = full_text
+				break
+			dialogue_label.text = full_text.substr(0, i)
+			await get_tree().create_timer(0.05).timeout  
+		
+		is_animating_text = false  
 	else:
 		print("DIALOGUEEND")
 		end_dialogue()

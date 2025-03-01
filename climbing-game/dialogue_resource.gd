@@ -3,15 +3,15 @@ extends Resource
 
 @export var dialogue_lines: Array[Dictionary] = [
 	{
-		"speaker": "NPC 1",  
-		"text": "Hello, climber! Ready for the challenge?"
+		"speaker": "CHAR 1",  
+		"text": "LINE OF DIALOGUE 1"
 	},
 	{
-		"speaker": "NPC 1",
-		"text": "The route ahead is dangerous, so be careful!"
+		"speaker": "CHAR 1",
+		"text": "LINE OF DIALOGUE 2"
 	},
 	{
-		"speaker": "NPC 1",
-		"text": "If you need help, just let me know."
+		"speaker": "CHAR 1",
+		"text": "LINE OF DIALOGUE 3"
 	}
 ]
