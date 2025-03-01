@@ -34,7 +34,6 @@ func _process(delta: float) -> void:
 					if ResourceLoader.exists(dialogue_path):
 						current_dialogue = load(dialogue_path)
 						print("Dialogue loaded: ", current_dialogue)
-						print("Dialogue lines: ", current_dialogue.dialogue_lines)
 						start_dialogue()
 					else:
 						print("Dialogue resource not found: ", dialogue_path)
@@ -85,4 +84,4 @@ func end_dialogue() -> void:
 	current_line = 0
 	if player and player.has_method("set_can_move"):
 		player.set_can_move(true)
-	print("Dialogue ended. Ready for new interaction.")
+	print("DIALOGUEENDFULLY")
