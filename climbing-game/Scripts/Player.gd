@@ -80,10 +80,8 @@ func _ready():
 	# Load pause menu
 	var pause_menu_scene = load(pause_menu_scene_path)
 	if pause_menu_scene:
-		print("Pause menu scene loaded successfully.")
 		pause_menu_instance = pause_menu_scene.instantiate()
 		if pause_menu_instance:
-			print("Pause menu instance created successfully.")
 			add_child(pause_menu_instance)
 			pause_menu_instance.hide()
 		else:
@@ -168,10 +166,6 @@ func _unhandled_input(event):
 		if pause_menu_instance:
 			if pause_menu_instance.is_inside_tree():
 				pause_menu_instance.toggle_pause()
-			else:
-				print("Pause menu instance is not part of the SceneTree!")
-		else:
-			print("Pause menu instance not found!")
 	
 	# Mouse movement
 	if event is InputEventMouseMotion:
