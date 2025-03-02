@@ -88,7 +88,7 @@ func show_dialogue_line() -> void:
 		
 		is_animating_text = false  
 	else:
-		print("DIALOGUEEND")
+		print("DIALOGUEEND")	
 		end_dialogue()
 
 func next_line() -> void:

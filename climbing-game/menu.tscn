@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://cw5ty64yjmos8"]
+[gd_scene load_steps=18 format=3 uid="uid://cw5ty64yjmos8"]
 
 [ext_resource type="Script" path="res://Scripts/menu.gd" id="1_3ru06"]
 [ext_resource type="PackedScene" uid="uid://8qoj8306fs56" path="res://Models/well_model.glb" id="2_3qr0f"]
@@ -7,6 +7,7 @@
 [ext_resource type="Script" path="res://Scripts/start.gd" id="3_af8js"]
 [ext_resource type="FontFile" uid="uid://c8vijpv4huy16" path="res://Fonts/ARIAL.TTF" id="3_pevfs"]
 [ext_resource type="Texture2D" uid="uid://diq7n02p7gbs4" path="res://Models/wooden_plank_model_wood_bark.png" id="4_55s7h"]
+[ext_resource type="Script" path="res://camera_3d.gd" id="5_odhhc"]
 [ext_resource type="Script" path="res://addons/zylann.hterrain/hterrain.gd" id="8_bbpf4"]
 [ext_resource type="Resource" path="res://Terrain/data.hterrain" id="9_42nfg"]
 [ext_resource type="Script" path="res://addons/zylann.hterrain/hterrain_texture_set.gd" id="10_oov1q"]
@@ -232,6 +233,7 @@ text = "exit"
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.965926, 0.258819, 0, -0.258819, 0.965926, 0.5, 3.5, -5)
+script = ExtResource("5_odhhc")
 
 [node name="CSGBox3D" type="CSGBox3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -4)
