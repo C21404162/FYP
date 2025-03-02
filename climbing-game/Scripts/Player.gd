@@ -143,18 +143,26 @@ func setup_game_manager_connection():
 func setup_hands():
 	left_hand.gravity_scale = 0
 	right_hand.gravity_scale = 0
-	left_hand.collision_layer = LAYER_HANDS
-	left_hand.collision_mask = LAYER_WORLD
-	right_hand.collision_layer = LAYER_HANDS
-	right_hand.collision_mask = LAYER_WORLD
-	collision_layer = LAYER_PLAYER
-	collision_mask = LAYER_WORLD
 	
+	# Disable collisions by default
+	left_hand.collision_layer = 0
+	left_hand.collision_mask = 0
+	right_hand.collision_layer = 0
+	right_hand.collision_mask = 0
+	
+	# Enable collisions only when grabbing
+	if left_hand_grabbing:
+		left_hand.collision_layer = LAYER_HANDS
+		left_hand.collision_mask = LAYER_WORLD
+	if right_hand_grabbing:
+		right_hand.collision_layer = LAYER_HANDS
+		right_hand.collision_mask = LAYER_WORLD
+
 	left_hand.contact_monitor = true
 	right_hand.contact_monitor = true
 	left_hand.max_contacts_reported = 1
 	right_hand.max_contacts_reported = 1
-	
+
 	left_hand.mass = 1.0
 	right_hand.mass = 1.0
 	left_hand.inertia = Vector3(1, 1, 1)
