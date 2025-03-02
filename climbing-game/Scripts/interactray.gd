@@ -26,7 +26,7 @@ func _process(delta: float) -> void:
 		var collider = get_collider()
 		if collider and collider.is_in_group("Interactable"):
 			create_tween().tween_property(interaction_icon, "modulate", Color(1, 1, 1, 1), 0.1)
-
+		
 			if Input.is_action_just_pressed("interact"):
 				if not is_dialogue_active and not cooldown: 
 					is_processing_interaction = true
@@ -47,7 +47,7 @@ func _process(delta: float) -> void:
 	else:
 		create_tween().tween_property(interaction_icon, "modulate", Color(1, 1, 1, 0), 0.1)
 		dialogue_panel.visible = false
-
+	
 	if is_dialogue_active:
 		if Input.is_action_just_pressed("interact") and not is_advancing_dialogue: 
 			if is_animating_text:

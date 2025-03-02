@@ -1,4 +1,4 @@
-[gd_scene load_steps=53 format=3 uid="uid://daea0cguij4h2"]
+[gd_scene load_steps=55 format=3 uid="uid://daea0cguij4h2"]
 
 [ext_resource type="Material" uid="uid://rt8kwy52hryb" path="res://Materials/highlight.tres" id="1_lgiqj"]
 [ext_resource type="Script" path="res://Scripts/world.gd" id="1_q6rjl"]
@@ -131,9 +131,15 @@ radius = 0.3
 
 [sub_resource type="SphereMesh" id="SphereMesh_1wjrs"]
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_vkgnv"]
+size = Vector3(0.239258, 0.0667173, 0.601501)
+
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_jj8ub"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_wc6pi"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_6u2uw"]
+size = Vector3(0.454834, 0.109381, 1.19788)
 
 [sub_resource type="Gradient" id="Gradient_r4ykm"]
 colors = PackedColorArray(0.222656, 0.222656, 0.222656, 1, 1, 1, 1, 0)
@@ -503,6 +509,24 @@ use_collision = true
 radius = 0.301674
 material = SubResource("StandardMaterial3D_ulsda")
 
+[node name="CSGSphere3D30" type="CSGSphere3D" parent="Map" groups=["Climbable"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.15598, 59.1769, 0.60961)
+use_collision = true
+radius = 0.301674
+material = SubResource("StandardMaterial3D_ulsda")
+
+[node name="CSGSphere3D31" type="CSGSphere3D" parent="Map" groups=["Climbable"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.873005, 59.6769, 3.02767)
+use_collision = true
+radius = 0.301674
+material = SubResource("StandardMaterial3D_ulsda")
+
+[node name="CSGSphere3D32" type="CSGSphere3D" parent="Map" groups=["Climbable"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.88848, 60.824, -1.02665)
+use_collision = true
+radius = 0.301674
+material = SubResource("StandardMaterial3D_ulsda")
+
 [node name="char_1" type="CSGSphere3D" parent="Map" groups=["Interactable"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1.5, -2.5)
 use_collision = true
@@ -558,11 +582,15 @@ visible = false
 mesh = SubResource("SphereMesh_1wjrs")
 
 [node name="left_hand_raycast" type="RayCast3D" parent="Player/lefthand"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.244801)
+transform = Transform3D(7, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.244801)
 target_position = Vector3(0, 0, -0.6)
 
 [node name="hand_left" parent="Player/lefthand" instance=ExtResource("12_xv8ak")]
 transform = Transform3D(2.18557e-09, 4.37114e-09, 0.05, 1.91069e-16, -0.05, 4.37114e-09, 0.05, 0, -2.18557e-09, 0, 0, 0.2)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Player/lefthand"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.02, 0, -0.05)
+shape = SubResource("BoxShape3D_vkgnv")
 
 [node name="righthand" type="RigidBody3D" parent="Player"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 1.2, -0.6)
@@ -575,11 +603,15 @@ visible = false
 mesh = SubResource("SphereMesh_wc6pi")
 
 [node name="right_hand_raycast" type="RayCast3D" parent="Player/righthand"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.245)
+transform = Transform3D(7, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.245)
 target_position = Vector3(0, 0, -0.6)
 
 [node name="hand_right" parent="Player/righthand" instance=ExtResource("14_apo2k")]
 transform = Transform3D(2.18557e-09, 5.58794e-09, 0.05, 1.19045e-16, -0.05, 5.58794e-09, 0.05, -3.07979e-18, -2.18557e-09, 0, 0, 0.2)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Player/righthand"]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0.02, 0, -0.05)
+shape = SubResource("BoxShape3D_6u2uw")
 
 [node name="LandingParticles" type="GPUParticles3D" parent="Player"]
 emitting = false
