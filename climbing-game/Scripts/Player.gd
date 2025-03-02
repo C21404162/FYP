@@ -159,6 +159,7 @@ func setup_hands():
 	right_hand.mass = 1.0
 	left_hand.inertia = Vector3(1, 1, 1)
 	right_hand.inertia = Vector3(1, 1, 1)
+	
 
 func _unhandled_input(event):
 	# Pause
