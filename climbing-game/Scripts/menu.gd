@@ -24,6 +24,8 @@ extends Control
 
 func _ready() -> void:
 	
+	#fade_in.play("fade_in") 
+	
 	#Visiblity
 	ogham_label_continue.modulate = Color(1, 1, 1, 1)  
 	english_label_continue.modulate = Color(1, 1, 1, 0)  

@@ -16,7 +16,7 @@ const LAYER_HANDS = 2
 const LAYER_PLAYER = 4
 
 # Physics stuff
-@export var hand_smoothing = 35.0
+@export var hand_smoothing = 40
 @export var reach_distance = 0.6
 @export var reach_speed = 12.5
 @export var climb_force = 5.0
@@ -267,8 +267,8 @@ func handle_climbing(delta):
 	
 	#Calculate movement direction based on camera orientation
 	var move_direction = Vector3.ZERO
-	move_direction += cam_basis.x * input_dir.x     # Horizontal movement (left/right)
-	move_direction += cam_basis.z * input_dir.y    # Forward/backward movement (up/down keys)
+	move_direction += cam_basis.x * input_dir.x   
+	move_direction += cam_basis.z * input_dir.y  
 	move_direction = move_direction.normalized()
 	
 	# Base climbing speed
