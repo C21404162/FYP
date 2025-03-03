@@ -72,10 +72,24 @@ const BREAK_TIME: float = 2.0  # Time in seconds before a surface breaks
 const RESPAWN_TIME: float = 5.0  # Time in seconds before a surface respawns
 
 # Sound effects
-#@export var break_sound: AudioStream  # Sound to play when a surface breaks
-#@export var respawn_sound: AudioStream  # Sound to play when a surface respawns
+@export var fall_sound: AudioStream
+@export var landing_sound: AudioStream
+var fall_sound_player: AudioStreamPlayer3D = null
+
+# Camera shake
+var fall_distance = 0.0
+var max_fall_distance = 20.0  # Maximum distance before the shake effect caps out
+var shake_intensity = 0.0
+var shake_decay = 5.0
+var noise = FastNoiseLite.new()  # Use FastNoiseLite in Godot 4.x
 
 func _ready():
+	# Configure noise for camera shake
+	noise.seed = randi()
+	noise.fractal_octaves = 4
+	noise.frequency = 0.05  # Adjust frequency for smoother noise
+	noise.fractal_gain = 0.8
+
 	# Configure left joint
 	configure_hinge_joint(grab_joint_left)
 	
@@ -112,6 +126,13 @@ func _ready():
 		# Apply saved position and rotation
 		global_transform.origin = GameManager.player_position
 		$Head.global_transform.basis = GameManager.player_rotation
+
+	# Create fall sound player
+	if fall_sound:
+		fall_sound_player = AudioStreamPlayer3D.new()
+		fall_sound_player.stream = fall_sound
+		fall_sound_player.unit_size = 10.0
+		add_child(fall_sound_player)
 
 func configure_hinge_joint(joint: HingeJoint3D):
 	# Enable angular limits
@@ -238,7 +259,47 @@ func _physics_process(delta):
 	# Landing 
 	if !was_in_air and is_on_floor():
 		emit_landing_particles()
+		play_landing_sound()
 	was_in_air = !is_on_floor()
+	
+	# Apply camera shake and fall sound
+	if not is_on_floor():
+		play_fall_sound()
+	apply_camera_shake(delta)
+
+func apply_camera_shake(delta):
+	if shake_intensity > 0:
+		# Reduce shake intensity over time
+		shake_intensity = max(shake_intensity - shake_decay * delta, 0)
+		
+		# Apply shake to camera rotation
+		var shake_offset = Vector3(
+			noise.get_noise_1d(Time.get_ticks_msec() * 0.1),  # Use Time.get_ticks_msec()
+			noise.get_noise_1d(Time.get_ticks_msec() * 0.1 + 100),  # Use Time.get_ticks_msec()
+			0
+		) * shake_intensity
+		
+		# Apply the shake to the camera's rotation
+		camera.rotation_degrees = shake_offset
+
+func play_fall_sound():
+	if fall_sound_player:
+		if not fall_sound_player.playing:
+			fall_sound_player.play()
+		
+		# Adjust pitch or volume based on fall distance
+		var pitch_scale = 1.0 + (fall_distance / max_fall_distance) * 0.5
+		fall_sound_player.pitch_scale = pitch_scale
+
+func play_landing_sound():
+	if landing_sound:
+		var landing_sound_player = AudioStreamPlayer3D.new()
+		landing_sound_player.stream = landing_sound
+		landing_sound_player.unit_size = 10.0
+		add_child(landing_sound_player)
+		landing_sound_player.global_transform.origin = global_transform.origin
+		landing_sound_player.play()
+		landing_sound_player.connect("finished", Callable(landing_sound_player, "queue_free"))
 
 func emit_landing_particles():
 	if landing_particles:

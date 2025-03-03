@@ -331,7 +331,7 @@ metadata/climbable = false
 [node name="CSGCylinder3D" type="CSGCylinder3D" parent="Map/CSGCylinder3D"]
 operation = 2
 radius = 3.19823
-height = 119.0
+height = 121.0
 
 [node name="CSGBox3D" type="CSGBox3D" parent="Map/CSGCylinder3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.84115, 16, -0.021145)
@@ -562,7 +562,7 @@ radius = 0.301674
 material = SubResource("StandardMaterial3D_ulsda")
 
 [node name="CSGSphere3D36" type="CSGSphere3D" parent="Map" groups=["Climbable"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0523424, 69.3032, 3.25595)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0523424, 68.3032, 3.25595)
 use_collision = true
 radius = 0.301674
 material = SubResource("StandardMaterial3D_ulsda")
@@ -585,12 +585,6 @@ use_collision = true
 size = Vector3(0.595703, 0.25, 2.79248)
 material = SubResource("StandardMaterial3D_oqckm")
 
-[node name="CSGBox3D13" type="CSGBox3D" parent="Map" groups=["Climbable"]]
-transform = Transform3D(0.784732, -0.278782, 0.553603, -0.216184, 0.713961, 0.665976, -0.580913, -0.642292, 0.5, 1.30647, 66.0112, 2.33404)
-use_collision = true
-size = Vector3(0.595703, 0.215698, 2.70471)
-material = SubResource("StandardMaterial3D_oqckm")
-
 [node name="CSGBox3D14" type="CSGBox3D" parent="Map" groups=["Climbable"]]
 transform = Transform3D(0.85982, -0.103486, -0.5, 0.119496, 0.992835, 0, 0.496417, -0.0597479, 0.866025, 1.80211, 62.9675, -2.19892)
 use_collision = true
@@ -604,13 +598,19 @@ size = Vector3(0.5, 0.321289, 7)
 material = SubResource("StandardMaterial3D_ux0q7")
 
 [node name="CSGBox3D15" type="CSGBox3D" parent="Map" groups=["Breakable", "Climbable"]]
-transform = Transform3D(0.965926, 0.12941, -0.224144, 0, 0.866025, 0.5, 0.258819, -0.482963, 0.836516, 1.25, 24.75, 3)
+transform = Transform3D(0.965926, 0.12941, -0.224144, 0, 0.866025, 0.5, 0.258819, -0.482963, 0.836516, 1.25, 24.4838, 2.90764)
+use_collision = true
+size = Vector3(0.5, 0.5, 1)
+material = SubResource("StandardMaterial3D_oq7pb")
+
+[node name="CSGBox3D17" type="CSGBox3D" parent="Map" groups=["Breakable", "Climbable"]]
+transform = Transform3D(0.868308, 0.303754, -0.392142, 0.0669873, 0.711516, 0.699469, 0.491482, -0.633623, 0.597467, 1.25, 65.25, 3)
 use_collision = true
 size = Vector3(0.5, 0.5, 1)
 material = SubResource("StandardMaterial3D_oq7pb")
 
 [node name="CSGBox3D16" type="CSGBox3D" parent="Map" groups=["Breakable", "Climbable"]]
-transform = Transform3D(0.997718, 0.062272, 0.0261164, -0.0669873, 0.961516, 0.266457, -0.00851855, -0.267598, 0.963493, -1.19368, 26.1863, 2.90696)
+transform = Transform3D(0.997718, 0.062272, 0.0261164, -0.0669873, 0.961516, 0.266457, -0.00851855, -0.267598, 0.963493, -1.07502, 26.1863, 2.8734)
 use_collision = true
 size = Vector3(0.5, 0.5, 0.521973)
 material = SubResource("StandardMaterial3D_oq7pb")
