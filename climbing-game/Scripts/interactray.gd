@@ -18,27 +18,33 @@ var skip_animation = false
 var cooldown = false
 
 func _ready() -> void:
+	#transparent
 	create_tween().tween_property(interaction_icon, "modulate", Color(1, 1, 1, 0), 0.1)
 	dialogue_panel.visible = false  
 
 func _process(delta: float) -> void:
 	if is_colliding():
 		var collider = get_collider()
+		#group check
 		if collider and collider.is_in_group("Interactable"):
+			#make icon fade in
 			create_tween().tween_property(interaction_icon, "modulate", Color(1, 1, 1, 1), 0.1)
 		
+			#interact logic
 			if Input.is_action_just_pressed("interact"):
 				if not is_dialogue_active and not cooldown: 
 					is_processing_interaction = true
 					var dialogue_path = "res://Dialogue/%s_dialogue.tres" % collider.name
 					print("INTERACTED")
-					print("Dialogue path: ", dialogue_path)
+			
+					print("PATH USED: ", dialogue_path)
 					if ResourceLoader.exists(dialogue_path):
 						current_dialogue = load(dialogue_path)
-						print("Dialogue loaded: ", current_dialogue)
+						print("DIALOGUE LOADED: ", current_dialogue)
 						start_dialogue()
 					else:
-						print("Dialogue resource not found: ", dialogue_path)
+						print("DIALOGUE NOT FOUND HERE: ", dialogue_path)
+						#spam stopper
 					await get_tree().create_timer(0.2).timeout
 					is_processing_interaction = false
 		else:
@@ -77,7 +83,7 @@ func show_dialogue_line() -> void:
 		is_animating_text = true  
 		skip_animation = false 
 		
-		# Animate the text
+		#typewriter animation thing
 		var full_text = "%s: %s" % [line["speaker"], line["text"]]
 		for i in range(full_text.length() + 1):
 			if skip_animation: 
