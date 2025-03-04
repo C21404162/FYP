@@ -51,7 +51,7 @@ var is_charging_jump = false
 var jump_charge_time = 0.0
 var noclip_enabled = false
 
-# Landing 
+#landing 
 var was_in_air = false
 @onready var landing_particles = $LandingParticles
 
@@ -66,35 +66,24 @@ var pause_menu_instance: Control = null
 @onready var game_manager = get_node("/root/GameManager")
 
 #Breaking
-var grab_timers: Dictionary = {}  # Tracks how long each surface has been held
-var broken_surfaces: Dictionary = {}  # Tracks broken surfaces and their respawn timers
-const BREAK_TIME: float = 2.0  # Time in seconds before a surface breaks
-const RESPAWN_TIME: float = 5.0  # Time in seconds before a surface respawns
+var grab_timers: Dictionary = {}  #track how long surface is held
+var broken_surfaces: Dictionary = {}  #tracks timers+surfaces
+const BREAK_TIME: float = 2.0  #time b4 break
+const RESPAWN_TIME: float = 5.0  #respawn timer
 
 # Sound effects
-@export var fall_sound: AudioStream
-@export var landing_sound: AudioStream
-var fall_sound_player: AudioStreamPlayer3D = null
-
-# Camera shake
-var fall_distance = 0.0
-var max_fall_distance = 20.0  # Maximum distance before the shake effect caps out
-var shake_intensity = 0.0
-var shake_decay = 5.0
-var noise = FastNoiseLite.new()  # Use FastNoiseLite in Godot 4.x
+#@export var break_sound: AudioStream  # Sound to play when a surface breaks
+#@export var respawn_sound: AudioStream  # Sound to play when a surface respawns
 
 func _ready():
-	# Configure noise for camera shake
-	noise.seed = randi()
-	noise.fractal_octaves = 4
-	noise.frequency = 0.05  # Adjust frequency for smoother noise
-	noise.fractal_gain = 0.8
-
-	# Configure left joint
-	configure_hinge_joint(grab_joint_left)
 	
-	# Configure right joint
-	configure_hinge_joint(grab_joint_right)
+	#noise 4 falling
+	
+	## Configure left joint
+	#configure_hinge_joint(grab_joint_left)
+	#
+	## Configure right joint
+	#configure_hinge_joint(grab_joint_right)
 	
 	# Set FOV from GameManager
 	camera.fov = GameManager.fov
@@ -127,13 +116,6 @@ func _ready():
 		global_transform.origin = GameManager.player_position
 		$Head.global_transform.basis = GameManager.player_rotation
 
-	# Create fall sound player
-	if fall_sound:
-		fall_sound_player = AudioStreamPlayer3D.new()
-		fall_sound_player.stream = fall_sound
-		fall_sound_player.unit_size = 10.0
-		add_child(fall_sound_player)
-
 func configure_hinge_joint(joint: HingeJoint3D):
 	# Enable angular limits
 	joint.set_flag(HingeJoint3D.FLAG_USE_LIMIT, true)
@@ -162,14 +144,15 @@ func _on_player_position_updated(position: Vector3):
 
 func _on_player_rotation_updated(rotation: Basis):
 	$Head.global_transform.basis = rotation
-
+	
 func setup_game_manager_connection():
 	if game_manager:
-		game_manager.connect("player_position_updated", _on_player_position_updated)
-		game_manager.connect("player_rotation_updated", _on_player_rotation_updated)
+		game_manager.connect("player_position_updated", Callable(self, "_on_player_position_updated"))
+		game_manager.connect("player_rotation_updated", Callable(self, "_on_player_rotation_updated"))
 	else:
-		print("Error: Game Manager node not found.")
+		print("*GAME MANAGER NOT FOUND")
 
+#physics setup
 func setup_hands():
 	left_hand.gravity_scale = 0
 	right_hand.gravity_scale = 0
@@ -192,18 +175,19 @@ func setup_hands():
 	
 
 func _unhandled_input(event):
-	# Pause
+	#pause
 	if event.is_action_pressed("esc"):
 		if pause_menu_instance:
 			if pause_menu_instance.is_inside_tree():
 				pause_menu_instance.toggle_pause()
 	
-	# Mouse movement
+	#mouse movement
 	if event is InputEventMouseMotion:
 		head.rotate_y(-event.relative.x * SENSITIVITY)
 		camera.rotate_x(-event.relative.y * SENSITIVITY)
 		camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-90), deg_to_rad(90))
 	
+	#grab binds
 	if event is InputEventMouseButton:
 		match event.button_index:
 			MOUSE_BUTTON_LEFT:
@@ -224,7 +208,7 @@ func _unhandled_input(event):
 func _physics_process(delta):
 	check_grab()
 	
-	# Update grab timers and break surfaces if necessary
+	#grab timer + break_surface
 	for collider_id in grab_timers.keys():
 		grab_timers[collider_id] += delta
 		if grab_timers[collider_id] >= BREAK_TIME:
@@ -234,18 +218,19 @@ func _physics_process(delta):
 				grab_timers.erase(collider_id)
 				release_grab(left_hand_grabbing)
 	
-	# Update respawn timers
+	#breakable respawn
 	for collider_id in broken_surfaces.keys():
 		broken_surfaces[collider_id] -= delta
 		if broken_surfaces[collider_id] <= 0:
 			respawn_surface(collider_id)
 	
-	# Game manager updates
+	#game manager updates
 	GameManager.update_player_position(global_transform.origin)
 	var camera_rotation = $Head.global_transform.basis
 	GameManager.update_player_position(global_transform.origin)
 	GameManager.update_player_rotation(camera_rotation)
 	
+	#more noclip
 	if noclip_enabled:
 		handle_noclip(delta)
 	elif left_hand_grabbing or right_hand_grabbing:
@@ -256,56 +241,18 @@ func _physics_process(delta):
 	update_hands(delta)
 	move_and_slide()
 	
-	# Landing 
+	#landing 
 	if !was_in_air and is_on_floor():
 		emit_landing_particles()
-		play_landing_sound()
 	was_in_air = !is_on_floor()
-	
-	# Apply camera shake and fall sound
-	if not is_on_floor():
-		play_fall_sound()
-	apply_camera_shake(delta)
 
-func apply_camera_shake(delta):
-	if shake_intensity > 0:
-		# Reduce shake intensity over time
-		shake_intensity = max(shake_intensity - shake_decay * delta, 0)
-		
-		# Apply shake to camera rotation
-		var shake_offset = Vector3(
-			noise.get_noise_1d(Time.get_ticks_msec() * 0.1),  # Use Time.get_ticks_msec()
-			noise.get_noise_1d(Time.get_ticks_msec() * 0.1 + 100),  # Use Time.get_ticks_msec()
-			0
-		) * shake_intensity
-		
-		# Apply the shake to the camera's rotation
-		camera.rotation_degrees = shake_offset
-
-func play_fall_sound():
-	if fall_sound_player:
-		if not fall_sound_player.playing:
-			fall_sound_player.play()
-		
-		# Adjust pitch or volume based on fall distance
-		var pitch_scale = 1.0 + (fall_distance / max_fall_distance) * 0.5
-		fall_sound_player.pitch_scale = pitch_scale
-
-func play_landing_sound():
-	if landing_sound:
-		var landing_sound_player = AudioStreamPlayer3D.new()
-		landing_sound_player.stream = landing_sound
-		landing_sound_player.unit_size = 10.0
-		add_child(landing_sound_player)
-		landing_sound_player.global_transform.origin = global_transform.origin
-		landing_sound_player.play()
-		landing_sound_player.connect("finished", Callable(landing_sound_player, "queue_free"))
-
+#landing fx
 func emit_landing_particles():
 	if landing_particles:
 		landing_particles.global_transform.origin = global_transform.origin
 		landing_particles.emitting = true
 
+#noclip
 func handle_noclip(delta):
 	var input_dir = Input.get_vector("left", "right", "up", "down")
 	var direction = (head.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
@@ -318,21 +265,24 @@ func handle_movement(delta):
 	if not is_on_floor():
 		velocity.y -= gravity * delta
 		
+		#movement input
 		var input_dir = Input.get_vector("left", "right", "up", "down")
 		var direction = (head.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 		var speed = SPRINT_SPEED if Input.is_action_pressed("sprint") else WALK_SPEED
 		
+		#lerp 4 movement
 		if direction:
 			velocity.x = lerp(velocity.x, direction.x * speed, delta * 2.0)
 			velocity.z = lerp(velocity.z, direction.z * speed, delta * 2.0)
 	elif Input.is_action_just_pressed("jump"):
 		velocity.y = JUMP_VELOCITY
 	
+	#sprint (should remove probs)
 	var speed = SPRINT_SPEED if Input.is_action_pressed("sprint") else WALK_SPEED
 	var input_dir = Input.get_vector("left", "right", "up", "down")
 	var direction = (head.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 	
-	# Crouch
+	#crouch
 	if Input.is_action_pressed("crouch"):
 		speed *= 0.6
 	
@@ -347,17 +297,17 @@ func handle_movement(delta):
 func handle_climbing(delta):
 	velocity.y -= gravity * delta
 	
-	# Get input and camera orientation
+	#input + cam orientation
 	var input_dir = Input.get_vector("left", "right", "up", "down")
 	var cam_basis = camera.global_transform.basis
 	
-	# Calculate movement direction based on camera orientation
+	#movement based on cam direction
 	var move_direction = Vector3.ZERO
 	move_direction += cam_basis.x * input_dir.x   
 	move_direction += cam_basis.z * input_dir.y  
 	move_direction = move_direction.normalized()
 	
-	# Base climbing speed
+	#climb speed
 	var climb_speed = 5.0
 	
 	# Apply movement
@@ -389,37 +339,42 @@ func handle_climbing(delta):
 		velocity += pull_force * delta
 
 func check_grab():
-	# Left hand grab logic
+	#left hand grab logic
 	if left_hand_reaching and not left_hand_grabbing:
 		if left_hand_raycast.is_colliding():
 			var collider = left_hand_raycast.get_collider()
+			#group check
 			if collider and collider.is_in_group("Climbable"):
 				var grab_point = left_hand_raycast.get_collision_point()
 				var distance_to_grab = global_position.distance_to(grab_point)
+				#grab if in range
 				if distance_to_grab <= MAX_GRAB_DISTANCE:
 					grab_object(left_hand_raycast, true)
 					print("Left hand grabbed: ", collider.name)
 					
-					# Particle and sound
+					#grab sound + fx
 					particles_hand(grab_point)
 					grab_sound.play()
 
-	# Right hand grab logic
+	#right hand grab logic
 	if right_hand_reaching and not right_hand_grabbing:
 		if right_hand_raycast.is_colliding():
 			var collider = right_hand_raycast.get_collider()
+			#group check
 			if collider and collider.is_in_group("Climbable"):
 				var grab_point = right_hand_raycast.get_collision_point()
 				var distance_to_grab = global_position.distance_to(grab_point)
+				#grab if in range
 				if distance_to_grab <= MAX_GRAB_DISTANCE:
 					grab_object(right_hand_raycast, false)
-					print("Right hand grabbed: ", collider.name)
+					print("RIGHT HAND GRABBED: ", collider.name)
 					
-					# Particle and sound
+					#grab sound + fx
 					particles_hand(grab_point)
 					grab_sound.play()
 
 func grab_object(hand_raycast: RayCast3D, is_left_hand: bool):
+	#connect joint with raycast
 	if hand_raycast.is_colliding():
 		var grab_point = hand_raycast.get_collision_point()
 		var grab_joint = grab_joint_left if is_left_hand else grab_joint_right
@@ -427,8 +382,10 @@ func grab_object(hand_raycast: RayCast3D, is_left_hand: bool):
 
 		grab_joint.global_transform.origin = grab_point
 
-		grab_joint.node_a = self.get_path()  # Player is node_a
-		grab_joint.node_b = collider.get_path()  # Collider is node_b
+		# nodeA is player
+		grab_joint.node_a = self.get_path() 
+		#collision is b node
+		grab_joint.node_b = collider.get_path()
 		
 		configure_hinge_joint(grab_joint)
 		
@@ -439,88 +396,67 @@ func grab_object(hand_raycast: RayCast3D, is_left_hand: bool):
 			grab_point_right = grab_point
 			right_hand_grabbing = true
 		
-		# Start tracking the grab time for this surface
+		#track grab time
 		if not grab_timers.has(collider.get_instance_id()):
 			grab_timers[collider.get_instance_id()] = 0.0
-		
-		print("Grabbed with", "left" if is_left_hand else "right", "hand at:", grab_point)
-		print("Node A:", grab_joint.node_a)
-		print("Node B:", grab_joint.node_b)
+		#debugs
+		print("GRABBED WITH", "left" if is_left_hand else "right", "hand at:", grab_point)
+		print("NODE A:", grab_joint.node_a)
+		print("NODE B:", grab_joint.node_b)
 
 func release_grab(is_left_hand: bool):
 	var grab_joint = grab_joint_left if is_left_hand else grab_joint_right
-	var collider_path = grab_joint.node_b  # Get the NodePath of the collider
+	var collider_path = grab_joint.node_b 
 	
-	# Check if the collider path is valid
 	if collider_path and collider_path != NodePath(""):
-		var collider = get_node(collider_path)  # Get the actual collider node
+		var collider = get_node(collider_path)
 		if collider and grab_timers.has(collider.get_instance_id()):
-			grab_timers.erase(collider.get_instance_id())  # Stop tracking the grab time
-
-	# Disable the joint
+			grab_timers.erase(collider.get_instance_id())
+	
+	#disable joint
 	grab_joint.node_b = NodePath("")
 
 	if is_left_hand:
 		left_hand_grabbing = false
 	else:
 		right_hand_grabbing = false
-
+		
 	print("Released", "left" if is_left_hand else "right", "hand")
 
 func break_surface(collider: Node,):
 	if collider:
 		print("Surface broke: ", collider.name)
 		
-		# Hide the surface and disable collision
+		#hide+no collision
 		collider.visible = false
 		collider.set_collision_layer_value(LAYER_WORLD, false)
 		#particles_hand(grab_point)
-		
-		# Play break sound
-		#if break_sound:
-			#var audio_player = AudioStreamPlayer3D.new()
-			#audio_player.stream = break_sound
-			#get_parent().add_child(audio_player)
-			#audio_player.global_transform.origin = collider.global_transform.origin
-			#audio_player.play()
-		
-		# Start respawn timer
+		#timer
 		broken_surfaces[collider.get_instance_id()] = RESPAWN_TIME
 
 func respawn_surface(collider_id: int):
 	var collider = instance_from_id(collider_id)
 	if collider:
 		print("Surface respawned: ", collider.name)
-		
-		# Restore visibility and collision
+		#restore state
 		collider.visible = true
 		collider.set_collision_layer_value(LAYER_WORLD, true)
-		
-		# Play respawn sound
-		#if respawn_sound:
-			#var audio_player = AudioStreamPlayer3D.new()
-			#audio_player.stream = respawn_sound
-			#get_parent().add_child(audio_player)
-			#audio_player.global_transform.origin = collider.global_transform.origin
-			#audio_player.play()
-		
-		# Remove from broken surfaces dictionary
 		broken_surfaces.erase(collider_id)
 
 func update_hands(delta):
 	var cam_basis = camera.global_transform.basis
 	
-	# Left hand position
+	#Left hand position
 	var left_target = grab_point_left if left_hand_grabbing else \
 		camera.global_position + cam_basis * left_hand_initial_offset + \
 		(-cam_basis.z * reach_distance if left_hand_reaching else Vector3.ZERO)
 	
-	# Right hand position
+	#Right hand position
 	var right_target = grab_point_right if right_hand_grabbing else \
 		camera.global_position + cam_basis * right_hand_initial_offset + \
 		(-cam_basis.z * reach_distance if right_hand_reaching else Vector3.ZERO)
 	
-	# Move hands to their target positions
+	#move hands to target pos
 	left_hand.global_position = left_hand.global_position.lerp(
 		left_target,
 		delta * (reach_speed if left_hand_reaching else hand_smoothing))
@@ -530,13 +466,13 @@ func update_hands(delta):
 		delta * (reach_speed if right_hand_reaching else hand_smoothing))
 		
 		
+#update hands
 func _process(delta):
 	update_hand_rotations(delta)
 
 func update_hand_rotations(delta):
 	var cam_basis = camera.global_transform.basis
-	
-	# Left hand rotation
+	#left hand rot
 	var left_adjustment = Basis().rotated(Vector3.FORWARD, deg_to_rad(180))
 	if left_hand_grabbing:
 		var grab_dir = (grab_point_left - camera.global_position).normalized()
@@ -550,8 +486,7 @@ func update_hand_rotations(delta):
 			cam_basis * left_adjustment,
 			delta * hand_smoothing
 		)
-	
-	# Right hand rotation
+	#right hand rot
 	var right_adjustment = Basis().rotated(Vector3.FORWARD, deg_to_rad(180))
 	if right_hand_grabbing:
 		var grab_dir = (grab_point_right - camera.global_position).normalized()
@@ -565,7 +500,8 @@ func update_hand_rotations(delta):
 			cam_basis * right_adjustment,
 			delta * hand_smoothing
 		)
-		
+
+#hand fx
 func particles_hand(contact_point):
 	hand_fx.global_position = contact_point
 	hand_fx.emitting = true
