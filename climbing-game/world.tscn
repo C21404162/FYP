@@ -1,4 +1,4 @@
-[gd_scene load_steps=55 format=3 uid="uid://daea0cguij4h2"]
+[gd_scene load_steps=56 format=3 uid="uid://daea0cguij4h2"]
 
 [ext_resource type="Material" uid="uid://rt8kwy52hryb" path="res://Materials/highlight.tres" id="1_lgiqj"]
 [ext_resource type="Script" path="res://Scripts/world.gd" id="1_q6rjl"]
@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://dl4ehmpcpnc3u" path="res://Textures/IMG_2034.jpg" id="3_umr55"]
 [ext_resource type="Texture2D" uid="uid://diq7n02p7gbs4" path="res://Models/wooden_plank_model_wood_bark.png" id="4_05muq"]
 [ext_resource type="Texture2D" uid="uid://d334hub33k2fn" path="res://Textures/IMG_2019.jpg" id="4_a512g"]
+[ext_resource type="Texture2D" uid="uid://guff740bkob4" path="res://Textures/moss_new.jpg" id="4_oki8d"]
 [ext_resource type="PackedScene" uid="uid://dx11h6ui0c2mi" path="res://Models/wooden_plank_model.glb" id="6_imwlo"]
 [ext_resource type="Texture2D" uid="uid://c8lm8hg8qpmyg" path="res://Models/well_model_cobble_wall.png" id="8_irqvw"]
 [ext_resource type="Script" path="res://Scripts/interactray.gd" id="9_bfa6a"]
@@ -49,8 +50,8 @@ volumetric_fog_emission = Color(0.110451, 0.148438, 0.111251, 1)
 volumetric_fog_detail_spread = 0.675938
 volumetric_fog_ambient_inject = 1.74
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_g6l77"]
-albedo_texture = ExtResource("4_a512g")
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3ahdk"]
+albedo_texture = ExtResource("4_oki8d")
 uv1_triplanar = true
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hx26c"]
@@ -275,7 +276,7 @@ shadow_enabled = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.000499994, 0)
 use_collision = true
 size = Vector3(100, 0.001, 100)
-material = SubResource("StandardMaterial3D_g6l77")
+material = SubResource("StandardMaterial3D_3ahdk")
 
 [node name="CSGBox3D5" type="CSGBox3D" parent="Map" groups=["Climbable"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.25, -9.5)
