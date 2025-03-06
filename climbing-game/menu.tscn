@@ -1,9 +1,11 @@
-[gd_scene load_steps=20 format=3 uid="uid://cw5ty64yjmos8"]
+[gd_scene load_steps=22 format=3 uid="uid://cw5ty64yjmos8"]
 
 [ext_resource type="Script" path="res://Scripts/menu.gd" id="1_3ru06"]
 [ext_resource type="PackedScene" uid="uid://8qoj8306fs56" path="res://Models/well_model.glb" id="2_3qr0f"]
+[ext_resource type="AudioStream" uid="uid://clehoi86kyos" path="res://Sounds/SFX/hover1.mp3" id="2_b0bxi"]
 [ext_resource type="FontFile" uid="uid://nly7k1yk8vc1" path="res://Fonts/NotoSansOgham-Regular.ttf" id="2_gdm1x"]
 [ext_resource type="Texture2D" uid="uid://d334hub33k2fn" path="res://Textures/IMG_2019.jpg" id="2_wnj5a"]
+[ext_resource type="AudioStream" uid="uid://b40ss0vvbrop4" path="res://Sounds/SFX/hover2.mp3" id="3_bvnap"]
 [ext_resource type="FontFile" uid="uid://c8vijpv4huy16" path="res://Fonts/ARIAL.TTF" id="3_pevfs"]
 [ext_resource type="Texture2D" uid="uid://diq7n02p7gbs4" path="res://Models/wooden_plank_model_wood_bark.png" id="4_55s7h"]
 [ext_resource type="Script" path="res://Scripts/Menu_cam.gd" id="5_odhhc"]
@@ -70,6 +72,7 @@ offset_right = 12.0
 offset_bottom = -108.0
 grow_vertical = 0
 script = ExtResource("1_3ru06")
+hover_sounds = Array[AudioStream]([ExtResource("2_b0bxi"), ExtResource("3_bvnap")])
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
@@ -321,6 +324,8 @@ shader_params/u_tile_reduction = null
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.5, 0, -31.5)
 material_override = SubResource("StandardMaterial3D_nqhrx")
 script = ExtResource("11_a1n8c")
+
+[node name="HoverSoundPlayer" type="AudioStreamPlayer3D" parent="."]
 
 [connection signal="mouse_entered" from="VBoxContainer/continue" to="." method="_on_mouse_entered_continue"]
 [connection signal="pressed" from="VBoxContainer/continue" to="." method="_on_continue_pressed"]
