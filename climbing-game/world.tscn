@@ -1,4 +1,4 @@
-[gd_scene load_steps=56 format=3 uid="uid://daea0cguij4h2"]
+[gd_scene load_steps=58 format=3 uid="uid://daea0cguij4h2"]
 
 [ext_resource type="Material" uid="uid://rt8kwy52hryb" path="res://Materials/highlight.tres" id="1_lgiqj"]
 [ext_resource type="Script" path="res://Scripts/world.gd" id="1_q6rjl"]
@@ -10,12 +10,14 @@
 [ext_resource type="Texture2D" uid="uid://guff740bkob4" path="res://Textures/moss_new.jpg" id="4_oki8d"]
 [ext_resource type="PackedScene" uid="uid://dx11h6ui0c2mi" path="res://Models/wooden_plank_model.glb" id="6_imwlo"]
 [ext_resource type="Texture2D" uid="uid://c8lm8hg8qpmyg" path="res://Models/well_model_cobble_wall.png" id="8_irqvw"]
+[ext_resource type="Texture2D" uid="uid://dxn03o3k6f8d2" path="res://Textures/shitwall.png" id="8_w86qp"]
 [ext_resource type="Script" path="res://Scripts/interactray.gd" id="9_bfa6a"]
 [ext_resource type="PackedScene" uid="uid://bsr064cghwhkg" path="res://Models/hand_left.glb" id="12_xv8ak"]
-[ext_resource type="AudioStream" uid="uid://n1368xkcp0oa" path="res://Sounds/SFX/grab.wav" id="13_dftgj"]
 [ext_resource type="Texture2D" uid="uid://p4e38kfwdxfq" path="res://Textures/icon.svg" id="14_3x2jh"]
 [ext_resource type="PackedScene" uid="uid://1sfp2ihf2nds" path="res://Models/hand_right.glb" id="14_apo2k"]
 [ext_resource type="FontFile" uid="uid://c8vijpv4huy16" path="res://Fonts/ARIAL.TTF" id="15_86m0o"]
+[ext_resource type="AudioStream" uid="uid://y3kmoxpsn2kh" path="res://Sounds/SFX/grab_real.mp3" id="15_hj3ll"]
+[ext_resource type="AudioStream" uid="uid://d22yewk558711" path="res://Sounds/Music/ambience_cave.mp3" id="18_6hcjt"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5qhtx"]
 albedo_texture = ExtResource("3_umbod")
@@ -66,8 +68,8 @@ albedo_texture = ExtResource("4_05muq")
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gtese"]
 albedo_texture = ExtResource("3_umr55")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gx5kp"]
-albedo_texture = ExtResource("3_umr55")
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_k7ply"]
+albedo_texture = ExtResource("8_w86qp")
 uv1_triplanar = true
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ups6o"]
@@ -101,7 +103,7 @@ radial_segments = 8
 rings = 4
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_i4qhw"]
-albedo_texture = ExtResource("4_a512g")
+albedo_texture = ExtResource("4_oki8d")
 uv1_triplanar = true
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_r7mot"]
@@ -322,7 +324,7 @@ metadata/climbable = true
 
 [node name="CSGCylinder3D" type="CSGCylinder3D" parent="Map"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10, 0)
-material_override = SubResource("StandardMaterial3D_gx5kp")
+material_override = SubResource("StandardMaterial3D_k7ply")
 use_collision = true
 radius = 3.5
 height = 119.0
@@ -692,7 +694,8 @@ draw_pass_1 = SubResource("SphereMesh_icc2d")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 1.2, -0.6)
 
 [node name="grabsound" type="AudioStreamPlayer3D" parent="."]
-stream = ExtResource("13_dftgj")
+stream = ExtResource("15_hj3ll")
+volume_db = -30.0
 
 [node name="Fade_interact" type="CanvasLayer" parent="."]
 
@@ -758,3 +761,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_fonts/font = ExtResource("15_86m0o")
 theme_override_font_sizes/font_size = 40
+
+[node name="ambience" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("18_6hcjt")
+volume_db = -32.0
