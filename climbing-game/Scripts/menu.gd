@@ -1,5 +1,9 @@
 extends Control
 
+#hover noise
+@export var hover_sounds: Array[AudioStream] = []
+@onready var hover_sound_player = $HoverSoundPlayer
+
 #cam
 @onready var Camera: Camera3D = $Camera3D
 
@@ -52,24 +56,36 @@ func _on_mouse_entered_start():
 	if ogham_label_start and english_label_start:
 		create_tween().tween_property(ogham_label_start, "modulate", Color(1, 1, 1, 0), 0.7)
 		create_tween().tween_property(english_label_start, "modulate", Color(1, 1, 1, 1), 0.7)
+		play_hover_sound()
 
 func _on_mouse_entered_options():
 	if ogham_label_options and english_label_options:
 		create_tween().tween_property(ogham_label_options, "modulate", Color(1, 1, 1, 0), 0.7)
 		create_tween().tween_property(english_label_options, "modulate", Color(1, 1, 1, 1), 0.7)
+		play_hover_sound()
 
 func _on_mouse_entered_exit():
 	if ogham_label_exit and english_label_exit:
 		create_tween().tween_property(ogham_label_exit, "modulate", Color(1, 1, 1, 0), 0.7)
 		create_tween().tween_property(english_label_exit, "modulate", Color(1, 1, 1, 1), 0.7)
+		play_hover_sound()
 
 func _on_mouse_entered_continue() -> void:
 	if ogham_label_continue and english_label_continue:
 		create_tween().tween_property(ogham_label_continue, "modulate", Color(1, 1, 1, 0), 0.7)
 		create_tween().tween_property(english_label_continue, "modulate", Color(1, 1, 1, 1), 0.7)
+		play_hover_sound()
 
 func _on_continue_pressed() -> void:
 	print("Continue button pressed. Loading game data...")
 	game_manager.load_game_data()
 	print("Game data loaded. Changing scene...")
 	get_tree().change_scene_to_file("res://world.tscn")
+	
+func play_hover_sound():
+	hover_sound_player.volume_db = -20
+	if hover_sound_player and hover_sounds.size() > 0:
+		var random_index = randi() % hover_sounds.size()
+		hover_sound_player.stream = hover_sounds[random_index]
+		hover_sound_player.pitch_scale = randf_range(0.9, 3.0)  # Random pitch
+		hover_sound_player.play()

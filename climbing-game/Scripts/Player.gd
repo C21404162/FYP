@@ -394,18 +394,17 @@ func grab_object(hand_raycast: RayCast3D, is_left_hand: bool):
 		grab_joint.node_b = collider.get_path()
 		
 		configure_hinge_joint(grab_joint)
-		
+	
 		if is_left_hand:
 			grab_point_left = grab_point
 			left_hand_grabbing = true
 		else:
 			grab_point_right = grab_point
 			right_hand_grabbing = true
-		
 		#track grgab time
 		if not grab_timers.has(collider.get_instance_id()):
 			grab_timers[collider.get_instance_id()] = 0.0
-		
+	
 		#random sound
 		if grab_sounds.size() > 0:
 			var random_index = randi() % grab_sounds.size()
@@ -413,16 +412,18 @@ func grab_object(hand_raycast: RayCast3D, is_left_hand: bool):
 			while random_index == last_grab_sound_index:
 				random_index = randi() % grab_sounds.size()
 			last_grab_sound_index = random_index
-			
+
 			#random pitch
 			if is_left_hand:
 				left_hand_sound.pitch_scale = randf_range(0.9, 1.1) 
 				left_hand_sound.stream = grab_sounds[random_index]
 				left_hand_sound.play()
+			
 			else:
 				right_hand_sound.pitch_scale = randf_range(0.9, 1.1)
 				right_hand_sound.stream = grab_sounds[random_index]
 				right_hand_sound.play()
+	
 		#debugs
 		print("GRABBED WITH", "left" if is_left_hand else "right", "hand at:", grab_point)
 		print("NODE A:", grab_joint.node_a)
