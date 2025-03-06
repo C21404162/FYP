@@ -1,4 +1,4 @@
-[gd_scene load_steps=58 format=3 uid="uid://daea0cguij4h2"]
+[gd_scene load_steps=60 format=3 uid="uid://daea0cguij4h2"]
 
 [ext_resource type="Material" uid="uid://rt8kwy52hryb" path="res://Materials/highlight.tres" id="1_lgiqj"]
 [ext_resource type="Script" path="res://Scripts/world.gd" id="1_q6rjl"]
@@ -13,10 +13,12 @@
 [ext_resource type="Texture2D" uid="uid://dxn03o3k6f8d2" path="res://Textures/shitwall.png" id="8_w86qp"]
 [ext_resource type="Script" path="res://Scripts/interactray.gd" id="9_bfa6a"]
 [ext_resource type="PackedScene" uid="uid://bsr064cghwhkg" path="res://Models/hand_left.glb" id="12_xv8ak"]
+[ext_resource type="AudioStream" uid="uid://ndcgjfycqb4i" path="res://Sounds/SFX/grab_real_2.mp3" id="13_k2b4s"]
 [ext_resource type="Texture2D" uid="uid://p4e38kfwdxfq" path="res://Textures/icon.svg" id="14_3x2jh"]
 [ext_resource type="PackedScene" uid="uid://1sfp2ihf2nds" path="res://Models/hand_right.glb" id="14_apo2k"]
+[ext_resource type="AudioStream" uid="uid://dccu8dppqk7x4" path="res://Sounds/SFX/grab_real_3.mp3" id="14_fw5k0"]
 [ext_resource type="FontFile" uid="uid://c8vijpv4huy16" path="res://Fonts/ARIAL.TTF" id="15_86m0o"]
-[ext_resource type="AudioStream" uid="uid://y3kmoxpsn2kh" path="res://Sounds/SFX/grab_real.mp3" id="15_hj3ll"]
+[ext_resource type="AudioStream" uid="uid://y3kmoxpsn2kh" path="res://Sounds/SFX/grab_real_1.mp3" id="15_hj3ll"]
 [ext_resource type="AudioStream" uid="uid://d22yewk558711" path="res://Sounds/Music/ambience_cave.mp3" id="18_6hcjt"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5qhtx"]
@@ -620,6 +622,7 @@ material = SubResource("StandardMaterial3D_oq7pb")
 
 [node name="Player" type="CharacterBody3D" parent="."]
 script = ExtResource("1_vwaj1")
+grab_sounds = Array[AudioStream]([ExtResource("15_hj3ll"), ExtResource("13_k2b4s"), ExtResource("14_fw5k0")])
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Player"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
@@ -660,6 +663,8 @@ transform = Transform3D(2.18557e-09, 4.37114e-09, 0.05, 1.91069e-16, -0.05, 4.37
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.02, 0, -0.05)
 shape = SubResource("BoxShape3D_vkgnv")
 
+[node name="grab_sound_left" type="AudioStreamPlayer3D" parent="Player/lefthand"]
+
 [node name="righthand" type="RigidBody3D" parent="Player"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 1.2, -0.6)
 collision_layer = 2
@@ -675,6 +680,8 @@ transform = Transform3D(2.18557e-09, 5.58794e-09, 0.05, 1.19045e-16, -0.05, 5.58
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Player/righthand"]
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0.02, 0, -0.05)
 shape = SubResource("BoxShape3D_6u2uw")
+
+[node name="grab_sound_right" type="AudioStreamPlayer3D" parent="Player/righthand"]
 
 [node name="LandingParticles" type="GPUParticles3D" parent="Player"]
 emitting = false
@@ -695,7 +702,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 1.2, -0.6)
 
 [node name="grabsound" type="AudioStreamPlayer3D" parent="."]
 stream = ExtResource("15_hj3ll")
-volume_db = -30.0
+volume_db = -25.0
 
 [node name="Fade_interact" type="CanvasLayer" parent="."]
 
