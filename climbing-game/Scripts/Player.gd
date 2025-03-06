@@ -55,6 +55,12 @@ var noclip_enabled = false
 var was_in_air = false
 @onready var landing_particles = $LandingParticles
 
+#grabsounds
+@export var grab_sounds: Array[AudioStream] = []
+@onready var left_hand_sound = $lefthand/grab_sound_left
+@onready var right_hand_sound = $righthand/grab_sound_right
+var last_grab_sound_index = -1
+
 # Gravity
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
@@ -374,7 +380,7 @@ func check_grab():
 					grab_sound.play()
 
 func grab_object(hand_raycast: RayCast3D, is_left_hand: bool):
-	#connect joint with raycast
+	#connect joint 2 raycast
 	if hand_raycast.is_colliding():
 		var grab_point = hand_raycast.get_collision_point()
 		var grab_joint = grab_joint_left if is_left_hand else grab_joint_right
@@ -382,9 +388,9 @@ func grab_object(hand_raycast: RayCast3D, is_left_hand: bool):
 
 		grab_joint.global_transform.origin = grab_point
 
-		# nodeA is player
+		#nodeA is player
 		grab_joint.node_a = self.get_path() 
-		#collision is b node
+		#collision is nodeB
 		grab_joint.node_b = collider.get_path()
 		
 		configure_hinge_joint(grab_joint)
@@ -396,9 +402,27 @@ func grab_object(hand_raycast: RayCast3D, is_left_hand: bool):
 			grab_point_right = grab_point
 			right_hand_grabbing = true
 		
-		#track grab time
+		#track grgab time
 		if not grab_timers.has(collider.get_instance_id()):
 			grab_timers[collider.get_instance_id()] = 0.0
+		
+		#random sound
+		if grab_sounds.size() > 0:
+			var random_index = randi() % grab_sounds.size()
+			#dont play same sound twice
+			while random_index == last_grab_sound_index:
+				random_index = randi() % grab_sounds.size()
+			last_grab_sound_index = random_index
+			
+			#random pitch
+			if is_left_hand:
+				left_hand_sound.pitch_scale = randf_range(0.9, 1.1) 
+				left_hand_sound.stream = grab_sounds[random_index]
+				left_hand_sound.play()
+			else:
+				right_hand_sound.pitch_scale = randf_range(0.9, 1.1)
+				right_hand_sound.stream = grab_sounds[random_index]
+				right_hand_sound.play()
 		#debugs
 		print("GRABBED WITH", "left" if is_left_hand else "right", "hand at:", grab_point)
 		print("NODE A:", grab_joint.node_a)
