@@ -74,7 +74,7 @@ var pause_menu_instance: Control = null
 #Breaking
 var grab_timers: Dictionary = {}  #track how long surface is held
 var broken_surfaces: Dictionary = {}  #tracks timers+surfaces
-const BREAK_TIME: float = 2.0  #time b4 break
+const BREAK_TIME: float = 3.0  #time b4 break
 const RESPAWN_TIME: float = 5.0  #respawn timer
 
 # Sound effects
@@ -83,6 +83,7 @@ const RESPAWN_TIME: float = 5.0  #respawn timer
 
 func _ready():
 	
+
 	#noise 4 falling
 	
 	## Configure left joint
@@ -360,7 +361,7 @@ func check_grab():
 					
 					#grab sound + fx
 					particles_hand(grab_point)
-					grab_sound.play()
+					#grab_sound.play()
 
 	#right hand grab logic
 	if right_hand_reaching and not right_hand_grabbing:
@@ -377,7 +378,7 @@ func check_grab():
 					
 					#grab sound + fx
 					particles_hand(grab_point)
-					grab_sound.play()
+					#grab_sound.play()
 
 func grab_object(hand_raycast: RayCast3D, is_left_hand: bool):
 	#connect joint 2 raycast
@@ -415,11 +416,13 @@ func grab_object(hand_raycast: RayCast3D, is_left_hand: bool):
 
 			#random pitch
 			if is_left_hand:
+				left_hand_sound.volume_db = -20
 				left_hand_sound.pitch_scale = randf_range(0.9, 1.1) 
 				left_hand_sound.stream = grab_sounds[random_index]
 				left_hand_sound.play()
 			
 			else:
+				right_hand_sound.volume_db =-20
 				right_hand_sound.pitch_scale = randf_range(0.9, 1.1)
 				right_hand_sound.stream = grab_sounds[random_index]
 				right_hand_sound.play()
