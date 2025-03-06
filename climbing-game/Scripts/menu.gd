@@ -1,5 +1,8 @@
 extends Control
 
+#forest_sounds
+@onready var forest_ambience = $forest_ambience
+
 #hover noise
 @export var hover_sounds: Array[AudioStream] = []
 @onready var hover_sound_player = $HoverSoundPlayer
@@ -27,6 +30,9 @@ extends Control
 @onready var english_label_exit: Label = $VBoxContainer/exit/english_label_exit
 
 func _ready() -> void:
+	
+	if forest_ambience:
+		forest_ambience.play()
 	
 	#fade_in.play("fade_in") 
 	
@@ -87,5 +93,5 @@ func play_hover_sound():
 	if hover_sound_player and hover_sounds.size() > 0:
 		var random_index = randi() % hover_sounds.size()
 		hover_sound_player.stream = hover_sounds[random_index]
-		hover_sound_player.pitch_scale = randf_range(0.9, 3.0)  # Random pitch
+		hover_sound_player.pitch_scale = randf_range(1.2, 2.5)
 		hover_sound_player.play()

@@ -7,7 +7,8 @@ extends Node3D
 
 func _ready() -> void:
 	fade_in.play("fade_in")
-	ambience.play()  # Start ambient sound
+	ambience.play()
+	ambience.volume_db = -20
 	#tween.interpolate_property(ambient_sound, "volume_db", -80, 0, 2.0)  # Fade in
 	#tween.start()
 
