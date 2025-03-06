@@ -50,6 +50,9 @@ var grab_point_right: Vector3
 var is_charging_jump = false
 var jump_charge_time = 0.0
 var noclip_enabled = false
+#
+var left_hand_rotation_locked = false
+var right_hand_rotation_locked = false
 
 #landing 
 var was_in_air = false
@@ -399,9 +402,11 @@ func grab_object(hand_raycast: RayCast3D, is_left_hand: bool):
 		if is_left_hand:
 			grab_point_left = grab_point
 			left_hand_grabbing = true
+			left_hand_rotation_locked = true
 		else:
 			grab_point_right = grab_point
 			right_hand_grabbing = true
+			right_hand_rotation_locked = true
 		#track grgab time
 		if not grab_timers.has(collider.get_instance_id()):
 			grab_timers[collider.get_instance_id()] = 0.0
@@ -441,13 +446,15 @@ func release_grab(is_left_hand: bool):
 		if collider and grab_timers.has(collider.get_instance_id()):
 			grab_timers.erase(collider.get_instance_id())
 	
-	#disable joint
+	# Disable joint
 	grab_joint.node_b = NodePath("")
 
 	if is_left_hand:
 		left_hand_grabbing = false
+		left_hand_rotation_locked = false  # Unlock left hand rotation
 	else:
 		right_hand_grabbing = false
+		right_hand_rotation_locked = false  # Unlock right hand rotation
 		
 	print("Released", "left" if is_left_hand else "right", "hand")
 
@@ -500,34 +507,38 @@ func _process(delta):
 
 func update_hand_rotations(delta):
 	var cam_basis = camera.global_transform.basis
-	#left hand rot
-	var left_adjustment = Basis().rotated(Vector3.FORWARD, deg_to_rad(180))
-	if left_hand_grabbing:
-		var grab_dir = (grab_point_left - camera.global_position).normalized()
-		var target_basis = Basis.looking_at(grab_dir, Vector3.UP)
-		left_hand.global_transform.basis = left_hand.global_transform.basis.slerp(
-			target_basis, 
-			delta * hand_smoothing
-		)
-	else:
-		left_hand.global_transform.basis = left_hand.global_transform.basis.slerp(
-			cam_basis * left_adjustment,
-			delta * hand_smoothing
-		)
-	#right hand rot
-	var right_adjustment = Basis().rotated(Vector3.FORWARD, deg_to_rad(180))
-	if right_hand_grabbing:
-		var grab_dir = (grab_point_right - camera.global_position).normalized()
-		var target_basis = Basis.looking_at(grab_dir, Vector3.UP)
-		right_hand.global_transform.basis = right_hand.global_transform.basis.slerp(
-			target_basis, 
-			delta * hand_smoothing
-		)
-	else:
-		right_hand.global_transform.basis = right_hand.global_transform.basis.slerp(
-			cam_basis * right_adjustment,
-			delta * hand_smoothing
-		)
+	
+	# Left hand rotation
+	if not left_hand_rotation_locked:  # Only update if rotation is not locked
+		var left_adjustment = Basis().rotated(Vector3.FORWARD, deg_to_rad(180))
+		if left_hand_grabbing:
+			var grab_dir = (grab_point_left - camera.global_position).normalized()
+			var target_basis = Basis.looking_at(grab_dir, Vector3.UP)
+			left_hand.global_transform.basis = left_hand.global_transform.basis.slerp(
+				target_basis, 
+				delta * hand_smoothing
+			)
+		else:
+			left_hand.global_transform.basis = left_hand.global_transform.basis.slerp(
+				cam_basis * left_adjustment,
+				delta * hand_smoothing
+			)
+	
+	# Right hand rotation
+	if not right_hand_rotation_locked:  # Only update if rotation is not locked
+		var right_adjustment = Basis().rotated(Vector3.FORWARD, deg_to_rad(180))
+		if right_hand_grabbing:
+			var grab_dir = (grab_point_right - camera.global_position).normalized()
+			var target_basis = Basis.looking_at(grab_dir, Vector3.UP)
+			right_hand.global_transform.basis = right_hand.global_transform.basis.slerp(
+				target_basis, 
+				delta * hand_smoothing
+			)
+		else:
+			right_hand.global_transform.basis = right_hand.global_transform.basis.slerp(
+				cam_basis * right_adjustment,
+				delta * hand_smoothing
+			)
 
 #hand fx
 func particles_hand(contact_point):
