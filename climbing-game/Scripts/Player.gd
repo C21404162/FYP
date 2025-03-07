@@ -85,7 +85,7 @@ const RESPAWN_TIME: float = 5.0  #respawn timer
 #@export var break_sound: AudioStream  # Sound to play when a surface breaks
 #@export var respawn_sound: AudioStream  # Sound to play when a surface respawns
 
-@onready var hand_animation_player = $lefthand/hand_left_rigged/Hand_open
+@onready var hand_animation_player = $lefthand/hand_left_rigged/AnimationPlayer
 
 func _ready():
 	
@@ -201,18 +201,23 @@ func _unhandled_input(event):
 		camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-90), deg_to_rad(90))
 	
 	#grab binds
-	if event is InputEventMouseButton:
-		match event.button_index:
-			MOUSE_BUTTON_LEFT:
-				hand_animation_player.play()
-				left_hand_reaching = event.pressed
-				if !event.pressed: release_grab(true)
-			MOUSE_BUTTON_RIGHT:
-				right_hand_reaching = event.pressed
-				if !event.pressed: release_grab(false)
-	
+	if event.is_action_pressed("grab_left"):
+		hand_animation_player.play("open")
+		left_hand_reaching = true
+	elif event.is_action_released("grab_left"):
+		hand_animation_player.play("default")
+		left_hand_reaching = false
+		release_grab(true)
+
+	if event.is_action_pressed("grab_right"):
+		right_hand_reaching = true
+	elif event.is_action_released("grab_right"):
+		right_hand_reaching = false
+		release_grab(false)
+				
 	# Noclip toggle
 	if event.is_action_pressed("noclip"):
+		hand_animation_player.play("open")
 		noclip_enabled = !noclip_enabled
 		if noclip_enabled:
 			collision_mask = 0 
