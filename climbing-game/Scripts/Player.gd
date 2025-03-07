@@ -54,6 +54,7 @@ var noclip_enabled = false
 var left_hand_rotation_locked = false
 var right_hand_rotation_locked = false
 
+
 #landing 
 var was_in_air = false
 @onready var landing_particles = $LandingParticles
@@ -83,6 +84,8 @@ const RESPAWN_TIME: float = 5.0  #respawn timer
 # Sound effects
 #@export var break_sound: AudioStream  # Sound to play when a surface breaks
 #@export var respawn_sound: AudioStream  # Sound to play when a surface respawns
+
+@onready var hand_animation_player = $lefthand/hand_left_rigged/Hand_open
 
 func _ready():
 	
@@ -201,6 +204,7 @@ func _unhandled_input(event):
 	if event is InputEventMouseButton:
 		match event.button_index:
 			MOUSE_BUTTON_LEFT:
+				hand_animation_player.play()
 				left_hand_reaching = event.pressed
 				if !event.pressed: release_grab(true)
 			MOUSE_BUTTON_RIGHT:
@@ -509,7 +513,7 @@ func update_hand_rotations(delta):
 	var cam_basis = camera.global_transform.basis
 	
 	# Left hand rotation
-	if not left_hand_rotation_locked:  # Only update if rotation is not locked
+	if not left_hand_rotation_locked:
 		var left_adjustment = Basis().rotated(Vector3.FORWARD, deg_to_rad(180))
 		if left_hand_grabbing:
 			var grab_dir = (grab_point_left - camera.global_position).normalized()
@@ -525,7 +529,7 @@ func update_hand_rotations(delta):
 			)
 	
 	# Right hand rotation
-	if not right_hand_rotation_locked:  # Only update if rotation is not locked
+	if not right_hand_rotation_locked:
 		var right_adjustment = Basis().rotated(Vector3.FORWARD, deg_to_rad(180))
 		if right_hand_grabbing:
 			var grab_dir = (grab_point_right - camera.global_position).normalized()
