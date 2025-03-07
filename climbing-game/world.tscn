@@ -1,4 +1,4 @@
-[gd_scene load_steps=60 format=3 uid="uid://daea0cguij4h2"]
+[gd_scene load_steps=64 format=3 uid="uid://daea0cguij4h2"]
 
 [ext_resource type="Material" uid="uid://rt8kwy52hryb" path="res://Materials/highlight.tres" id="1_lgiqj"]
 [ext_resource type="Script" path="res://Scripts/world.gd" id="1_q6rjl"]
@@ -19,6 +19,7 @@
 [ext_resource type="AudioStream" uid="uid://dccu8dppqk7x4" path="res://Sounds/SFX/grab_real_3.mp3" id="14_fw5k0"]
 [ext_resource type="FontFile" uid="uid://c8vijpv4huy16" path="res://Fonts/ARIAL.TTF" id="15_86m0o"]
 [ext_resource type="AudioStream" uid="uid://y3kmoxpsn2kh" path="res://Sounds/SFX/grab_real_1.mp3" id="15_hj3ll"]
+[ext_resource type="PackedScene" uid="uid://etpli0c68lgh" path="res://Models/hand_left_rigged.glb" id="17_mo8ux"]
 [ext_resource type="AudioStream" uid="uid://d22yewk558711" path="res://Sounds/Music/ambience_cave.mp3" id="18_6hcjt"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5qhtx"]
@@ -171,6 +172,256 @@ radius = 0.3
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_vkgnv"]
 size = Vector3(0.239258, 0.0667173, 0.601501)
+
+[sub_resource type="Animation" id="Animation_goy80"]
+resource_name = "open"
+tracks/0/type = "position_3d"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Skeleton3D:wrist.L")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = PackedFloat32Array(0, 1, 0.736109, 0.0369808, -0.0142191)
+tracks/1/type = "position_3d"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Skeleton3D:hand.R")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = PackedFloat32Array(0, 1, 1.07351e-09, 3.4, -1.86464e-09)
+tracks/2/type = "position_3d"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Skeleton3D:pinky1.R")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = PackedFloat32Array(0, 1, 0.32108, 3.67878, 1.47952)
+tracks/3/type = "position_3d"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Skeleton3D:pinky2.R")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = PackedFloat32Array(0, 1, 3.04369e-08, 1.59948, -3.56808e-08)
+tracks/4/type = "position_3d"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Skeleton3D:pinky3.R")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = PackedFloat32Array(0, 1, -1.66509e-08, 1.34352, 1.62284e-07)
+tracks/5/type = "position_3d"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("Skeleton3D:ring1.R")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = PackedFloat32Array(0, 1, 0.374245, 3.82843, 0.7435)
+tracks/6/type = "position_3d"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("Skeleton3D:ring2.R")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = PackedFloat32Array(0, 1, 4.17467e-08, 1.62978, -3.48548e-08)
+tracks/7/type = "position_3d"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("Skeleton3D:ring3.R")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = PackedFloat32Array(0, 1, 2.15801e-08, 1.42464, 6.29575e-08)
+tracks/8/type = "position_3d"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("Skeleton3D:mid1.R")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = PackedFloat32Array(0, 1, 0.374245, 3.82843, -0.0548343)
+tracks/9/type = "position_3d"
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/path = NodePath("Skeleton3D:mid2.R")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/keys = PackedFloat32Array(0, 1, 7.57228e-09, 2.10502, 1.85613e-09)
+tracks/10/type = "position_3d"
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/path = NodePath("Skeleton3D:mid3.R")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/keys = PackedFloat32Array(0, 1, -1.42997e-08, 1.39326, -5.47826e-09)
+tracks/11/type = "position_3d"
+tracks/11/imported = false
+tracks/11/enabled = true
+tracks/11/path = NodePath("Skeleton3D:index1.R")
+tracks/11/interp = 1
+tracks/11/loop_wrap = true
+tracks/11/keys = PackedFloat32Array(0, 1, 0.258783, 3.73172, -0.942139)
+tracks/12/type = "position_3d"
+tracks/12/imported = false
+tracks/12/enabled = true
+tracks/12/path = NodePath("Skeleton3D:index2.R")
+tracks/12/interp = 1
+tracks/12/loop_wrap = true
+tracks/12/keys = PackedFloat32Array(0, 1, -5.33606e-09, 1.78607, -3.89147e-08)
+tracks/13/type = "position_3d"
+tracks/13/imported = false
+tracks/13/enabled = true
+tracks/13/path = NodePath("Skeleton3D:index3.R")
+tracks/13/interp = 1
+tracks/13/loop_wrap = true
+tracks/13/keys = PackedFloat32Array(0, 1, 6.03745e-09, 1.37377, -4.14662e-08)
+tracks/14/type = "position_3d"
+tracks/14/imported = false
+tracks/14/enabled = true
+tracks/14/path = NodePath("Skeleton3D:thumb1.R")
+tracks/14/interp = 1
+tracks/14/loop_wrap = true
+tracks/14/keys = PackedFloat32Array(0, 1, 0.00688039, 0.644069, -1.43218)
+tracks/15/type = "position_3d"
+tracks/15/imported = false
+tracks/15/enabled = true
+tracks/15/path = NodePath("Skeleton3D:thumb2.R")
+tracks/15/interp = 1
+tracks/15/loop_wrap = true
+tracks/15/keys = PackedFloat32Array(0, 1, 0, 0.867786, -1.56462e-07)
+tracks/16/type = "position_3d"
+tracks/16/imported = false
+tracks/16/enabled = true
+tracks/16/path = NodePath("Skeleton3D:thumb3.R")
+tracks/16/interp = 1
+tracks/16/loop_wrap = true
+tracks/16/keys = PackedFloat32Array(0, 1, 5.66244e-07, 1.22088, -2.08616e-07)
+
+[sub_resource type="Animation" id="Animation_o88r0"]
+length = 0.001
+tracks/0/type = "position_3d"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Skeleton3D:wrist.L")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = PackedFloat32Array(0, 1, 0.736109, 0.0369808, -0.0142191)
+tracks/1/type = "position_3d"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Skeleton3D:hand.R")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = PackedFloat32Array(0, 1, 1.07351e-09, 3.4, -1.86464e-09)
+tracks/2/type = "position_3d"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Skeleton3D:pinky1.R")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = PackedFloat32Array(0, 1, 0.32108, 3.67878, 1.47952)
+tracks/3/type = "position_3d"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Skeleton3D:pinky2.R")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = PackedFloat32Array(0, 1, 3.04369e-08, 1.59948, -3.56808e-08)
+tracks/4/type = "position_3d"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Skeleton3D:pinky3.R")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = PackedFloat32Array(0, 1, -1.66509e-08, 1.34352, 1.62284e-07)
+tracks/5/type = "position_3d"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("Skeleton3D:ring1.R")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = PackedFloat32Array(0, 1, 0.374245, 3.82843, 0.7435)
+tracks/6/type = "position_3d"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("Skeleton3D:ring2.R")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = PackedFloat32Array(0, 1, 4.17467e-08, 1.62978, -3.48548e-08)
+tracks/7/type = "position_3d"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("Skeleton3D:ring3.R")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = PackedFloat32Array(0, 1, 2.15801e-08, 1.42464, 6.29575e-08)
+tracks/8/type = "position_3d"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("Skeleton3D:mid1.R")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = PackedFloat32Array(0, 1, 0.374245, 3.82843, -0.0548343)
+tracks/9/type = "position_3d"
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/path = NodePath("Skeleton3D:mid2.R")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/keys = PackedFloat32Array(0, 1, 7.57228e-09, 2.10502, 1.85613e-09)
+tracks/10/type = "position_3d"
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/path = NodePath("Skeleton3D:mid3.R")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/keys = PackedFloat32Array(0, 1, -1.42997e-08, 1.39326, -5.47826e-09)
+tracks/11/type = "position_3d"
+tracks/11/imported = false
+tracks/11/enabled = true
+tracks/11/path = NodePath("Skeleton3D:index1.R")
+tracks/11/interp = 1
+tracks/11/loop_wrap = true
+tracks/11/keys = PackedFloat32Array(0, 1, 0.258783, 3.73172, -0.942139)
+tracks/12/type = "position_3d"
+tracks/12/imported = false
+tracks/12/enabled = true
+tracks/12/path = NodePath("Skeleton3D:index2.R")
+tracks/12/interp = 1
+tracks/12/loop_wrap = true
+tracks/12/keys = PackedFloat32Array(0, 1, -5.33606e-09, 1.78607, -3.89147e-08)
+tracks/13/type = "position_3d"
+tracks/13/imported = false
+tracks/13/enabled = true
+tracks/13/path = NodePath("Skeleton3D:index3.R")
+tracks/13/interp = 1
+tracks/13/loop_wrap = true
+tracks/13/keys = PackedFloat32Array(0, 1, 6.03745e-09, 1.37377, -4.14662e-08)
+tracks/14/type = "position_3d"
+tracks/14/imported = false
+tracks/14/enabled = true
+tracks/14/path = NodePath("Skeleton3D:thumb1.R")
+tracks/14/interp = 1
+tracks/14/loop_wrap = true
+tracks/14/keys = PackedFloat32Array(0, 1, 0.00688039, 0.644069, -1.43218)
+tracks/15/type = "position_3d"
+tracks/15/imported = false
+tracks/15/enabled = true
+tracks/15/path = NodePath("Skeleton3D:thumb2.R")
+tracks/15/interp = 1
+tracks/15/loop_wrap = true
+tracks/15/keys = PackedFloat32Array(0, 1, 0, 0.867786, -1.56462e-07)
+tracks/16/type = "position_3d"
+tracks/16/imported = false
+tracks/16/enabled = true
+tracks/16/path = NodePath("Skeleton3D:thumb3.R")
+tracks/16/interp = 1
+tracks/16/loop_wrap = true
+tracks/16/keys = PackedFloat32Array(0, 1, 5.66244e-07, 1.22088, -2.08616e-07)
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_wmxc2"]
+_data = {
+"RESET": SubResource("Animation_o88r0"),
+"open": SubResource("Animation_goy80")
+}
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_jj8ub"]
 
@@ -658,12 +909,21 @@ target_position = Vector3(0, 0, -0.6)
 
 [node name="hand_left" parent="Player/lefthand" instance=ExtResource("12_xv8ak")]
 transform = Transform3D(2.18557e-09, 4.37114e-09, 0.05, 1.91069e-16, -0.05, 4.37114e-09, 0.05, 0, -2.18557e-09, 0, 0, 0.2)
+visible = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Player/lefthand"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.02, 0, -0.05)
 shape = SubResource("BoxShape3D_vkgnv")
 
 [node name="grab_sound_left" type="AudioStreamPlayer3D" parent="Player/lefthand"]
+
+[node name="hand_left_rigged" parent="Player/lefthand" instance=ExtResource("17_mo8ux")]
+transform = Transform3D(2.18557e-09, -1.91069e-16, 0.05, -4.37114e-09, -0.05, 0, 0.05, -4.37114e-09, -2.18557e-09, 0, 0, 0.2)
+
+[node name="Hand_open" type="AnimationPlayer" parent="Player/lefthand/hand_left_rigged"]
+libraries = {
+"": SubResource("AnimationLibrary_wmxc2")
+}
 
 [node name="righthand" type="RigidBody3D" parent="Player"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 1.2, -0.6)
@@ -774,3 +1034,5 @@ theme_override_font_sizes/font_size = 40
 [node name="ambience" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("18_6hcjt")
 volume_db = -32.0
+
+[editable path="Player/lefthand/hand_left_rigged"]
