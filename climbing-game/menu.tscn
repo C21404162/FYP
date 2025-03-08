@@ -335,9 +335,14 @@ stream = ExtResource("14_05xk2")
 volume_db = -38.0
 
 [connection signal="mouse_entered" from="VBoxContainer/continue" to="." method="_on_mouse_entered_continue"]
+[connection signal="mouse_exited" from="VBoxContainer/continue" to="." method="_on_continue_mouse_exited"]
 [connection signal="pressed" from="VBoxContainer/continue" to="." method="_on_continue_pressed"]
 [connection signal="mouse_entered" from="VBoxContainer/start" to="." method="_on_mouse_entered_start"]
+[connection signal="mouse_exited" from="VBoxContainer/start" to="." method="_on_start_mouse_exited"]
 [connection signal="pressed" from="VBoxContainer/start" to="." method="_on_start_pressed"]
 [connection signal="mouse_entered" from="VBoxContainer/options" to="." method="_on_mouse_entered_options"]
+[connection signal="mouse_exited" from="VBoxContainer/options" to="." method="_on_options_mouse_exited"]
+[connection signal="pressed" from="VBoxContainer/options" to="." method="_on_options_pressed"]
 [connection signal="mouse_entered" from="VBoxContainer/exit" to="." method="_on_mouse_entered_exit"]
+[connection signal="mouse_exited" from="VBoxContainer/exit" to="." method="_on_exit_mouse_exited"]
 [connection signal="pressed" from="VBoxContainer/exit" to="." method="_on_exit_pressed"]
