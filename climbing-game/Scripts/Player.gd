@@ -370,6 +370,7 @@ func check_grab():
 				if distance_to_grab <= MAX_GRAB_DISTANCE:
 					grab_object(left_hand_raycast, true)
 					print("Left hand grabbed: ", collider.name)
+					hand_animation_player.play("close")
 					
 					#grab sound + fx
 					particles_hand(grab_point)
