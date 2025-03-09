@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://cw5ty64yjmos8"]
+[gd_scene load_steps=25 format=3 uid="uid://cw5ty64yjmos8"]
 
 [ext_resource type="Script" path="res://Scripts/menu.gd" id="1_3ru06"]
 [ext_resource type="PackedScene" uid="uid://8qoj8306fs56" path="res://Models/well_model.glb" id="2_3qr0f"]
@@ -15,6 +15,7 @@
 [ext_resource type="Script" path="res://mesh_instance_3d.gd" id="11_a1n8c"]
 [ext_resource type="Texture2D" uid="uid://guff740bkob4" path="res://Textures/moss_new.jpg" id="13_h2s18"]
 [ext_resource type="AudioStream" uid="uid://chwnm5uwcahta" path="res://Sounds/Music/forest_sounds.mp3" id="14_05xk2"]
+[ext_resource type="PackedScene" uid="uid://bshqkghplo1px" path="res://Foliage/fol1.glb" id="16_kp7id"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_iw7r8"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -256,7 +257,7 @@ theme_override_font_sizes/font_size = 38
 text = "exit"
 
 [node name="Menu_cam" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.965926, 0.258819, 0, -0.258819, 0.965926, 0.5, 4, -4.5)
+transform = Transform3D(-1, -2.26267e-08, 8.44439e-08, 0, 0.965926, 0.258819, -8.74228e-08, 0.258819, -0.965926, 0.5, 4, -23.5)
 script = ExtResource("5_odhhc")
 
 [node name="CSGBox3D" type="CSGBox3D" parent="."]
@@ -333,6 +334,24 @@ script = ExtResource("11_a1n8c")
 [node name="forest_ambience" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("14_05xk2")
 volume_db = -38.0
+
+[node name="fol1" parent="." instance=ExtResource("16_kp7id")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 4.5, 1, -9.5)
+
+[node name="fol2" parent="." instance=ExtResource("16_kp7id")]
+transform = Transform3D(1.93185, -0.517638, 0, 0.517638, 1.93185, 0, 0, 0, 2, 4.5, 1.5, -10)
+
+[node name="fol3" parent="." instance=ExtResource("16_kp7id")]
+transform = Transform3D(1.93185, 0.517638, 0, -0.517638, 1.93185, 0, 0, 0, 2, -2.5, 1.5, -15)
+
+[node name="fol6" parent="." instance=ExtResource("16_kp7id")]
+transform = Transform3D(1.5, -0.866025, 1, 1, 1.73205, 0, -0.866025, 0.5, 1.73205, -2.5, 2, -15)
+
+[node name="fol4" parent="." instance=ExtResource("16_kp7id")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -3, 1, -10)
+
+[node name="fol5" parent="." instance=ExtResource("16_kp7id")]
+transform = Transform3D(1.93185, 0.517638, 0, -0.517638, 1.93185, 0, 0, 0, 2, -3, 1, -11)
 
 [connection signal="mouse_entered" from="VBoxContainer/continue" to="." method="_on_mouse_entered_continue"]
 [connection signal="mouse_exited" from="VBoxContainer/continue" to="." method="_on_continue_mouse_exited"]
