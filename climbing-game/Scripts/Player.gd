@@ -65,6 +65,10 @@ var was_in_air = false
 @onready var right_hand_sound = $righthand/grab_sound_right
 var last_grab_sound_index = -1
 
+# Break sounds
+@export var rock_break_sounds: Array[AudioStream] = []
+@onready var rock_break_sound = $"../rock_break_sound"
+
 # Gravity
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
@@ -194,7 +198,6 @@ func _unhandled_input(event):
 				
 	# Noclip toggle
 	if event.is_action_pressed("noclip"):
-		hand_animation_player.play("open")
 		noclip_enabled = !noclip_enabled
 		if noclip_enabled:
 			collision_mask = 0 
@@ -312,24 +315,32 @@ func handle_climbing(delta):
 		var pull_force = Vector3.ZERO
 		
 		if left_hand_grabbing:
-			var dir_to_grab = (grab_point_left - global_position).normalized()
-			var distance_to_grab = global_position.distance_to(grab_point_left)
-			if distance_to_grab > MAX_GRAB_DISTANCE:
-				var overreach = distance_to_grab - MAX_GRAB_DISTANCE
-				global_position += dir_to_grab * overreach
-				distance_to_grab = MAX_GRAB_DISTANCE
-			if distance_to_grab > reach_distance:
-				pull_force += dir_to_grab * (distance_to_grab - reach_distance) * climb_force
+			var collider = get_node(grab_joint_left.node_b) if grab_joint_left.node_b != NodePath("") else null
+			if collider and collider.visible:  # Check if the surface is still valid
+				var dir_to_grab = (grab_point_left - global_position).normalized()
+				var distance_to_grab = global_position.distance_to(grab_point_left)
+				if distance_to_grab > MAX_GRAB_DISTANCE:
+					var overreach = distance_to_grab - MAX_GRAB_DISTANCE
+					global_position += dir_to_grab * overreach
+					distance_to_grab = MAX_GRAB_DISTANCE
+				if distance_to_grab > reach_distance:
+					pull_force += dir_to_grab * (distance_to_grab - reach_distance) * climb_force
+			else:
+				release_grab(true)  # Release left hand if the surface is broken
 		
 		if right_hand_grabbing:
-			var dir_to_grab = (grab_point_right - global_position).normalized()
-			var distance_to_grab = global_position.distance_to(grab_point_right)
-			if distance_to_grab > MAX_GRAB_DISTANCE:
-				var overreach = distance_to_grab - MAX_GRAB_DISTANCE
-				global_position += dir_to_grab * overreach
-				distance_to_grab = MAX_GRAB_DISTANCE
-			if distance_to_grab > reach_distance:
-				pull_force += dir_to_grab * (distance_to_grab - reach_distance) * climb_force
+			var collider = get_node(grab_joint_right.node_b) if grab_joint_right.node_b != NodePath("") else null
+			if collider and collider.visible:  # Check if the surface is still valid
+				var dir_to_grab = (grab_point_right - global_position).normalized()
+				var distance_to_grab = global_position.distance_to(grab_point_right)
+				if distance_to_grab > MAX_GRAB_DISTANCE:
+					var overreach = distance_to_grab - MAX_GRAB_DISTANCE
+					global_position += dir_to_grab * overreach
+					distance_to_grab = MAX_GRAB_DISTANCE
+				if distance_to_grab > reach_distance:
+					pull_force += dir_to_grab * (distance_to_grab - reach_distance) * climb_force
+			else:
+				release_grab(false)  # Release right hand if the surface is broken
 		
 		velocity += pull_force * delta
 
@@ -447,11 +458,26 @@ func break_surface(collider: Node):
 	if collider:
 		print("Surface broke: ", collider.name)
 		
+		# Play rock break sound
+		rock_break_sound.volume_db = -20
+		if rock_break_sound and rock_break_sounds.size() > 0:
+			var random_index = randi() % rock_break_sounds.size()
+			rock_break_sound.stream = rock_break_sounds[random_index]
+			rock_break_sound.pitch_scale = randf_range(0.9, 1.1)
+			rock_break_sound.global_transform.origin = collider.global_transform.origin
+			rock_break_sound.play()
+		
 		# Hide + no collision
 		collider.visible = false
 		collider.set_collision_layer_value(LAYER_WORLD, false)
-		# particles_hand(grab_point)
-		# Timer
+		
+		# Release both hands if they are grabbing the broken surface
+		if left_hand_grabbing and grab_joint_left.node_b == collider.get_path():
+			release_grab(true)  # Release left hand
+		if right_hand_grabbing and grab_joint_right.node_b == collider.get_path():
+			release_grab(false)  # Release right hand
+		
+		# Timer for respawn
 		broken_surfaces[collider.get_instance_id()] = RESPAWN_TIME
 
 func respawn_surface(collider_id: int):
