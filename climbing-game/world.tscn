@@ -1,4 +1,4 @@
-[gd_scene load_steps=69 format=3 uid="uid://daea0cguij4h2"]
+[gd_scene load_steps=71 format=3 uid="uid://daea0cguij4h2"]
 
 [ext_resource type="Material" uid="uid://rt8kwy52hryb" path="res://Materials/highlight.tres" id="1_lgiqj"]
 [ext_resource type="Script" path="res://Scripts/world.gd" id="1_q6rjl"]
@@ -17,9 +17,11 @@
 [ext_resource type="AudioStream" uid="uid://dccu8dppqk7x4" path="res://Sounds/SFX/grab_real_3.mp3" id="14_fw5k0"]
 [ext_resource type="FontFile" uid="uid://c8vijpv4huy16" path="res://Fonts/ARIAL.TTF" id="15_86m0o"]
 [ext_resource type="AudioStream" uid="uid://y3kmoxpsn2kh" path="res://Sounds/SFX/grab_real_1.mp3" id="15_hj3ll"]
+[ext_resource type="AudioStream" uid="uid://0j6cfrjgbljg" path="res://Sounds/SFX/rock_break2.mp3" id="16_5eljq"]
 [ext_resource type="PackedScene" uid="uid://etpli0c68lgh" path="res://Models/hand_left_rigged.glb" id="17_mo8ux"]
 [ext_resource type="AudioStream" uid="uid://d22yewk558711" path="res://Sounds/Music/ambience_cave.mp3" id="18_6hcjt"]
 [ext_resource type="PackedScene" uid="uid://dlldw6fqobr1n" path="res://Models/hand_right_rigged.glb" id="19_icmgn"]
+[ext_resource type="AudioStream" uid="uid://cdm7k126sa6th" path="res://Sounds/SFX/rock_break1.mp3" id="21_l2y3y"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5qhtx"]
 albedo_texture = ExtResource("3_umbod")
@@ -1226,6 +1228,7 @@ material = SubResource("StandardMaterial3D_oq7pb")
 [node name="Player" type="CharacterBody3D" parent="."]
 script = ExtResource("1_vwaj1")
 grab_sounds = Array[AudioStream]([ExtResource("15_hj3ll"), ExtResource("13_k2b4s"), ExtResource("14_fw5k0")])
+rock_break_sounds = Array[AudioStream]([ExtResource("21_l2y3y"), ExtResource("16_5eljq")])
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Player"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
@@ -1475,6 +1478,8 @@ theme_override_font_sizes/font_size = 40
 [node name="ambience" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("18_6hcjt")
 volume_db = -32.0
+
+[node name="rock_break_sound" type="AudioStreamPlayer3D" parent="."]
 
 [editable path="Player/lefthand/hand_left_rigged"]
 [editable path="Player/righthand/hand_right_rigged"]

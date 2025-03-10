@@ -262,7 +262,6 @@ script = ExtResource("5_odhhc")
 
 [node name="CSGBox3D" type="CSGBox3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -4)
-visible = false
 size = Vector3(100, 0, 100)
 material = SubResource("StandardMaterial3D_epqux")
 
