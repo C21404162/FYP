@@ -69,6 +69,10 @@ var last_grab_sound_index = -1
 @export var rock_break_sounds: Array[AudioStream] = []
 @onready var rock_break_sound = $"../rock_break_sound"
 
+#reach sounds
+@export var hand_reach_sounds: Array[AudioStream] = []
+@onready var hand_reach_sound = $"../hand_reach_sound"
+
 # Gravity
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
@@ -109,11 +113,11 @@ func _ready():
 	right_hand_initial_offset = right_hand.global_position - camera.global_position
 	setup_game_manager_connection()
 	
-	# Only spawn falling if no saved position exists
+	#spawn falling if no save
 	if GameManager.player_position == Vector3.ZERO:
 		spawn_falling()
 	else:
-		# Apply saved position and rotation
+		#saved pos and rot
 		global_transform.origin = GameManager.player_position
 		$Head.global_transform.basis = GameManager.player_rotation
 
@@ -122,12 +126,12 @@ func configure_hinge_joint(joint: HingeJoint3D):
 	joint.set_flag(HingeJoint3D.FLAG_USE_LIMIT, true)
 	
 	# Set angular limits
-	joint.set_param(HingeJoint3D.PARAM_LIMIT_LOWER, -0.1)  # Slight lower limit
-	joint.set_param(HingeJoint3D.PARAM_LIMIT_UPPER, 0.1)  # Slight upper limit
+	joint.set_param(HingeJoint3D.PARAM_LIMIT_LOWER, -0.1) 
+	joint.set_param(HingeJoint3D.PARAM_LIMIT_UPPER, 0.1) 
 	
 	# Set bias and relaxation for stiffness
-	joint.set_param(HingeJoint3D.PARAM_LIMIT_BIAS, 10)  # Increase bias for stiffness
-	joint.set_param(HingeJoint3D.PARAM_LIMIT_RELAXATION, 0.1)  # Reduce relaxation
+	joint.set_param(HingeJoint3D.PARAM_LIMIT_BIAS, 10)  
+	joint.set_param(HingeJoint3D.PARAM_LIMIT_RELAXATION, 0.1) 
 
 func spawn_falling():
 	global_transform.origin = $"/root/World/Map/SpawnPoint".global_transform.origin
@@ -185,6 +189,25 @@ func _unhandled_input(event):
 	if event.is_action_pressed("grab_left"):
 		hand_animation_player.play("open")
 		left_hand_reaching = true
+		
+		# Play random reach sound for left hand
+		if hand_reach_sounds.size() > 0:
+			var random_index = randi() % hand_reach_sounds.size()
+			# Ensure the same sound isn't played twice in a row
+			while random_index == last_grab_sound_index:
+				random_index = randi() % hand_reach_sounds.size()
+			last_grab_sound_index = random_index
+
+			# Set random pitch and volume
+			var pitch = randf_range(0.9, 1.1)  # Random pitch between 0.9 and 1.1
+			var volume_db = -30  # Adjust volume as needed
+
+			# Play the sound on the left hand
+			left_hand_sound.volume_db = volume_db
+			left_hand_sound.pitch_scale = pitch
+			left_hand_sound.stream = hand_reach_sounds[random_index]
+			left_hand_sound.play()
+		
 	elif event.is_action_released("grab_left"):
 		hand_animation_player.play("default")
 		left_hand_reaching = false
@@ -192,6 +215,25 @@ func _unhandled_input(event):
 
 	if event.is_action_pressed("grab_right"):
 		right_hand_reaching = true
+		
+		# Play random reach sound for right hand
+		if hand_reach_sounds.size() > 0:
+			var random_index = randi() % hand_reach_sounds.size()
+			# Ensure the same sound isn't played twice in a row
+			while random_index == last_grab_sound_index:
+				random_index = randi() % hand_reach_sounds.size()
+			last_grab_sound_index = random_index
+
+			# Set random pitch and volume
+			var pitch = randf_range(0.9, 1.1)  # Random pitch between 0.9 and 1.1
+			var volume_db = -30  # Adjust volume as needed
+
+			# Play the sound on the right hand
+			right_hand_sound.volume_db = volume_db
+			right_hand_sound.pitch_scale = pitch
+			right_hand_sound.stream = hand_reach_sounds[random_index]
+			right_hand_sound.play()
+		
 	elif event.is_action_released("grab_right"):
 		right_hand_reaching = false
 		release_grab(false)
@@ -212,7 +254,7 @@ func _physics_process(delta):
 		grab_timers[collider_id] += delta
 		if grab_timers[collider_id] >= BREAK_TIME:
 			var collider = instance_from_id(collider_id)
-			if collider and collider.is_in_group("Breakable"):  # Check if the surface is in the "Breakable" group
+			if collider and collider.is_in_group("Breakable"):  #check if surface is breakable
 				break_surface(collider)
 				grab_timers.erase(collider_id)
 				release_grab(left_hand_grabbing)
@@ -238,7 +280,7 @@ func _physics_process(delta):
 		handle_movement(delta)
 	
 	update_hands(delta)
-	update_hand_rotations(delta)  # Update rotations in physics_process
+	update_hand_rotations(delta) 
 	move_and_slide()
 	
 	# Landing 
@@ -326,7 +368,7 @@ func handle_climbing(delta):
 				if distance_to_grab > reach_distance:
 					pull_force += dir_to_grab * (distance_to_grab - reach_distance) * climb_force
 			else:
-				release_grab(true)  # Release left hand if the surface is broken
+				release_grab(true) 
 		
 		if right_hand_grabbing:
 			var collider = get_node(grab_joint_right.node_b) if grab_joint_right.node_b != NodePath("") else null
@@ -340,7 +382,7 @@ func handle_climbing(delta):
 				if distance_to_grab > reach_distance:
 					pull_force += dir_to_grab * (distance_to_grab - reach_distance) * climb_force
 			else:
-				release_grab(false)  # Release right hand if the surface is broken
+				release_grab(false)  
 		
 		velocity += pull_force * delta
 
@@ -512,11 +554,10 @@ func update_hand_position(hand: RigidBody3D, target: Vector3, delta: float):
 	var movement_direction = movement.normalized()
 	var movement_distance = movement.length()
 	
-	# Use move_and_collide to handle collisions
+	#move_and_collide
 	var collision = hand.move_and_collide(movement_direction * movement_distance * delta * hand_smoothing)
 	
 	if collision:
-		# If there's a collision, adjust the target position to be just before the collision point
 		var adjusted_target = hand.global_position + movement_direction * collision.get_remainder().length()
 		hand.global_position = hand.global_position.lerp(adjusted_target, delta * hand_smoothing)
 	else:
