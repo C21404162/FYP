@@ -15,7 +15,7 @@
 [ext_resource type="Script" path="res://mesh_instance_3d.gd" id="11_a1n8c"]
 [ext_resource type="Texture2D" uid="uid://guff740bkob4" path="res://Textures/moss_new.jpg" id="13_h2s18"]
 [ext_resource type="AudioStream" uid="uid://chwnm5uwcahta" path="res://Sounds/Music/forest_sounds.mp3" id="14_05xk2"]
-[ext_resource type="PackedScene" uid="uid://bshqkghplo1px" path="res://Foliage/fol1.glb" id="16_kp7id"]
+[ext_resource type="PackedScene" uid="uid://b8wksvfw0gewi" path="res://Foliage/fol1_edit.glb" id="16_3py14"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_iw7r8"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -28,7 +28,6 @@ sky_material = SubResource("ProceduralSkyMaterial_iw7r8")
 background_mode = 2
 sky = SubResource("Sky_fm5sv")
 tonemap_mode = 2
-fog_enabled = true
 fog_light_color = Color(0.545796, 0.582674, 0.640625, 1)
 fog_density = 0.03
 
@@ -334,23 +333,8 @@ script = ExtResource("11_a1n8c")
 stream = ExtResource("14_05xk2")
 volume_db = -38.0
 
-[node name="fol1" parent="." instance=ExtResource("16_kp7id")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, 1, -9.5)
-
-[node name="fol2" parent="." instance=ExtResource("16_kp7id")]
-transform = Transform3D(0.965926, -0.258819, 0, 0.258819, 0.965926, 0, 0, 0, 1, 4.5, 1.5, -10)
-
-[node name="fol3" parent="." instance=ExtResource("16_kp7id")]
-transform = Transform3D(0.965926, 0.258819, 0, -0.258819, 0.965926, 0, 0, 0, 1, -2.5, 1.5, -15)
-
-[node name="fol6" parent="." instance=ExtResource("16_kp7id")]
-transform = Transform3D(0.75, -0.433013, 0.5, 0.5, 0.866025, 1.29048e-08, -0.433013, 0.25, 0.866025, -2.5, 2, -15)
-
-[node name="fol4" parent="." instance=ExtResource("16_kp7id")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 1, -10)
-
-[node name="fol5" parent="." instance=ExtResource("16_kp7id")]
-transform = Transform3D(0.965926, 0.258819, 0, -0.258819, 0.965926, 0, 0, 0, 1, -3, 1, -11)
+[node name="fol1_edit" parent="." instance=ExtResource("16_3py14")]
+transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, 4.5, 0.5, -7)
 
 [connection signal="mouse_entered" from="VBoxContainer/continue" to="." method="_on_mouse_entered_continue"]
 [connection signal="mouse_exited" from="VBoxContainer/continue" to="." method="_on_continue_mouse_exited"]

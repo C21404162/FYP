@@ -1,4 +1,4 @@
-[gd_scene load_steps=71 format=3 uid="uid://daea0cguij4h2"]
+[gd_scene load_steps=75 format=3 uid="uid://daea0cguij4h2"]
 
 [ext_resource type="Material" uid="uid://rt8kwy52hryb" path="res://Materials/highlight.tres" id="1_lgiqj"]
 [ext_resource type="Script" path="res://Scripts/world.gd" id="1_q6rjl"]
@@ -18,10 +18,14 @@
 [ext_resource type="FontFile" uid="uid://c8vijpv4huy16" path="res://Fonts/ARIAL.TTF" id="15_86m0o"]
 [ext_resource type="AudioStream" uid="uid://y3kmoxpsn2kh" path="res://Sounds/SFX/grab_real_1.mp3" id="15_hj3ll"]
 [ext_resource type="AudioStream" uid="uid://0j6cfrjgbljg" path="res://Sounds/SFX/rock_break2.mp3" id="16_5eljq"]
+[ext_resource type="AudioStream" uid="uid://ckqt2rijt4i7v" path="res://Sounds/SFX/reach1.mp3" id="17_6qyhe"]
 [ext_resource type="PackedScene" uid="uid://etpli0c68lgh" path="res://Models/hand_left_rigged.glb" id="17_mo8ux"]
 [ext_resource type="AudioStream" uid="uid://d22yewk558711" path="res://Sounds/Music/ambience_cave.mp3" id="18_6hcjt"]
+[ext_resource type="AudioStream" uid="uid://chc0p6cm6070n" path="res://Sounds/SFX/reach2.mp3" id="18_ql2o4"]
 [ext_resource type="PackedScene" uid="uid://dlldw6fqobr1n" path="res://Models/hand_right_rigged.glb" id="19_icmgn"]
+[ext_resource type="AudioStream" uid="uid://neoe0qvse0ea" path="res://Sounds/SFX/reach3.mp3" id="19_iian6"]
 [ext_resource type="AudioStream" uid="uid://cdm7k126sa6th" path="res://Sounds/SFX/rock_break1.mp3" id="21_l2y3y"]
+[ext_resource type="PackedScene" uid="uid://b8wksvfw0gewi" path="res://Foliage/fol1_edit.glb" id="23_80ho2"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5qhtx"]
 albedo_texture = ExtResource("3_umbod")
@@ -1229,6 +1233,7 @@ material = SubResource("StandardMaterial3D_oq7pb")
 script = ExtResource("1_vwaj1")
 grab_sounds = Array[AudioStream]([ExtResource("15_hj3ll"), ExtResource("13_k2b4s"), ExtResource("14_fw5k0")])
 rock_break_sounds = Array[AudioStream]([ExtResource("21_l2y3y"), ExtResource("16_5eljq")])
+hand_reach_sounds = Array[AudioStream]([ExtResource("17_6qyhe"), ExtResource("18_ql2o4"), ExtResource("19_iian6")])
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Player"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
@@ -1480,6 +1485,14 @@ stream = ExtResource("18_6hcjt")
 volume_db = -32.0
 
 [node name="rock_break_sound" type="AudioStreamPlayer3D" parent="."]
+
+[node name="fol1_edit" parent="." instance=ExtResource("23_80ho2")]
+transform = Transform3D(0.424264, 0, -0.424264, -0.104678, 0.581451, -0.104678, 0.411148, 0.148037, 0.411148, -1, 0, -2.82368)
+
+[node name="fol1_edit2" parent="." instance=ExtResource("23_80ho2")]
+transform = Transform3D(0.416593, 0.113581, -0.416593, -0.0803137, 0.589151, 0.0803137, 0.424264, 0, 0.424264, -1, 0, -2.78877)
+
+[node name="hand_reach_sound" type="AudioStreamPlayer3D" parent="."]
 
 [editable path="Player/lefthand/hand_left_rigged"]
 [editable path="Player/righthand/hand_right_rigged"]
