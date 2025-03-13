@@ -69,7 +69,7 @@ var last_grab_sound_index = -1
 @export var rock_break_sounds: Array[AudioStream] = []
 @onready var rock_break_sound = $"../rock_break_sound"
 
-#reach sounds
+# Reach sounds
 @export var hand_reach_sounds: Array[AudioStream] = []
 @onready var hand_reach_sound = $"../hand_reach_sound"
 
@@ -88,6 +88,14 @@ var grab_timers: Dictionary = {}  # Track how long surface is held
 var broken_surfaces: Dictionary = {}  # Tracks timers + surfaces
 const BREAK_TIME: float = 3.0  # Time before break
 const RESPAWN_TIME: float = 5.0  # Respawn timer
+
+# Falling effects
+@export var wind_woosh_sounds: Array[AudioStream] = []
+@onready var wind_woosh_sound = $Falling_sound
+var is_falling = false
+var fall_time = 0.0
+const FALL_SHAKE_INTENSITY = 0.1
+const FALL_SHAKE_SPEED = 10.0
 
 func _ready():
 	# Set FOV from GameManager
@@ -113,11 +121,11 @@ func _ready():
 	right_hand_initial_offset = right_hand.global_position - camera.global_position
 	setup_game_manager_connection()
 	
-	#spawn falling if no save
+	# Spawn falling if no save
 	if GameManager.player_position == Vector3.ZERO:
 		spawn_falling()
 	else:
-		#saved pos and rot
+		# Saved pos and rot
 		global_transform.origin = GameManager.player_position
 		$Head.global_transform.basis = GameManager.player_rotation
 
@@ -254,7 +262,7 @@ func _physics_process(delta):
 		grab_timers[collider_id] += delta
 		if grab_timers[collider_id] >= BREAK_TIME:
 			var collider = instance_from_id(collider_id)
-			if collider and collider.is_in_group("Breakable"):  #check if surface is breakable
+			if collider and collider.is_in_group("Breakable"):  # Check if surface is breakable
 				break_surface(collider)
 				grab_timers.erase(collider_id)
 				release_grab(left_hand_grabbing)
@@ -286,7 +294,41 @@ func _physics_process(delta):
 	# Landing 
 	if !was_in_air and is_on_floor():
 		emit_landing_particles()
+		stop_falling_effects()
 	was_in_air = !is_on_floor()
+	
+	# Falling effects
+	if !is_on_floor() and velocity.y < 0:
+		if !is_falling:
+			start_falling_effects()
+		update_falling_effects(delta)
+	else:
+		if is_falling:
+			stop_falling_effects()
+
+func start_falling_effects():
+	is_falling = true
+	fall_time = 0.0
+	if wind_woosh_sounds.size() > 0:
+		var random_index = randi() % wind_woosh_sounds.size()
+		wind_woosh_sound.stream = wind_woosh_sounds[random_index]
+		wind_woosh_sound.volume_db = -20
+		wind_woosh_sound.pitch_scale = randf_range(0.9, 1.1)
+		wind_woosh_sound.play()
+
+func stop_falling_effects():
+	is_falling = false
+	wind_woosh_sound.stop()
+
+func update_falling_effects(delta):
+	fall_time += delta
+	var shake_intensity = FALL_SHAKE_INTENSITY * fall_time
+	var shake_offset = Vector3(
+		randf_range(-shake_intensity, shake_intensity),
+		randf_range(-shake_intensity, shake_intensity),
+		0
+	)
+	camera.transform.origin = camera.transform.origin.lerp(shake_offset, delta * FALL_SHAKE_SPEED)
 
 func emit_landing_particles():
 	if landing_particles:
@@ -554,7 +596,7 @@ func update_hand_position(hand: RigidBody3D, target: Vector3, delta: float):
 	var movement_direction = movement.normalized()
 	var movement_distance = movement.length()
 	
-	#move_and_collide
+	# Move_and_collide
 	var collision = hand.move_and_collide(movement_direction * movement_distance * delta * hand_smoothing)
 	
 	if collision:
