@@ -18,7 +18,7 @@ const LAYER_PLAYER = 4
 # Physics stuff
 @export var hand_smoothing = 20
 @export var reach_distance = 0.6
-@export var reach_speed = 12.5
+@export var reach_speed = 10.0
 @export var climb_force = 5.0
 @export var hang_offset = Vector3(0, -1.8, 0)
 
@@ -38,7 +38,8 @@ const LAYER_PLAYER = 4
 @onready var grab_joint_left = $HingeJoint3D_Left
 @onready var grab_joint_right = $HingeJoint3D_Right
 
-@onready var hand_animation_player = $lefthand/hand_left_rigged/AnimationPlayer
+@onready var hand_animation_player_left = $lefthand/hand_left_rigged/AnimationPlayer
+@onready var hand_animation_player_right = $righthand/hand_right_rigged/AnimationPlayer
 
 # Climb variables
 var left_hand_initial_offset: Vector3
@@ -71,7 +72,7 @@ var last_grab_sound_index = -1
 
 # Reach sounds
 @export var hand_reach_sounds: Array[AudioStream] = []
-@onready var hand_reach_sound = $"../hand_reach_sound"
+@onready var hand_reach_sound = $hand_reach_sound
 
 # Gravity
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
@@ -90,12 +91,16 @@ const BREAK_TIME: float = 3.0  # Time before break
 const RESPAWN_TIME: float = 5.0  # Respawn timer
 
 # Falling effects
+@export var landing_sounds: Array[AudioStream] = []
 @export var wind_woosh_sounds: Array[AudioStream] = []
+@onready var landing_sound = $Landing_sound
 @onready var wind_woosh_sound = $Falling_sound
 var is_falling = false
 var fall_time = 0.0
 const FALL_SHAKE_INTENSITY = 0.1
 const FALL_SHAKE_SPEED = 10.0
+const MIN_FALL_TIME = 1.5
+var last_landing_sound_index = -1
 
 func _ready():
 	# Set FOV from GameManager
@@ -195,7 +200,7 @@ func _unhandled_input(event):
 	
 	# Grab binds
 	if event.is_action_pressed("grab_left"):
-		hand_animation_player.play("open")
+		hand_animation_player_left.play("open")
 		left_hand_reaching = true
 		
 		# Play random reach sound for left hand
@@ -207,8 +212,8 @@ func _unhandled_input(event):
 			last_grab_sound_index = random_index
 
 			# Set random pitch and volume
-			var pitch = randf_range(0.9, 1.1)  # Random pitch between 0.9 and 1.1
-			var volume_db = -30  # Adjust volume as needed
+			var pitch = randf_range(0.9, 1.1)  
+			var volume_db = -30  
 
 			# Play the sound on the left hand
 			left_hand_sound.volume_db = volume_db
@@ -217,11 +222,12 @@ func _unhandled_input(event):
 			left_hand_sound.play()
 		
 	elif event.is_action_released("grab_left"):
-		hand_animation_player.play("default")
+		hand_animation_player_left.play("default")
 		left_hand_reaching = false
 		release_grab(true)
 
 	if event.is_action_pressed("grab_right"):
+		hand_animation_player_right.play("open")
 		right_hand_reaching = true
 		
 		# Play random reach sound for right hand
@@ -233,8 +239,8 @@ func _unhandled_input(event):
 			last_grab_sound_index = random_index
 
 			# Set random pitch and volume
-			var pitch = randf_range(0.9, 1.1)  # Random pitch between 0.9 and 1.1
-			var volume_db = -30  # Adjust volume as needed
+			var pitch = randf_range(0.9, 1.1) 
+			var volume_db = -30 
 
 			# Play the sound on the right hand
 			right_hand_sound.volume_db = volume_db
@@ -243,6 +249,7 @@ func _unhandled_input(event):
 			right_hand_sound.play()
 		
 	elif event.is_action_released("grab_right"):
+		hand_animation_player_right.play("default")
 		right_hand_reaching = false
 		release_grab(false)
 				
@@ -291,44 +298,71 @@ func _physics_process(delta):
 	update_hand_rotations(delta) 
 	move_and_slide()
 	
+	# Debug prints for landing logic
+	print("was_in_air: ", was_in_air, " | is_on_floor(): ", is_on_floor(), " | is_falling: ", is_falling)
+	
 	# Landing 
-	if !was_in_air and is_on_floor():
+	if was_in_air and is_on_floor():
+		print("Player landed")  # Debug print
 		emit_landing_particles()
-		stop_falling_effects()
+		# Stop falling effects when landing
+		if is_falling:
+			is_falling = false
+			fall_time = 0.0
+			wind_woosh_sound.stop()
+			
+			# Play landing sound
+			if landing_sounds.size() > 0:
+				print("Playing landing sound")  # Debug print
+				var random_index = randi() % landing_sounds.size()
+				# Ensure the same sound isn't played twice in a row
+				while random_index == last_landing_sound_index:
+					random_index = randi() % landing_sounds.size()
+				last_landing_sound_index = random_index
+
+				# Set random pitch and volume
+				var pitch = randf_range(1.0, 1.2)  # Random pitch between 0.9 and 1.1
+				var volume_db = -25  # Adjust volume as needed
+
+				# Play the sound
+				landing_sound.stream = landing_sounds[random_index]
+				landing_sound.volume_db = volume_db
+				landing_sound.pitch_scale = pitch
+				landing_sound.play()
 	was_in_air = !is_on_floor()
 	
 	# Falling effects
 	if !is_on_floor() and velocity.y < 0:
-		if !is_falling:
-			start_falling_effects()
-		update_falling_effects(delta)
+		# Only trigger effects if the player is NOT grabbing onto anything
+		if !left_hand_grabbing and !right_hand_grabbing:
+			fall_time += delta  # Increment fall time
+			
+			# Only trigger effects if the fall time exceeds the minimum
+			if fall_time >= MIN_FALL_TIME:
+				if !is_falling:
+					# Start falling effects
+					is_falling = true
+					if wind_woosh_sounds.size() > 0:
+						var random_index = randi() % wind_woosh_sounds.size()
+						wind_woosh_sound.stream = wind_woosh_sounds[random_index]
+						wind_woosh_sound.volume_db = -20
+						wind_woosh_sound.pitch_scale = randf_range(0.9, 1.1)
+						wind_woosh_sound.play()
+				
+				# Update falling effects (camera shake)
+				var shake_intensity = FALL_SHAKE_INTENSITY * (fall_time - MIN_FALL_TIME)
+				var shake_offset = Vector3(
+					randf_range(-shake_intensity, shake_intensity),
+					randf_range(-shake_intensity, shake_intensity),
+					0
+				)
+				camera.transform.origin = camera.transform.origin.lerp(shake_offset, delta * FALL_SHAKE_SPEED)
 	else:
 		if is_falling:
-			stop_falling_effects()
-
-func start_falling_effects():
-	is_falling = true
-	fall_time = 0.0
-	if wind_woosh_sounds.size() > 0:
-		var random_index = randi() % wind_woosh_sounds.size()
-		wind_woosh_sound.stream = wind_woosh_sounds[random_index]
-		wind_woosh_sound.volume_db = -20
-		wind_woosh_sound.pitch_scale = randf_range(0.9, 1.1)
-		wind_woosh_sound.play()
-
-func stop_falling_effects():
-	is_falling = false
-	wind_woosh_sound.stop()
-
-func update_falling_effects(delta):
-	fall_time += delta
-	var shake_intensity = FALL_SHAKE_INTENSITY * fall_time
-	var shake_offset = Vector3(
-		randf_range(-shake_intensity, shake_intensity),
-		randf_range(-shake_intensity, shake_intensity),
-		0
-	)
-	camera.transform.origin = camera.transform.origin.lerp(shake_offset, delta * FALL_SHAKE_SPEED)
+			# Stop falling effects when not falling
+			is_falling = false
+			fall_time = 0.0
+			wind_woosh_sound.stop()
 
 func emit_landing_particles():
 	if landing_particles:
@@ -440,8 +474,7 @@ func check_grab():
 				# Grab if in range
 				if distance_to_grab <= MAX_GRAB_DISTANCE:
 					grab_object(left_hand_raycast, true)
-					print("Left hand grabbed: ", collider.name)
-					hand_animation_player.play("close")
+					hand_animation_player_left.play("close")
 					
 					# Grab sound + fx
 					particles_hand(grab_point)
@@ -458,7 +491,7 @@ func check_grab():
 				# Grab if in range
 				if distance_to_grab <= MAX_GRAB_DISTANCE:
 					grab_object(right_hand_raycast, false)
-					print("RIGHT HAND GRABBED: ", collider.name)
+					hand_animation_player_right.play("close")
 					
 					# Grab sound + fx
 					particles_hand(grab_point)
