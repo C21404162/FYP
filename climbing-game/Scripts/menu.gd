@@ -2,6 +2,9 @@ extends Control
 
 @onready var options_panel = $options_panel
 @onready var fov_slider = $options_panel/VBoxContainer/FOVSlider
+@onready var fov_label = $options_panel/VBoxContainer/Label
+@onready var sensitivity_slider = $options_panel/VBoxContainer/SENSSlider
+@onready var sensitivity_label = $options_panel/VBoxContainer/Label2
 
 #cam animation
 @onready var animation_player = $camera_into_well
@@ -50,7 +53,12 @@ func _ready() -> void:
 	fov_slider.value = game_manager.fov
 	fov_slider.connect("value_changed", Callable(self, "_on_fov_changed"))
 	
+	sensitivity_slider.value = game_manager.sensitivity
+	sensitivity_slider.connect("value_changed", Callable(self, "_on_sensitivity_changed"))
+	
 	#fade_in.play("fade_in") 
+	
+	
 	
 	#Visiblity
 	ogham_label_continue.modulate = Color(1, 1, 1, 1)  
@@ -163,4 +171,11 @@ func _on_back_pressed() -> void:
 
 func _on_fov_slider_value_changed(value: float) -> void:
 	game_manager.set_fov(value)
+	fov_label.text = "Fov: %.0f" % fov_slider.value
 	print("FOVCHANGED")
+
+
+func _on_sens_slider_value_changed(value: float) -> void:
+	game_manager.set_sensitivity(value)
+	sensitivity_label.text = "Sensitivity: %.3f" % sensitivity_slider.value
+	print("Sensitivity changed to: ", value)

@@ -1,7 +1,20 @@
 [gd_scene load_steps=3 format=3 uid="uid://beetiutedhsjl"]
 
 [ext_resource type="Script" path="res://Scripts/pause.gd" id="1_xly8l"]
-[ext_resource type="Script" path="res://Scripts/h_slider.gd" id="2_f8qr4"]
+
+[sub_resource type="GDScript" id="GDScript_5mjp6"]
+script/source = "extends HSlider
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	pass
+"
 
 [node name="Pause" type="Control"]
 layout_mode = 3
@@ -88,20 +101,26 @@ offset_bottom = 96.5
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="options_panel/VBoxContainer"]
+[node name="Label2" type="Label" parent="options_panel/VBoxContainer"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="options_panel/VBoxContainer/HBoxContainer"]
+[node name="HSlider" type="HSlider" parent="options_panel/VBoxContainer"]
 layout_mode = 2
-text = "FOV"
+min_value = 0.001
+max_value = 0.01
+step = 0.001
+value = 0.001
 
-[node name="FOVSlider" type="HSlider" parent="options_panel/VBoxContainer/HBoxContainer"]
+[node name="Label" type="Label" parent="options_panel/VBoxContainer"]
+layout_mode = 2
+
+[node name="FOVSlider" type="HSlider" parent="options_panel/VBoxContainer"]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 min_value = 60.0
 max_value = 120.0
 value = 60.0
-script = ExtResource("2_f8qr4")
+script = SubResource("GDScript_5mjp6")
 
 [node name="placeholder1" type="Button" parent="options_panel/VBoxContainer"]
 layout_mode = 2
@@ -161,7 +180,8 @@ text = "back"
 [connection signal="pressed" from="pause_panel/VBoxContainer/options" to="." method="_on_options_pressed"]
 [connection signal="pressed" from="pause_panel/VBoxContainer/save_load" to="." method="_on_saveload_pressed"]
 [connection signal="pressed" from="pause_panel/VBoxContainer/exit" to="." method="_on_exit_pressed"]
-[connection signal="value_changed" from="options_panel/VBoxContainer/HBoxContainer/FOVSlider" to="." method="_on_fov_slider_value_changed"]
+[connection signal="value_changed" from="options_panel/VBoxContainer/HSlider" to="." method="_on_h_slider_value_changed"]
+[connection signal="value_changed" from="options_panel/VBoxContainer/FOVSlider" to="." method="_on_fov_slider_value_changed"]
 [connection signal="pressed" from="options_panel/VBoxContainer/back" to="." method="_on_back_pressed"]
 [connection signal="pressed" from="saveload_panel/VBoxContainer/save" to="." method="onsave_pressed"]
 [connection signal="pressed" from="saveload_panel/VBoxContainer/load" to="." method="onload_pressed"]

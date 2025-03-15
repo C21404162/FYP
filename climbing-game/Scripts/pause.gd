@@ -5,7 +5,10 @@ extends Control
 @onready var options_panel = $options_panel
 @onready var saveload_panel = $saveload_panel
 @onready var game_manager = GameManager
-@onready var fov_slider = $options_panel/VBoxContainer/HBoxContainer/FOVSlider
+@onready var fov_slider = $options_panel/VBoxContainer/FOVSlider
+@onready var fov_label = $options_panel/VBoxContainer/Label
+@onready var sensitivity_slider = $options_panel/VBoxContainer/HSlider
+@onready var sensitivity_label = $options_panel/VBoxContainer/Label2
 
 func _ready():
 	#Hide the pause menu and options panel when the scene starts
@@ -17,10 +20,15 @@ func _ready():
 	#Load the saved FOV value 
 	fov_slider.value = game_manager.fov
 	fov_slider.connect("value_changed", Callable(self, "_on_fov_changed"))
+	fov_label.text = "Fov: %.0f" % fov_slider.value
+	
+	sensitivity_label.text = "Sensitivity: %.3f" % sensitivity_slider.value
+	sensitivity_slider.value = game_manager.sensitivity
+	sensitivity_slider.connect("value_changed", Callable(self, "_on_sensitivity_changed"))
 
 func _on_fov_changed(value: float):
-	#Update the FOV in GameManager
 	game_manager.set_fov(value)
+	fov_label.text = "Fov: %.0f" % value
 
 func toggle_pause():
 	visible = !visible
@@ -61,3 +69,7 @@ func _on_saveload_pressed() -> void:
 	options_panel.hide()
 	saveload_panel.show()
 	pause_panel.hide()
+	
+func _on_h_slider_value_changed(value: float) -> void:
+	game_manager.set_sensitivity(value)
+	sensitivity_label.text = "Sensitivity: %.3f" % value
