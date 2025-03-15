@@ -1,5 +1,9 @@
 extends Control
 
+#cam animation
+@onready var animation_player = $camera_into_well
+@onready var fade_color_rect = $CanvasLayer/ColorRect
+
 #forest_sounds
 @onready var forest_ambience = $forest_ambience
 
@@ -36,6 +40,7 @@ func _ready() -> void:
 		
 	# Set initial transparency for the entire menu
 	self.modulate = Color(1, 1, 1, 0)
+	fade_color_rect.modulate = Color(1, 1, 1, 0)
 	
 	# Fade in the menu
 	create_tween().tween_property(self, "modulate", Color(1, 1, 1, 1), 1.65)
@@ -64,6 +69,14 @@ func _on_start_pressed() -> void:
 	create_tween().tween_property($VBoxContainer/start, "position:x", $VBoxContainer/start.position.x - shake_amount, 0.05).set_trans(Tween.TRANS_SINE).set_delay(0.05)
 	create_tween().tween_property($VBoxContainer/start, "position:x", $VBoxContainer/start.position.x, 0.05).set_trans(Tween.TRANS_SINE).set_delay(0.1)
 	await get_tree().create_timer(0.10).timeout
+	
+	# Play the camera and fade animation
+	animation_player.play("camera_into_well")
+	
+	# Wait for the animation to finish
+	await animation_player.animation_finished
+	
+	# Change the scene to the game scene
 	get_tree().change_scene_to_file("res://world.tscn")
 
 func _on_exit_pressed() -> void:

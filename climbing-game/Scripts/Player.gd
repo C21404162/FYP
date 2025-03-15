@@ -4,7 +4,7 @@ extends CharacterBody3D
 const WALK_SPEED = 3.5
 const SPRINT_SPEED = 5.0
 const JUMP_VELOCITY = 4.5
-const SENSITIVITY = 0.005
+const SENSITIVITY = 0.001
 const MAX_JUMP_CHARGE_TIME = 1.0 
 const MIN_CHARGE_FOR_BOOST = 0.3
 const MAX_JUMP_BOOST = 1.5 
