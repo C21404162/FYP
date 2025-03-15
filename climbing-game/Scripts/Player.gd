@@ -4,7 +4,7 @@ extends CharacterBody3D
 const WALK_SPEED = 3.5
 const SPRINT_SPEED = 5.0
 const JUMP_VELOCITY = 4.5
-const SENSITIVITY = 0.001
+var SENSITIVITY = 0.001
 const MAX_JUMP_CHARGE_TIME = 1.0 
 const MIN_CHARGE_FOR_BOOST = 0.3
 const MAX_JUMP_BOOST = 1.5 
@@ -107,6 +107,9 @@ func _ready():
 	camera.fov = GameManager.fov
 	GameManager.connect("fov_updated", Callable(self, "_on_fov_updated"))
 	
+	SENSITIVITY = game_manager.sensitivity
+	game_manager.connect("sensitivity_updated", Callable(self, "_on_sensitivity_updated"))
+	
 	# Load pause menu
 	var pause_menu_scene = load(pause_menu_scene_path)
 	if pause_menu_scene:
@@ -151,6 +154,10 @@ func spawn_falling():
 
 func _on_fov_updated(new_fov: float):
 	camera.fov = new_fov
+	
+func _on_sensitivity_updated(new_sensitivity: float):
+	SENSITIVITY = new_sensitivity
+	print("Sensitivity updated to: ", SENSITIVITY)
 
 func _on_player_position_updated(position: Vector3):
 	global_position = position
