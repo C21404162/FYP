@@ -1,5 +1,7 @@
 extends Control
 
+@onready var options_panel = $options_panel
+
 #cam animation
 @onready var animation_player = $camera_into_well
 @onready var fade_color_rect = $CanvasLayer/ColorRect
@@ -38,12 +40,11 @@ func _ready() -> void:
 	if forest_ambience:
 		forest_ambience.play()
 		
-	# Set initial transparency for the entire menu
 	self.modulate = Color(1, 1, 1, 0)
 	fade_color_rect.modulate = Color(1, 1, 1, 0)
-	
-	# Fade in the menu
 	create_tween().tween_property(self, "modulate", Color(1, 1, 1, 1), 1.65)
+	
+	options_panel.hide()
 	
 	#fade_in.play("fade_in") 
 	
@@ -70,13 +71,9 @@ func _on_start_pressed() -> void:
 	create_tween().tween_property($VBoxContainer/start, "position:x", $VBoxContainer/start.position.x, 0.05).set_trans(Tween.TRANS_SINE).set_delay(0.1)
 	await get_tree().create_timer(0.10).timeout
 	
-	# Play the camera and fade animation
 	animation_player.play("camera_into_well")
-	
-	# Wait for the animation to finish
 	await animation_player.animation_finished
 	
-	# Change the scene to the game scene
 	get_tree().change_scene_to_file("res://world.tscn")
 
 func _on_exit_pressed() -> void:
@@ -117,9 +114,9 @@ func _on_mouse_entered_continue() -> void:
 		play_hover_sound()
 
 func _on_continue_pressed() -> void:
-	print("Continue button pressed. Loading game data...")
+	print("LOADING GAME")
 	game_manager.load_game_data()
-	print("Game data loaded. Changing scene...")
+	print("LOADED")
 	get_tree().change_scene_to_file("res://world.tscn")
 	
 func play_hover_sound():
@@ -153,3 +150,9 @@ func _on_options_pressed() -> void:
 	create_tween().tween_property($VBoxContainer/options, "position:x", $VBoxContainer/options.position.x - shake_amount, 0.05).set_trans(Tween.TRANS_SINE).set_delay(0.05)
 	create_tween().tween_property($VBoxContainer/options, "position:x", $VBoxContainer/options.position.x, 0.05).set_trans(Tween.TRANS_SINE).set_delay(0.1)
 	await get_tree().create_timer(0.10).timeout
+	
+	options_panel.show()
+
+
+func _on_back_pressed() -> void:
+	options_panel.hide()
