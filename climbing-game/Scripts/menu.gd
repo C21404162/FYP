@@ -1,6 +1,7 @@
 extends Control
 
 @onready var options_panel = $options_panel
+@onready var fov_slider = $options_panel/VBoxContainer/FOVSlider
 
 #cam animation
 @onready var animation_player = $camera_into_well
@@ -45,6 +46,9 @@ func _ready() -> void:
 	create_tween().tween_property(self, "modulate", Color(1, 1, 1, 1), 1.65)
 	
 	options_panel.hide()
+	
+	fov_slider.value = game_manager.fov
+	fov_slider.connect("value_changed", Callable(self, "_on_fov_changed"))
 	
 	#fade_in.play("fade_in") 
 	
@@ -156,3 +160,7 @@ func _on_options_pressed() -> void:
 
 func _on_back_pressed() -> void:
 	options_panel.hide()
+
+func _on_fov_slider_value_changed(value: float) -> void:
+	game_manager.set_fov(value)
+	print("FOVCHANGED")
