@@ -4,12 +4,12 @@ importer="scene"
 importer_version=1
 type="PackedScene"
 uid="uid://ceu435mpplepa"
-path="res://.godot/imported/fol3_noback_edit.glb-4e10bacfc25ef93eb8cfb3f938694382.scn"
+path="res://.godot/imported/fol3_noback_edit.glb-661d74181d308fc453e409042ad4f07d.scn"
 
 [deps]
 
-source_file="res://Foliage/fol3_noback_edit.glb"
-dest_files=["res://.godot/imported/fol3_noback_edit.glb-4e10bacfc25ef93eb8cfb3f938694382.scn"]
+source_file="res://Models/Foliage/fol3_noback_edit.glb"
+dest_files=["res://.godot/imported/fol3_noback_edit.glb-661d74181d308fc453e409042ad4f07d.scn"]
 
 [params]
 

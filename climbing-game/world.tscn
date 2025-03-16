@@ -1,15 +1,14 @@
-[gd_scene load_steps=87 format=3 uid="uid://daea0cguij4h2"]
+[gd_scene load_steps=86 format=3 uid="uid://daea0cguij4h2"]
 
 [ext_resource type="Material" uid="uid://rt8kwy52hryb" path="res://Materials/highlight.tres" id="1_lgiqj"]
 [ext_resource type="Script" path="res://Scripts/world.gd" id="1_q6rjl"]
 [ext_resource type="Script" path="res://Scripts/Player.gd" id="1_vwaj1"]
 [ext_resource type="Texture2D" uid="uid://c2ote7bbhccsr" path="res://Textures/cobble_wall.png" id="3_umbod"]
 [ext_resource type="Texture2D" uid="uid://dl4ehmpcpnc3u" path="res://Textures/IMG_2034.jpg" id="3_umr55"]
-[ext_resource type="Texture2D" uid="uid://diq7n02p7gbs4" path="res://Models/wooden_plank_model_wood_bark.png" id="4_05muq"]
+[ext_resource type="Texture2D" uid="uid://diq7n02p7gbs4" path="res://Textures/wooden_plank_model_wood_bark.png" id="4_05muq"]
 [ext_resource type="Texture2D" uid="uid://d334hub33k2fn" path="res://Textures/IMG_2019.jpg" id="4_a512g"]
 [ext_resource type="Texture2D" uid="uid://guff740bkob4" path="res://Textures/moss_new.jpg" id="4_oki8d"]
-[ext_resource type="PackedScene" uid="uid://dx11h6ui0c2mi" path="res://Models/wooden_plank_model.glb" id="6_imwlo"]
-[ext_resource type="Texture2D" uid="uid://c8lm8hg8qpmyg" path="res://Models/well_model_cobble_wall.png" id="8_irqvw"]
+[ext_resource type="Texture2D" uid="uid://c8lm8hg8qpmyg" path="res://Textures/well_model_cobble_wall.png" id="8_irqvw"]
 [ext_resource type="Texture2D" uid="uid://dxn03o3k6f8d2" path="res://Textures/shitwall.png" id="8_w86qp"]
 [ext_resource type="Script" path="res://Scripts/interactray.gd" id="9_bfa6a"]
 [ext_resource type="AudioStream" uid="uid://ndcgjfycqb4i" path="res://Sounds/SFX/grab_real_2.mp3" id="13_k2b4s"]
@@ -31,7 +30,7 @@
 [ext_resource type="AudioStream" uid="uid://cdm7k126sa6th" path="res://Sounds/SFX/rock_break1.mp3" id="21_l2y3y"]
 [ext_resource type="AudioStream" uid="uid://dkx22fn5swsh0" path="res://Sounds/SFX/landing_sound3.mp3" id="22_fq2a6"]
 [ext_resource type="AudioStream" uid="uid://b37cmqut0xsci" path="res://Sounds/SFX/landing_sound4.mp3" id="23_7jinl"]
-[ext_resource type="PackedScene" uid="uid://b8wksvfw0gewi" path="res://Foliage/fol1_edit.glb" id="23_80ho2"]
+[ext_resource type="PackedScene" uid="uid://b8wksvfw0gewi" path="res://Models/Foliage/fol1_edit.glb" id="23_80ho2"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5qhtx"]
 albedo_texture = ExtResource("3_umbod")
@@ -1268,7 +1267,6 @@ environment = SubResource("Environment_jna2u")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="Map"]
 transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
-visible = false
 light_energy = 2.371
 light_volumetric_fog_energy = 0.0
 shadow_enabled = true
@@ -1312,14 +1310,6 @@ material = SubResource("StandardMaterial3D_gtese")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.75, 4, 10.5)
 use_collision = true
 size = Vector3(0.5, 1, 7)
-
-[node name="wooden_plank_model3" parent="Map" groups=["Climbable"] instance=ExtResource("6_imwlo")]
-transform = Transform3D(-0.0776455, 0, -0.289778, 0, 0.3, 0, 0.289778, 0, -0.0776455, 3.08606, 13, 0.201479)
-metadata/climbable = true
-
-[node name="wooden_plank_model4" parent="Map" groups=["Climbable"] instance=ExtResource("6_imwlo")]
-transform = Transform3D(-0.259808, 0, -0.15, 0, 0.3, 0, 0.15, 0, -0.259808, 1.08606, 34.5, 3.20148)
-metadata/climbable = true
 
 [node name="CSGCylinder3D" type="CSGCylinder3D" parent="Map"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10, 0)
@@ -1641,6 +1631,48 @@ use_collision = true
 radius = 0.301674
 material = SubResource("StandardMaterial3D_ulsda")
 
+[node name="CSGSphere3D42" type="CSGSphere3D" parent="Map" groups=["Climbable"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.866987, 95.9116, -1.84142)
+use_collision = true
+radius = 0.301674
+material = SubResource("StandardMaterial3D_ulsda")
+
+[node name="CSGSphere3D43" type="CSGSphere3D" parent="Map" groups=["Climbable"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.633013, 98.2623, -1.84142)
+use_collision = true
+radius = 0.301674
+material = SubResource("StandardMaterial3D_ulsda")
+
+[node name="CSGSphere3D44" type="CSGSphere3D" parent="Map" groups=["Climbable"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.366987, 100.949, -1.93611)
+use_collision = true
+radius = 0.301674
+material = SubResource("StandardMaterial3D_ulsda")
+
+[node name="CSGSphere3D45" type="CSGSphere3D" parent="Map" groups=["Climbable"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.86699, 103.449, -0.736071)
+use_collision = true
+radius = 0.301674
+material = SubResource("StandardMaterial3D_ulsda")
+
+[node name="CSGSphere3D46" type="CSGSphere3D" parent="Map" groups=["Climbable"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.866987, 104.949, 1.79633)
+use_collision = true
+radius = 0.301674
+material = SubResource("StandardMaterial3D_ulsda")
+
+[node name="CSGSphere3D47" type="CSGSphere3D" parent="Map" groups=["Climbable"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.13301, 106.949, 1.62478)
+use_collision = true
+radius = 0.301674
+material = SubResource("StandardMaterial3D_ulsda")
+
+[node name="CSGSphere3D48" type="CSGSphere3D" parent="Map" groups=["Climbable"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.51122, 107.449, -1.38794)
+use_collision = true
+radius = 0.301674
+material = SubResource("StandardMaterial3D_ulsda")
+
 [node name="char_1" type="CSGSphere3D" parent="Map" groups=["Interactable"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1.5, -2.5)
 use_collision = true
@@ -1651,6 +1683,18 @@ rings = 3
 transform = Transform3D(0.97891, 0.204291, 0, -0.204291, 0.97891, 0, 0, 0, 1, -0.197885, 38.4675, -2.19892)
 use_collision = true
 size = Vector3(0.595703, 0.25, 2.79248)
+material = SubResource("StandardMaterial3D_oqckm")
+
+[node name="CSGBox3D15" type="CSGBox3D" parent="Map" groups=["Climbable"]]
+transform = Transform3D(-0.258412, 0.0145018, -0.965926, 0.0560306, 0.998429, -3.84882e-16, 0.964408, -0.0541214, -0.258819, 2.28089, 12.9675, 0.295393)
+use_collision = true
+size = Vector3(0.595703, 0.25, 2.83643)
+material = SubResource("StandardMaterial3D_oqckm")
+
+[node name="CSGBox3D21" type="CSGBox3D" parent="Map" groups=["Climbable"]]
+transform = Transform3D(-0.864665, 0.0485239, -0.5, 0.0560306, 0.998429, 1.86376e-09, 0.499215, -0.0280153, -0.866026, 0.472755, 34.4675, 2.12771)
+use_collision = true
+size = Vector3(0.595703, 0.25, 2.06897)
 material = SubResource("StandardMaterial3D_oqckm")
 
 [node name="CSGBox3D14" type="CSGBox3D" parent="Map" groups=["Climbable"]]
@@ -1672,9 +1716,9 @@ size = Vector3(0.5, 0.5, 1)
 material = SubResource("StandardMaterial3D_oq7pb")
 
 [node name="CSGBox3D16" type="CSGBox3D" parent="Map" groups=["Breakable", "Climbable"]]
-transform = Transform3D(0.997718, 0.062272, 0.0261164, -0.0669873, 0.961516, 0.266457, -0.00851855, -0.267598, 0.963493, -1.08126, 26.1226, 2.64311)
+transform = Transform3D(0.506236, 0.262883, -0.821351, -0.0669873, 0.961516, 0.266457, 0.85979, -0.0798699, 0.504364, -0.317275, 26.0343, 2.53566)
 use_collision = true
-size = Vector3(0.5, 0.5, 1)
+size = Vector3(0.5, 0.316284, 2)
 material = SubResource("StandardMaterial3D_oq7pb")
 
 [node name="CSGBox3D18" type="CSGBox3D" parent="Map" groups=["Breakable", "Climbable"]]
@@ -1822,6 +1866,18 @@ use_collision = true
 size = Vector3(1, 0.5, 3)
 material = SubResource("StandardMaterial3D_knbx5")
 
+[node name="CSGBox3D22" type="CSGBox3D" parent="Map" groups=["Climbable"]]
+transform = Transform3D(-0.258819, 0.25, 0.933013, 0, -0.965926, 0.258819, 0.965926, 0.0669873, 0.25, -1.75, 94.2873, -0.00342464)
+use_collision = true
+size = Vector3(0.5, 0.277466, 2)
+material = SubResource("StandardMaterial3D_knbx5")
+
+[node name="CSGBox3D23" type="CSGBox3D" parent="Map" groups=["Climbable"]]
+transform = Transform3D(-0.711516, -0.0537535, -0.700611, 0.0669873, -0.997717, 0.00851857, -0.699469, -0.0408709, 0.713493, 0.909339, 105.347, -1.09426)
+use_collision = true
+size = Vector3(0.376465, 0.149597, 2)
+material = SubResource("StandardMaterial3D_knbx5")
+
 [node name="CSGBox3D20" type="CSGBox3D" parent="Map" groups=["Climbable"]]
 transform = Transform3D(0.923673, 0.383183, 6.09003e-09, 0, -1.58933e-08, 1, 0.383183, -0.923672, -1.46802e-08, -1.0392, 81.5813, 1.5995)
 use_collision = true
@@ -1880,25 +1936,20 @@ transform = Transform3D(2.18557e-09, -2.75152e-23, 0.05, -4.37114e-09, -0.05, 5.
 
 [node name="Skeleton3D" parent="Player/lefthand/hand_left_rigged/Armature" index="0"]
 animate_physical_bones = false
-bones/0/position = Vector3(0.736109, 0.0369808, -0.0142191)
 bones/0/rotation = Quaternion(-2.66926e-08, 2.66925e-08, 0.707107, 0.707107)
 bones/1/position = Vector3(1.07351e-09, 3.4, -1.86464e-09)
 bones/2/position = Vector3(0.32108, 3.67878, 1.47952)
 bones/2/rotation = Quaternion(1.04341e-10, 8.21597e-08, -0.00126997, 0.999999)
-bones/2/scale = Vector3(1, 1, 1)
 bones/3/position = Vector3(3.04369e-08, 1.59948, -3.56808e-08)
 bones/3/rotation = Quaternion(2.4424e-09, -3.37858e-07, 0.0239115, 0.999714)
-bones/3/scale = Vector3(1, 1, 1)
 bones/4/position = Vector3(-1.66509e-08, 1.34352, 1.62284e-07)
 bones/4/rotation = Quaternion(5.2568e-10, 4.50683e-07, -0.0353339, 0.999376)
-bones/4/scale = Vector3(1, 1, 1)
 bones/5/position = Vector3(0.374245, 3.82843, 0.7435)
 bones/5/rotation = Quaternion(1.59738e-08, -3.01474e-07, -0.00767171, 0.999971)
 bones/5/scale = Vector3(1, 1, 1)
 bones/6/position = Vector3(4.17467e-08, 1.62978, -3.48548e-08)
 bones/6/scale = Vector3(1, 1, 1)
 bones/7/position = Vector3(2.15801e-08, 1.42464, 6.29575e-08)
-bones/7/scale = Vector3(1, 1, 1)
 bones/8/position = Vector3(0.374245, 3.82843, -0.0548343)
 bones/8/rotation = Quaternion(-2.46198e-09, -4.14493e-07, -0.00593963, 0.999982)
 bones/8/scale = Vector3(1, 1, 1)
@@ -1909,21 +1960,15 @@ bones/10/rotation = Quaternion(-1.88701e-08, 3.83404e-07, -0.0274794, 0.999622)
 bones/10/scale = Vector3(1, 1, 1)
 bones/11/position = Vector3(0.258783, 3.73172, -0.942139)
 bones/11/rotation = Quaternion(-2.08347e-09, -2.97617e-07, -0.00700033, 0.999976)
-bones/11/scale = Vector3(1, 1, 1)
 bones/12/position = Vector3(-5.33606e-09, 1.78607, -3.89147e-08)
 bones/12/rotation = Quaternion(2.79313e-08, -3.44473e-07, 0.0317024, 0.999497)
 bones/12/scale = Vector3(1, 1, 1)
 bones/13/position = Vector3(6.03745e-09, 1.37377, -4.14662e-08)
 bones/13/rotation = Quaternion(-1.86336e-08, 5.39808e-07, -0.0278529, 0.999612)
-bones/13/scale = Vector3(1, 1, 1)
-bones/14/position = Vector3(0.00688261, 0.644068, -1.43218)
 bones/14/rotation = Quaternion(-0.543409, 0.408374, -0.175425, 0.712154)
 bones/14/scale = Vector3(1, 1, 1)
-bones/15/position = Vector3(-7.54894e-07, 0.867782, -9.0679e-07)
 bones/15/rotation = Quaternion(0.0958627, -0.0128187, 0.0921269, 0.991039)
-bones/16/position = Vector3(-3.51086e-06, 1.22088, -1.39793e-06)
 bones/16/rotation = Quaternion(0.0220347, -0.0447416, 0.102511, 0.993481)
-bones/16/scale = Vector3(1, 1, 1)
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="Player/lefthand/hand_left_rigged"]
 libraries = {
@@ -1951,51 +1996,28 @@ transform = Transform3D(-2.18557e-09, -5.58794e-09, -0.05, 4.44089e-17, -0.05, 5
 
 [node name="Skeleton3D" parent="Player/righthand/hand_right_rigged/Armature" index="0"]
 bones/0/rotation = Quaternion(-2.66925e-08, 2.66925e-08, 0.707107, 0.707107)
-bones/1/position = Vector3(-3.03876e-06, 3.4, -2.03962e-07)
 bones/1/rotation = Quaternion(3.14933e-09, 4.14613e-10, 2.04891e-07, 1)
-bones/2/position = Vector3(0.321075, 3.67878, 1.47952)
 bones/2/rotation = Quaternion(3.03751e-09, 8.3379e-08, -0.00126993, 0.999999)
-bones/2/scale = Vector3(1, 1, 1)
-bones/3/position = Vector3(-2.17835e-06, 1.59948, -1.54891e-07)
 bones/3/rotation = Quaternion(2.4424e-09, -3.37858e-07, 0.0239114, 0.999714)
-bones/3/scale = Vector3(1, 1, 1)
-bones/4/position = Vector3(-2.50117e-06, 1.34352, -1.95343e-07)
 bones/4/rotation = Quaternion(-2.42109e-09, 4.49497e-07, -0.0353339, 0.999376)
-bones/4/scale = Vector3(1, 1, 1)
-bones/5/position = Vector3(0.374242, 3.82843, 0.743497)
 bones/5/rotation = Quaternion(2.14043e-08, -2.98282e-07, -0.00767191, 0.999971)
 bones/5/scale = Vector3(1, 1, 1)
-bones/6/position = Vector3(-5.132e-06, 1.62978, -2.13666e-07)
 bones/6/rotation = Quaternion(1.00674e-09, -2.43966e-07, 0.0314913, 0.999504)
-bones/6/scale = Vector3(1, 0.999999, 1)
-bones/7/position = Vector3(-2.99079e-06, 1.42463, -2.14241e-06)
+bones/6/scale = Vector3(1, 1, 1)
 bones/7/rotation = Quaternion(-1.3585e-08, 4.93601e-07, -0.0262977, 0.999654)
-bones/7/scale = Vector3(1, 1, 1)
-bones/8/position = Vector3(0.374243, 3.82843, -0.0548382)
 bones/8/rotation = Quaternion(2.97397e-09, -4.11311e-07, -0.00593975, 0.999982)
 bones/8/scale = Vector3(1, 1, 1)
-bones/9/position = Vector3(4.02995e-07, 2.10502, -2.29112e-07)
 bones/9/rotation = Quaternion(2.55193e-08, -1.60197e-07, 0.030296, 0.999541)
-bones/10/position = Vector3(-6.41806e-07, 1.39326, -1.19012e-06)
 bones/10/rotation = Quaternion(-2.81266e-08, 3.82384e-07, -0.0274798, 0.999622)
 bones/10/scale = Vector3(1, 1, 1)
-bones/11/position = Vector3(0.258781, 3.73172, -0.942142)
 bones/11/rotation = Quaternion(8.42708e-10, -2.96381e-07, -0.00699985, 0.999976)
-bones/11/scale = Vector3(1, 1, 1)
-bones/12/position = Vector3(-5.70914e-06, 1.78607, -5.93977e-06)
 bones/12/rotation = Quaternion(2.49756e-08, -3.45637e-07, 0.0317025, 0.999497)
 bones/12/scale = Vector3(1, 1, 1)
-bones/13/position = Vector3(-1.15022e-05, 1.37377, -3.02168e-06)
 bones/13/rotation = Quaternion(-2.17912e-08, 5.39461e-07, -0.0278529, 0.999612)
-bones/13/scale = Vector3(1, 1, 1)
-bones/14/position = Vector3(0.00687637, 0.644065, -1.43218)
 bones/14/rotation = Quaternion(-0.543409, 0.408374, -0.175425, 0.712154)
 bones/14/scale = Vector3(1, 1, 1)
-bones/15/position = Vector3(8.38466e-07, 0.867786, -6.04791e-07)
 bones/15/rotation = Quaternion(0.0958627, -0.0128187, 0.0921269, 0.991039)
-bones/16/position = Vector3(6.87738e-06, 1.22088, 4.14776e-06)
 bones/16/rotation = Quaternion(-0.0427358, -0.0363961, -0.0107215, 0.998366)
-bones/16/scale = Vector3(1, 1, 1)
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="Player/righthand/hand_right_rigged"]
 libraries = {

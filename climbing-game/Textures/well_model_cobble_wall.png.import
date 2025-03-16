@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c8lm8hg8qpmyg"
-path.s3tc="res://.godot/imported/well_model_cobble_wall.png-d31888edee56c58aa45b7b41aec6f9f4.s3tc.ctex"
+path.s3tc="res://.godot/imported/well_model_cobble_wall.png-998fc3b1bbb5dfd01da57126696b5e62.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -14,8 +14,8 @@ generator_parameters={
 
 [deps]
 
-source_file="res://Models/well_model_cobble_wall.png"
-dest_files=["res://.godot/imported/well_model_cobble_wall.png-d31888edee56c58aa45b7b41aec6f9f4.s3tc.ctex"]
+source_file="res://Textures/well_model_cobble_wall.png"
+dest_files=["res://.godot/imported/well_model_cobble_wall.png-998fc3b1bbb5dfd01da57126696b5e62.s3tc.ctex"]
 
 [params]
 

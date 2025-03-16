@@ -7,7 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://d334hub33k2fn" path="res://Textures/IMG_2019.jpg" id="2_wnj5a"]
 [ext_resource type="AudioStream" uid="uid://b40ss0vvbrop4" path="res://Sounds/SFX/hover2.mp3" id="3_bvnap"]
 [ext_resource type="FontFile" uid="uid://c8vijpv4huy16" path="res://Fonts/ARIAL.TTF" id="3_pevfs"]
-[ext_resource type="Texture2D" uid="uid://diq7n02p7gbs4" path="res://Models/wooden_plank_model_wood_bark.png" id="4_55s7h"]
+[ext_resource type="Texture2D" uid="uid://diq7n02p7gbs4" path="res://Textures/wooden_plank_model_wood_bark.png" id="4_55s7h"]
 [ext_resource type="Script" path="res://Scripts/Menu_cam.gd" id="5_odhhc"]
 [ext_resource type="Script" path="res://addons/zylann.hterrain/hterrain.gd" id="8_bbpf4"]
 [ext_resource type="Resource" path="res://Terrain/data.hterrain" id="9_42nfg"]
@@ -15,8 +15,8 @@
 [ext_resource type="Script" path="res://mesh_instance_3d.gd" id="11_a1n8c"]
 [ext_resource type="Texture2D" uid="uid://guff740bkob4" path="res://Textures/moss_new.jpg" id="13_h2s18"]
 [ext_resource type="AudioStream" uid="uid://chwnm5uwcahta" path="res://Sounds/Music/forest_sounds.mp3" id="14_05xk2"]
-[ext_resource type="PackedScene" uid="uid://b8wksvfw0gewi" path="res://Foliage/fol1_edit.glb" id="16_3py14"]
-[ext_resource type="PackedScene" uid="uid://ceu435mpplepa" path="res://Foliage/fol3_noback_edit.glb" id="17_bl3t0"]
+[ext_resource type="PackedScene" uid="uid://b8wksvfw0gewi" path="res://Models/Foliage/fol1_edit.glb" id="16_3py14"]
+[ext_resource type="PackedScene" uid="uid://ceu435mpplepa" path="res://Models/Foliage/fol3_noback_edit.glb" id="17_bl3t0"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_iw7r8"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)

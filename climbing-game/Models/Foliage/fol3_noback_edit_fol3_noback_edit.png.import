@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b3ekqjmo7tcax"
-path.s3tc="res://.godot/imported/fol3_noback_edit_fol3_noback_edit.png-29717541285badc529f9a4f2b0a94bbf.s3tc.ctex"
+path.s3tc="res://.godot/imported/fol3_noback_edit_fol3_noback_edit.png-04b9ab29e4ff48ca5d04112cab12bbfc.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -14,8 +14,8 @@ generator_parameters={
 
 [deps]
 
-source_file="res://Foliage/fol3_noback_edit_fol3_noback_edit.png"
-dest_files=["res://.godot/imported/fol3_noback_edit_fol3_noback_edit.png-29717541285badc529f9a4f2b0a94bbf.s3tc.ctex"]
+source_file="res://Models/Foliage/fol3_noback_edit_fol3_noback_edit.png"
+dest_files=["res://.godot/imported/fol3_noback_edit_fol3_noback_edit.png-04b9ab29e4ff48ca5d04112cab12bbfc.s3tc.ctex"]
 
 [params]
 
