@@ -26,7 +26,7 @@ grow_vertical = 2
 script = ExtResource("1_xly8l")
 
 [node name="pause_panel" type="Panel" parent="."]
-custom_minimum_size = Vector2(400, 200)
+custom_minimum_size = Vector2(400, 400)
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -175,6 +175,8 @@ text = "load"
 [node name="back" type="Button" parent="saveload_panel/VBoxContainer"]
 layout_mode = 2
 text = "back"
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="."]
 
 [connection signal="pressed" from="pause_panel/VBoxContainer/resume" to="." method="_on_resume_pressed"]
 [connection signal="pressed" from="pause_panel/VBoxContainer/options" to="." method="_on_options_pressed"]

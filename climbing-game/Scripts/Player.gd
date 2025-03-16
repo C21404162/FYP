@@ -103,6 +103,8 @@ const MIN_FALL_TIME = 1.5
 var last_landing_sound_index = -1
 
 func _ready():
+	
+	
 	# Set FOV from GameManager
 	camera.fov = GameManager.fov
 	GameManager.connect("fov_updated", Callable(self, "_on_fov_updated"))
@@ -470,20 +472,18 @@ func handle_climbing(delta):
 		velocity += pull_force * delta
 
 func check_grab():
-	# Left hand grab logic
 	if left_hand_reaching and not left_hand_grabbing:
 		if left_hand_raycast.is_colliding():
 			var collider = left_hand_raycast.get_collider()
-			# Group check
+			var normal = left_hand_raycast.get_collision_normal()  # Get surface normal
 			if collider and collider.is_in_group("Climbable"):
 				var grab_point = left_hand_raycast.get_collision_point()
 				var distance_to_grab = global_position.distance_to(grab_point)
-				# Grab if in range
-				if distance_to_grab <= MAX_GRAB_DISTANCE:
+				
+				# Adjust grab logic based on surface normal
+				if distance_to_grab <= MAX_GRAB_DISTANCE and abs(normal.dot(Vector3.UP)) > 0.2:
 					grab_object(left_hand_raycast, true)
 					hand_animation_player_left.play("close")
-					
-					# Grab sound + fx
 					particles_hand(grab_point)
 					# grab_sound.play()
 
