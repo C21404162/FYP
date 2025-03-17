@@ -8,7 +8,7 @@ var SENSITIVITY = 0.001
 const MAX_JUMP_CHARGE_TIME = 1.0 
 const MIN_CHARGE_FOR_BOOST = 0.3
 const MAX_JUMP_BOOST = 1.5 
-const MAX_GRAB_DISTANCE = 2.65 
+const MAX_GRAB_DISTANCE = 3.00
 
 # Collision layers
 const LAYER_WORLD = 1
@@ -55,6 +55,8 @@ var jump_charge_time = 0.0
 var noclip_enabled = false
 var left_hand_rotation_locked = false
 var right_hand_rotation_locked = false
+
+var velocity_decay_rate: float = 5.0  # Controls how quickly the velocity decays
 
 # Landing 
 var was_in_air = false
@@ -422,6 +424,13 @@ func handle_movement(delta):
 func handle_climbing(delta):
 	velocity.y -= gravity * delta
 	
+	if left_hand_grabbing or right_hand_grabbing:
+		velocity.y *= exp(-velocity_decay_rate * delta)  # Exponential decay
+		
+		## Clamp the velocity to avoid tiny values
+		#if abs(velocity.y) < 0.1:
+			#velocity.y = 0
+	
 	# Input + cam orientation
 	var input_dir = Input.get_vector("left", "right", "up", "down")
 	var cam_basis = camera.global_transform.basis
@@ -472,18 +481,20 @@ func handle_climbing(delta):
 		velocity += pull_force * delta
 
 func check_grab():
+	# Left hand grab logic
 	if left_hand_reaching and not left_hand_grabbing:
 		if left_hand_raycast.is_colliding():
 			var collider = left_hand_raycast.get_collider()
-			var normal = left_hand_raycast.get_collision_normal()  # Get surface normal
+			# Group check
 			if collider and collider.is_in_group("Climbable"):
 				var grab_point = left_hand_raycast.get_collision_point()
 				var distance_to_grab = global_position.distance_to(grab_point)
-				
-				# Adjust grab logic based on surface normal
-				if distance_to_grab <= MAX_GRAB_DISTANCE and abs(normal.dot(Vector3.UP)) > 0.2:
+				# Grab if in range
+				if distance_to_grab <= MAX_GRAB_DISTANCE:
 					grab_object(left_hand_raycast, true)
 					hand_animation_player_left.play("close")
+					
+					# Grab sound + fx
 					particles_hand(grab_point)
 					# grab_sound.play()
 
@@ -528,6 +539,9 @@ func grab_object(hand_raycast: RayCast3D, is_left_hand: bool):
 			grab_point_right = grab_point
 			right_hand_grabbing = true
 			right_hand_rotation_locked = true
+		
+		velocity.y *= 0.8  # Preserve some initial momentum (adjust as needed)
+		
 		# Track grab time
 		if not grab_timers.has(collider.get_instance_id()):
 			grab_timers[collider.get_instance_id()] = 0.0
