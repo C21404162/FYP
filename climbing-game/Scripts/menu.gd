@@ -18,7 +18,8 @@ extends Control
 @onready var hover_sound_player = $HoverSoundPlayer
 
 #cam
-@onready var Camera: Camera3D = $Camera3D
+@onready var Camera: Camera3D =  $Menu_cam
+var original_camera_position: Vector3
 
 #gamemanager
 @onready var game_manager = GameManager
@@ -58,8 +59,6 @@ func _ready() -> void:
 	
 	#fade_in.play("fade_in") 
 	
-	
-	
 	#Visiblity
 	ogham_label_continue.modulate = Color(1, 1, 1, 1)  
 	english_label_continue.modulate = Color(1, 1, 1, 0)  
@@ -82,10 +81,19 @@ func _on_start_pressed() -> void:
 	create_tween().tween_property($VBoxContainer/start, "position:x", $VBoxContainer/start.position.x - shake_amount, 0.05).set_trans(Tween.TRANS_SINE).set_delay(0.05)
 	create_tween().tween_property($VBoxContainer/start, "position:x", $VBoxContainer/start.position.x, 0.05).set_trans(Tween.TRANS_SINE).set_delay(0.1)
 	await get_tree().create_timer(0.10).timeout
-	
+
+	# Smoothly reset the camera's position and rotation
+	if Camera:
+		Camera.reset_camera_smoothly(0.8)  # Adjust duration as needed
+		await get_tree().create_timer(0.8).timeout  # Wait for the reset to complete
+	else:
+		print("Error: Camera node is not initialized!")
+
+	# Play the animation
 	animation_player.play("camera_into_well")
 	await animation_player.animation_finished
-	
+
+	# Change scene
 	get_tree().change_scene_to_file("res://world.tscn")
 
 func _on_exit_pressed() -> void:

@@ -1648,7 +1648,7 @@ radius = 0.301674
 material = SubResource("StandardMaterial3D_ulsda")
 
 [node name="CSGSphere3D47" type="CSGSphere3D" parent="Map" groups=["Climbable"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.13301, 108.449, 1.62478)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.13301, 109.449, 1.62478)
 use_collision = true
 radius = 0.301674
 material = SubResource("StandardMaterial3D_ulsda")
