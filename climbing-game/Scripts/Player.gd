@@ -276,6 +276,12 @@ func _unhandled_input(event):
 			collision_mask = LAYER_WORLD
 
 func _physics_process(delta):
+	
+	if left_hand_grabbing:
+		left_hand.global_transform.origin = grab_point_left
+	if right_hand_grabbing:
+		right_hand.global_transform.origin = grab_point_right
+	
 	check_grab()
 	
 	# Grab timer + break_surface
