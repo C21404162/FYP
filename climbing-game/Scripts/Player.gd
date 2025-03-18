@@ -425,60 +425,58 @@ func handle_climbing(delta):
 	velocity.y -= gravity * delta
 	
 	if left_hand_grabbing or right_hand_grabbing:
-		velocity.y *= exp(-velocity_decay_rate * delta)  # Exponential decay
+		# Apply velocity decay only if the player is falling and has been falling for a certain duration
+		if is_falling and fall_time >= MIN_FALL_TIME:
+			velocity.y *= exp(-velocity_decay_rate * delta)  # Exponential decay
 		
-		## Clamp the velocity to avoid tiny values
-		#if abs(velocity.y) < 0.1:
-			#velocity.y = 0
-	
-	# Input + cam orientation
-	var input_dir = Input.get_vector("left", "right", "up", "down")
-	var cam_basis = camera.global_transform.basis
-	
-	# Movement based on cam direction
-	var move_direction = Vector3.ZERO
-	move_direction += cam_basis.x * input_dir.x   
-	move_direction += cam_basis.z * input_dir.y  
-	move_direction = move_direction.normalized()
-	
-	# Climb speed
-	var climb_speed = 5.0
-	
-	# Apply movement
-	if left_hand_grabbing or right_hand_grabbing:
-		velocity += move_direction * climb_speed * delta
+		# Input + cam orientation
+		var input_dir = Input.get_vector("left", "right", "up", "down")
+		var cam_basis = camera.global_transform.basis
 		
-		var pull_force = Vector3.ZERO
+		# Movement based on cam direction
+		var move_direction = Vector3.ZERO
+		move_direction += cam_basis.x * input_dir.x   
+		move_direction += cam_basis.z * input_dir.y  
+		move_direction = move_direction.normalized()
 		
-		if left_hand_grabbing:
-			var collider = get_node(grab_joint_left.node_b) if grab_joint_left.node_b != NodePath("") else null
-			if collider and collider.visible:  # Check if the surface is still valid
-				var dir_to_grab = (grab_point_left - global_position).normalized()
-				var distance_to_grab = global_position.distance_to(grab_point_left)
-				if distance_to_grab > MAX_GRAB_DISTANCE:
-					var overreach = distance_to_grab - MAX_GRAB_DISTANCE
-					global_position += dir_to_grab * overreach
-					distance_to_grab = MAX_GRAB_DISTANCE
-				if distance_to_grab > reach_distance:
-					pull_force += dir_to_grab * (distance_to_grab - reach_distance) * climb_force
-			else:
-				release_grab(true) 
+		# Climb speed
+		var climb_speed = 5.0
 		
-		if right_hand_grabbing:
-			var collider = get_node(grab_joint_right.node_b) if grab_joint_right.node_b != NodePath("") else null
-			if collider and collider.visible:  # Check if the surface is still valid
-				var dir_to_grab = (grab_point_right - global_position).normalized()
-				var distance_to_grab = global_position.distance_to(grab_point_right)
-				if distance_to_grab > MAX_GRAB_DISTANCE:
-					var overreach = distance_to_grab - MAX_GRAB_DISTANCE
-					global_position += dir_to_grab * overreach
-					distance_to_grab = MAX_GRAB_DISTANCE
-				if distance_to_grab > reach_distance:
-					pull_force += dir_to_grab * (distance_to_grab - reach_distance) * climb_force
-			else:
-				release_grab(false)  
-		
-		velocity += pull_force * delta
+		# Apply movement
+		if left_hand_grabbing or right_hand_grabbing:
+			velocity += move_direction * climb_speed * delta
+			
+			var pull_force = Vector3.ZERO
+			
+			if left_hand_grabbing:
+				var collider = get_node(grab_joint_left.node_b) if grab_joint_left.node_b != NodePath("") else null
+				if collider and collider.visible:  # Check if the surface is still valid
+					var dir_to_grab = (grab_point_left - global_position).normalized()
+					var distance_to_grab = global_position.distance_to(grab_point_left)
+					if distance_to_grab > MAX_GRAB_DISTANCE:
+						var overreach = distance_to_grab - MAX_GRAB_DISTANCE
+						global_position += dir_to_grab * overreach
+						distance_to_grab = MAX_GRAB_DISTANCE
+					if distance_to_grab > reach_distance:
+						pull_force += dir_to_grab * (distance_to_grab - reach_distance) * climb_force
+				else:
+					release_grab(true) 
+			
+			if right_hand_grabbing:
+				var collider = get_node(grab_joint_right.node_b) if grab_joint_right.node_b != NodePath("") else null
+				if collider and collider.visible:  # Check if the surface is still valid
+					var dir_to_grab = (grab_point_right - global_position).normalized()
+					var distance_to_grab = global_position.distance_to(grab_point_right)
+					if distance_to_grab > MAX_GRAB_DISTANCE:
+						var overreach = distance_to_grab - MAX_GRAB_DISTANCE
+						global_position += dir_to_grab * overreach
+						distance_to_grab = MAX_GRAB_DISTANCE
+					if distance_to_grab > reach_distance:
+						pull_force += dir_to_grab * (distance_to_grab - reach_distance) * climb_force
+				else:
+					release_grab(false)  
+			
+			velocity += pull_force * delta
 
 func check_grab():
 	# Left hand grab logic
