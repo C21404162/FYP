@@ -89,8 +89,6 @@ var pause_menu_instance: Control = null
 # Game manager
 @onready var game_manager = get_node("/root/GameManager")
 
-var apply_velocity_decay: bool = false  # Tracks if velocity decay should be applied
-
 # Breaking
 var grab_timers: Dictionary = {}  
 var broken_surfaces: Dictionary = {}  
@@ -325,64 +323,8 @@ func _physics_process(delta):
 	update_hand_rotations(delta) 
 	move_and_slide()
 	
-	# Falling logic
-	if !is_on_floor() and velocity.y < 0:
-		if !left_hand_grabbing and !right_hand_grabbing:
-			# Player is falling and not grabbing anything
-			if !is_falling:
-				is_falling = true
-				fall_time = 0.0  # Reset fall time when starting to fall
-			
-			fall_time += delta  # Increment fall time
-			
-			# Start falling effects if fall time exceeds minimum
-			if fall_time >= MIN_FALL_TIME:
-				if wind_woosh_sounds.size() > 0 and !wind_woosh_sound.playing:
-					var random_index = randi() % wind_woosh_sounds.size()
-					wind_woosh_sound.stream = wind_woosh_sounds[random_index]
-					wind_woosh_sound.volume_db = -20
-					wind_woosh_sound.pitch_scale = randf_range(0.9, 1.1)
-					wind_woosh_sound.play()
-				
-				# Camera shake
-				var shake_intensity = FALL_SHAKE_INTENSITY * (fall_time - MIN_FALL_TIME)
-				var shake_offset = Vector3(
-					randf_range(-shake_intensity, shake_intensity),
-					randf_range(-shake_intensity, shake_intensity),
-					0
-				)
-				camera.transform.origin = camera.transform.origin.lerp(shake_offset, delta * FALL_SHAKE_SPEED)
-			
-			# Enable velocity decay if falling for long enough
-			if fall_time >= MIN_FALL_TIME:
-				apply_velocity_decay = true
-		else:
-			# Player grabbed a surface while falling
-			if is_falling:
-				is_falling = false
-				fall_time = 0.0
-				wind_woosh_sound.stop()  # Stop the wind sound
-	else:
-		# Player is on the ground or not falling
-		if is_falling:
-			is_falling = false
-			fall_time = 0.0
-			wind_woosh_sound.stop()  # Stop the wind sound
 	
-	# Apply velocity decay if enabled
-	if apply_velocity_decay:
-		velocity.y *= exp(-velocity_decay_rate * delta)  # Exponential decay
-		
-		# Stop velocity decay if the player has stabilized (y-velocity close to zero)
-		if abs(velocity.y) < 0.2:  # Adjust this threshold as needed
-			apply_velocity_decay = false
-	
-	# Reset velocity decay if the player starts falling again
-	if !is_on_floor() and velocity.y < 0 and !left_hand_grabbing and !right_hand_grabbing:
-		if !apply_velocity_decay:
-			apply_velocity_decay = true  # Re-enable velocity decay for a new fall
-	
-	# Landing logic
+	# Landing 
 	if was_in_air and is_on_floor():
 		emit_landing_particles()
 		if is_falling:
@@ -408,6 +350,37 @@ func _physics_process(delta):
 				landing_sound.pitch_scale = pitch
 				landing_sound.play()
 	was_in_air = !is_on_floor()
+	
+	# Falling effects
+	if !is_on_floor() and velocity.y < 0:
+		if !left_hand_grabbing and !right_hand_grabbing:
+			fall_time += delta  # Increment fall time
+			
+			if fall_time >= MIN_FALL_TIME:
+				if !is_falling:
+					# Start falling effects
+					is_falling = true
+					if wind_woosh_sounds.size() > 0:
+						var random_index = randi() % wind_woosh_sounds.size()
+						wind_woosh_sound.stream = wind_woosh_sounds[random_index]
+						wind_woosh_sound.volume_db = -20
+						wind_woosh_sound.pitch_scale = randf_range(0.9, 1.1)
+						wind_woosh_sound.play()
+				
+				# Update falling effects (camera shake)
+				var shake_intensity = FALL_SHAKE_INTENSITY * (fall_time - MIN_FALL_TIME)
+				var shake_offset = Vector3(
+					randf_range(-shake_intensity, shake_intensity),
+					randf_range(-shake_intensity, shake_intensity),
+					0
+				)
+				camera.transform.origin = camera.transform.origin.lerp(shake_offset, delta * FALL_SHAKE_SPEED)
+	else:
+		if is_falling:
+			# Stop falling effects when not falling
+			is_falling = false
+			fall_time = 0.0
+			wind_woosh_sound.stop()
 
 func emit_landing_particles():
 	if landing_particles:
@@ -548,6 +521,11 @@ func check_grab():
 					# grab_sound.play()
 
 func grab_object(hand_raycast: RayCast3D, is_left_hand: bool):
+	
+	is_falling = false
+	fall_time = 0.0
+	wind_woosh_sound.stop()
+	
 	# Connect joint to raycast
 	if hand_raycast.is_colliding():
 		var grab_point = hand_raycast.get_collision_point()
@@ -572,7 +550,7 @@ func grab_object(hand_raycast: RayCast3D, is_left_hand: bool):
 			right_hand_grabbing = true
 			right_hand_rotation_locked = true
 		
-		velocity.y *= 0.8  # Preserve some initial momentum (adjust as needed)
+		velocity.y *= 0.5  # Preserve some initial momentum (adjust as needed)
 		
 		# Track grab time by surface, not by hand
 		var collider_id = collider.get_instance_id()
