@@ -56,7 +56,7 @@ var noclip_enabled = false
 var left_hand_rotation_locked = false
 var right_hand_rotation_locked = false
 
-var velocity_decay_rate: float = 5.0  # Controls how quickly the velocity decays
+var velocity_decay_rate: float = 5.0 
 
 # Landing 
 var was_in_air = false
@@ -71,6 +71,9 @@ var last_grab_sound_index = -1
 # Break sounds
 @export var rock_break_sounds: Array[AudioStream] = []
 @onready var rock_break_sound = $"../rock_break_sound"
+# Gravel warning sounds
+@export var gravel_warning_sounds: Array[AudioStream] = []
+@onready var gravel_warning_sound = $"../gravelwarningsound"
 
 # Reach sounds
 @export var hand_reach_sounds: Array[AudioStream] = []
@@ -86,11 +89,15 @@ var pause_menu_instance: Control = null
 # Game manager
 @onready var game_manager = get_node("/root/GameManager")
 
+var apply_velocity_decay: bool = false  # Tracks if velocity decay should be applied
+
 # Breaking
-var grab_timers: Dictionary = {}  # Track how long surface is held
-var broken_surfaces: Dictionary = {}  # Tracks timers + surfaces
-const BREAK_TIME: float = 3.0  # Time before break
-const RESPAWN_TIME: float = 5.0  # Respawn timer
+var grab_timers: Dictionary = {}  
+var broken_surfaces: Dictionary = {}  
+const BREAK_TIME: float = 3.0  
+const RESPAWN_TIME: float = 5.0  
+const WARNING_TIME: float = 1.0  # Time before break when the warning sound plays
+var warning_sound_played: Dictionary = {}  # Tracks if the warning sound has been played for each surface
 
 # Falling effects
 @export var landing_sounds: Array[AudioStream] = []
@@ -101,12 +108,10 @@ var is_falling = false
 var fall_time = 0.0
 const FALL_SHAKE_INTENSITY = 0.1
 const FALL_SHAKE_SPEED = 10.0
-const MIN_FALL_TIME = 1.5
+const MIN_FALL_TIME = 2.0
 var last_landing_sound_index = -1
 
 func _ready():
-	
-	
 	# Set FOV from GameManager
 	camera.fov = GameManager.fov
 	GameManager.connect("fov_updated", Callable(self, "_on_fov_updated"))
@@ -277,13 +282,24 @@ func _physics_process(delta):
 	
 	# Grab timer + break_surface
 	for collider_id in grab_timers.keys():
-		grab_timers[collider_id] += delta
-		if grab_timers[collider_id] >= BREAK_TIME:
-			var collider = instance_from_id(collider_id)
-			if collider and collider.is_in_group("Breakable"):  # Check if surface is breakable
+		var collider = instance_from_id(collider_id)
+		if collider and collider.is_in_group("Breakable"):  # Ensure the collider is valid
+			grab_timers[collider_id] += delta
+			
+			# Check if the warning sound should play
+			if grab_timers[collider_id] >= BREAK_TIME - WARNING_TIME and not warning_sound_played.get(collider_id, false):
+				play_gravel_warning_sound(collider)
+				warning_sound_played[collider_id] = true  # Mark that the warning sound has been played
+			
+			# Check if the surface should break
+			if grab_timers[collider_id] >= BREAK_TIME:
 				break_surface(collider)
 				grab_timers.erase(collider_id)
-				release_grab(left_hand_grabbing)
+				warning_sound_played.erase(collider_id)  # Remove the warning flag
+		else:
+			# If the collider is invalid, remove it from the dictionaries
+			grab_timers.erase(collider_id)
+			warning_sound_played.erase(collider_id)
 	
 	# Breakable respawn
 	for collider_id in broken_surfaces.keys():
@@ -309,14 +325,66 @@ func _physics_process(delta):
 	update_hand_rotations(delta) 
 	move_and_slide()
 	
-	# Debug prints for landing logic
-	print("was_in_air: ", was_in_air, " | is_on_floor(): ", is_on_floor(), " | is_falling: ", is_falling)
+	# Falling logic
+	if !is_on_floor() and velocity.y < 0:
+		if !left_hand_grabbing and !right_hand_grabbing:
+			# Player is falling and not grabbing anything
+			if !is_falling:
+				is_falling = true
+				fall_time = 0.0  # Reset fall time when starting to fall
+			
+			fall_time += delta  # Increment fall time
+			
+			# Start falling effects if fall time exceeds minimum
+			if fall_time >= MIN_FALL_TIME:
+				if wind_woosh_sounds.size() > 0 and !wind_woosh_sound.playing:
+					var random_index = randi() % wind_woosh_sounds.size()
+					wind_woosh_sound.stream = wind_woosh_sounds[random_index]
+					wind_woosh_sound.volume_db = -20
+					wind_woosh_sound.pitch_scale = randf_range(0.9, 1.1)
+					wind_woosh_sound.play()
+				
+				# Camera shake
+				var shake_intensity = FALL_SHAKE_INTENSITY * (fall_time - MIN_FALL_TIME)
+				var shake_offset = Vector3(
+					randf_range(-shake_intensity, shake_intensity),
+					randf_range(-shake_intensity, shake_intensity),
+					0
+				)
+				camera.transform.origin = camera.transform.origin.lerp(shake_offset, delta * FALL_SHAKE_SPEED)
+			
+			# Enable velocity decay if falling for long enough
+			if fall_time >= MIN_FALL_TIME:
+				apply_velocity_decay = true
+		else:
+			# Player grabbed a surface while falling
+			if is_falling:
+				is_falling = false
+				fall_time = 0.0
+				wind_woosh_sound.stop()  # Stop the wind sound
+	else:
+		# Player is on the ground or not falling
+		if is_falling:
+			is_falling = false
+			fall_time = 0.0
+			wind_woosh_sound.stop()  # Stop the wind sound
 	
-	# Landing 
+	# Apply velocity decay if enabled
+	if apply_velocity_decay:
+		velocity.y *= exp(-velocity_decay_rate * delta)  # Exponential decay
+		
+		# Stop velocity decay if the player has stabilized (y-velocity close to zero)
+		if abs(velocity.y) < 0.2:  # Adjust this threshold as needed
+			apply_velocity_decay = false
+	
+	# Reset velocity decay if the player starts falling again
+	if !is_on_floor() and velocity.y < 0 and !left_hand_grabbing and !right_hand_grabbing:
+		if !apply_velocity_decay:
+			apply_velocity_decay = true  # Re-enable velocity decay for a new fall
+	
+	# Landing logic
 	if was_in_air and is_on_floor():
-		print("Player landed")  # Debug print
 		emit_landing_particles()
-		# Stop falling effects when landing
 		if is_falling:
 			is_falling = false
 			fall_time = 0.0
@@ -324,7 +392,6 @@ func _physics_process(delta):
 			
 			# Play landing sound
 			if landing_sounds.size() > 0:
-				print("Playing landing sound")  # Debug print
 				var random_index = randi() % landing_sounds.size()
 				# Ensure the same sound isn't played twice in a row
 				while random_index == last_landing_sound_index:
@@ -341,39 +408,6 @@ func _physics_process(delta):
 				landing_sound.pitch_scale = pitch
 				landing_sound.play()
 	was_in_air = !is_on_floor()
-	
-	# Falling effects
-	if !is_on_floor() and velocity.y < 0:
-		# Only trigger effects if the player is NOT grabbing onto anything
-		if !left_hand_grabbing and !right_hand_grabbing:
-			fall_time += delta  # Increment fall time
-			
-			# Only trigger effects if the fall time exceeds the minimum
-			if fall_time >= MIN_FALL_TIME:
-				if !is_falling:
-					# Start falling effects
-					is_falling = true
-					if wind_woosh_sounds.size() > 0:
-						var random_index = randi() % wind_woosh_sounds.size()
-						wind_woosh_sound.stream = wind_woosh_sounds[random_index]
-						wind_woosh_sound.volume_db = -20
-						wind_woosh_sound.pitch_scale = randf_range(0.9, 1.1)
-						wind_woosh_sound.play()
-				
-				# Update falling effects (camera shake)
-				var shake_intensity = FALL_SHAKE_INTENSITY * (fall_time - MIN_FALL_TIME)
-				var shake_offset = Vector3(
-					randf_range(-shake_intensity, shake_intensity),
-					randf_range(-shake_intensity, shake_intensity),
-					0
-				)
-				camera.transform.origin = camera.transform.origin.lerp(shake_offset, delta * FALL_SHAKE_SPEED)
-	else:
-		if is_falling:
-			# Stop falling effects when not falling
-			is_falling = false
-			fall_time = 0.0
-			wind_woosh_sound.stop()
 
 func emit_landing_particles():
 	if landing_particles:
@@ -450,7 +484,7 @@ func handle_climbing(delta):
 			
 			if left_hand_grabbing:
 				var collider = get_node(grab_joint_left.node_b) if grab_joint_left.node_b != NodePath("") else null
-				if collider and collider.visible:  # Check if the surface is still valid
+				if collider and collider.visible: 
 					var dir_to_grab = (grab_point_left - global_position).normalized()
 					var distance_to_grab = global_position.distance_to(grab_point_left)
 					if distance_to_grab > MAX_GRAB_DISTANCE:
@@ -464,7 +498,7 @@ func handle_climbing(delta):
 			
 			if right_hand_grabbing:
 				var collider = get_node(grab_joint_right.node_b) if grab_joint_right.node_b != NodePath("") else null
-				if collider and collider.visible:  # Check if the surface is still valid
+				if collider and collider.visible:  
 					var dir_to_grab = (grab_point_right - global_position).normalized()
 					var distance_to_grab = global_position.distance_to(grab_point_right)
 					if distance_to_grab > MAX_GRAB_DISTANCE:
@@ -540,9 +574,10 @@ func grab_object(hand_raycast: RayCast3D, is_left_hand: bool):
 		
 		velocity.y *= 0.8  # Preserve some initial momentum (adjust as needed)
 		
-		# Track grab time
-		if not grab_timers.has(collider.get_instance_id()):
-			grab_timers[collider.get_instance_id()] = 0.0
+		# Track grab time by surface, not by hand
+		var collider_id = collider.get_instance_id()
+		if not grab_timers.has(collider_id):
+			grab_timers[collider_id] = 0.0  # Only start a new timer if the surface isn't already being tracked
 	
 		# Random sound
 		if grab_sounds.size() > 0:
@@ -576,8 +611,14 @@ func release_grab(is_left_hand: bool):
 	
 	if collider_path and collider_path != NodePath(""):
 		var collider = get_node(collider_path)
-		if collider and grab_timers.has(collider.get_instance_id()):
-			grab_timers.erase(collider.get_instance_id())
+		if collider:
+			var collider_id = collider.get_instance_id()
+			
+			# Only remove the timer if both hands have released the surface
+			if collider_id in grab_timers:
+				if (is_left_hand and !right_hand_grabbing) or (!is_left_hand and !left_hand_grabbing):
+					grab_timers.erase(collider_id)
+					warning_sound_played.erase(collider_id)  # Also reset the warning flag
 	
 	# Disable joint
 	grab_joint.node_b = NodePath("")
@@ -613,8 +654,15 @@ func break_surface(collider: Node):
 		if right_hand_grabbing and grab_joint_right.node_b == collider.get_path():
 			release_grab(false)  # Release right hand
 		
+		# Clean up dictionaries
+		var collider_id = collider.get_instance_id()
+		if grab_timers.has(collider_id):
+			grab_timers.erase(collider_id)
+		if warning_sound_played.has(collider_id):
+			warning_sound_played.erase(collider_id)
+		
 		# Timer for respawn
-		broken_surfaces[collider.get_instance_id()] = RESPAWN_TIME
+		broken_surfaces[collider_id] = RESPAWN_TIME
 
 func respawn_surface(collider_id: int):
 	var collider = instance_from_id(collider_id)
@@ -624,6 +672,7 @@ func respawn_surface(collider_id: int):
 		collider.visible = true
 		collider.set_collision_layer_value(LAYER_WORLD, true)
 		broken_surfaces.erase(collider_id)
+		warning_sound_played.erase(collider_id)  # Reset the warning flag
 
 func update_hands(delta):
 	var cam_basis = camera.global_transform.basis
@@ -684,3 +733,14 @@ func update_hand_rotations(delta):
 func particles_hand(contact_point):
 	hand_fx.global_position = contact_point
 	hand_fx.emitting = true
+
+func play_gravel_warning_sound(collider: Node):
+	if gravel_warning_sounds.size() > 0:
+		var random_index = randi() % gravel_warning_sounds.size()
+		var pitch = randf_range(0.9, 1.1)  
+		var volume_db = -15
+		gravel_warning_sound.stream = gravel_warning_sounds[random_index]
+		gravel_warning_sound.pitch_scale = pitch
+		gravel_warning_sound.volume_db = volume_db
+		gravel_warning_sound.global_transform.origin = collider.global_transform.origin
+		gravel_warning_sound.play()

@@ -1,4 +1,4 @@
-[gd_scene load_steps=85 format=3 uid="uid://daea0cguij4h2"]
+[gd_scene load_steps=87 format=3 uid="uid://daea0cguij4h2"]
 
 [ext_resource type="Material" uid="uid://rt8kwy52hryb" path="res://Materials/highlight.tres" id="1_lgiqj"]
 [ext_resource type="Script" path="res://Scripts/world.gd" id="1_q6rjl"]
@@ -17,8 +17,10 @@
 [ext_resource type="FontFile" uid="uid://c8vijpv4huy16" path="res://Fonts/ARIAL.TTF" id="15_86m0o"]
 [ext_resource type="AudioStream" uid="uid://y3kmoxpsn2kh" path="res://Sounds/SFX/grab_real_1.mp3" id="15_hj3ll"]
 [ext_resource type="AudioStream" uid="uid://0j6cfrjgbljg" path="res://Sounds/SFX/rock_break2.mp3" id="16_5eljq"]
+[ext_resource type="AudioStream" uid="uid://btbp2beigd5xi" path="res://Sounds/SFX/gravel1.wav" id="16_wagte"]
 [ext_resource type="AudioStream" uid="uid://ckqt2rijt4i7v" path="res://Sounds/SFX/reach1.mp3" id="17_6qyhe"]
 [ext_resource type="PackedScene" uid="uid://etpli0c68lgh" path="res://Models/hand_left_rigged.glb" id="17_mo8ux"]
+[ext_resource type="AudioStream" uid="uid://bgavthye0s68p" path="res://Sounds/SFX/gravel2.wav" id="17_qpw5a"]
 [ext_resource type="AudioStream" uid="uid://d22yewk558711" path="res://Sounds/Music/ambience_cave.mp3" id="18_6hcjt"]
 [ext_resource type="AudioStream" uid="uid://chc0p6cm6070n" path="res://Sounds/SFX/reach2.mp3" id="18_ql2o4"]
 [ext_resource type="PackedScene" uid="uid://dlldw6fqobr1n" path="res://Models/hand_right_rigged.glb" id="19_icmgn"]
@@ -1892,6 +1894,7 @@ material = SubResource("StandardMaterial3D_knbx5")
 script = ExtResource("1_vwaj1")
 grab_sounds = Array[AudioStream]([ExtResource("15_hj3ll"), ExtResource("13_k2b4s"), ExtResource("14_fw5k0")])
 rock_break_sounds = Array[AudioStream]([ExtResource("21_l2y3y"), ExtResource("16_5eljq")])
+gravel_warning_sounds = Array[AudioStream]([ExtResource("16_wagte"), ExtResource("17_qpw5a")])
 hand_reach_sounds = Array[AudioStream]([ExtResource("17_6qyhe"), ExtResource("18_ql2o4"), ExtResource("19_iian6")])
 landing_sounds = Array[AudioStream]([ExtResource("20_rexxv"), ExtResource("21_66pq6"), ExtResource("22_fq2a6"), ExtResource("23_7jinl")])
 wind_woosh_sounds = Array[AudioStream]([ExtResource("20_adhi5"), ExtResource("21_07f3h")])
@@ -2126,6 +2129,8 @@ transform = Transform3D(0.424264, 0, -0.424264, -0.104678, 0.581451, -0.104678, 
 
 [node name="fol1_edit2" parent="." instance=ExtResource("23_80ho2")]
 transform = Transform3D(0.416593, 0.113581, -0.416593, -0.0803137, 0.589151, 0.0803137, 0.424264, 0, 0.424264, -1, 0, -2.78877)
+
+[node name="gravelwarningsound" type="AudioStreamPlayer3D" parent="."]
 
 [editable path="Player/lefthand/hand_left_rigged"]
 [editable path="Player/righthand/hand_right_rigged"]
