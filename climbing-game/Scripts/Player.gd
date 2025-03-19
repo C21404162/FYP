@@ -75,6 +75,12 @@ var last_grab_sound_index = -1
 @export var gravel_warning_sounds: Array[AudioStream] = []
 @onready var gravel_warning_sound = $"../gravelwarningsound"
 
+# Rock spawning variables
+@export var rock_scene: PackedScene  # Reference to a rock scene (e.g., a simple rock mesh)
+@export var rock_spawn_position: Vector3  # Position where the rock will fall from
+var rock_instance: RigidBody3D = null  # Track the active rock instance
+@onready var area_3d = $"../Map/Area3D"
+
 # Reach sounds
 @export var hand_reach_sounds: Array[AudioStream] = []
 @onready var hand_reach_sound = $hand_reach_sound
@@ -114,6 +120,25 @@ func _ready():
 	camera.fov = GameManager.fov
 	GameManager.connect("fov_updated", Callable(self, "_on_fov_updated"))
 	
+	if area_3d:
+		area_3d.collision_mask = 1 | 4  # Include Layers 1 and 4
+	if area_3d:
+		area_3d.connect("body_entered", Callable(self, "_on_area_3d_body_entered"))
+	print("Area3D collision layer:", area_3d.collision_layer)
+	print("Area3D collision mask:", area_3d.collision_mask)
+	print("Player collision layer:", collision_layer)
+	print("Player collision mask:", collision_mask)
+	print("Player is a physics body:", self is PhysicsBody3D)
+	
+	setup_hands()
+	print("Player collision layer after setup_hands():", collision_layer)  # Debug: Check the player's collision layer
+	print("Player collision mask after setup_hands():", collision_mask)  # Debug: Check the player's collision mask
+	if area_3d:
+		print("Area3D collision mask:", area_3d.collision_mask)  # Debug: Check the Area3D's collision mask
+	else:
+		print("Area3D node not found!")  # Debug: Check if the Area3D node is missing
+
+	
 	SENSITIVITY = game_manager.sensitivity
 	game_manager.connect("sensitivity_updated", Callable(self, "_on_sensitivity_updated"))
 	
@@ -131,7 +156,6 @@ func _ready():
 	
 	# Cam setup
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-	setup_hands()
 	left_hand_initial_offset = left_hand.global_position - camera.global_position
 	right_hand_initial_offset = right_hand.global_position - camera.global_position
 	setup_game_manager_connection()
@@ -186,8 +210,10 @@ func setup_hands():
 	left_hand.collision_mask = LAYER_WORLD
 	right_hand.collision_layer = LAYER_HANDS
 	right_hand.collision_mask = LAYER_WORLD
+	
+	# Update the player's collision mask to include Layer 1 (Area3D's layer)
 	collision_layer = LAYER_PLAYER
-	collision_mask = LAYER_WORLD
+	collision_mask = LAYER_WORLD | 1  # Include Layer 1 in the mask
 	
 	left_hand.contact_monitor = true
 	right_hand.contact_monitor = true
@@ -281,6 +307,8 @@ func _physics_process(delta):
 		left_hand.global_transform.origin = grab_point_left
 	if right_hand_grabbing:
 		right_hand.global_transform.origin = grab_point_right
+	
+	check_area_collision()
 	
 	check_grab()
 	
@@ -556,7 +584,7 @@ func grab_object(hand_raycast: RayCast3D, is_left_hand: bool):
 			right_hand_grabbing = true
 			right_hand_rotation_locked = true
 		
-		velocity.y *= 0.5  # Preserve some initial momentum (adjust as needed)
+		velocity.y *= 0.1  # Preserve some initial momentum (adjust as needed)
 		
 		# Track grab time by surface, not by hand
 		var collider_id = collider.get_instance_id()
@@ -688,7 +716,6 @@ func update_hand_position(hand: RigidBody3D, target: Vector3, delta: float):
 		var adjusted_target = hand.global_position + movement_direction * collision.get_remainder().length()
 		hand.global_position = hand.global_position.lerp(adjusted_target, delta * hand_smoothing)
 	else:
-		# If no collision, smoothly interpolate to the target position
 		hand.global_position = hand.global_position.lerp(target, delta * hand_smoothing)
 
 func update_hand_rotations(delta):
@@ -728,3 +755,78 @@ func play_gravel_warning_sound(collider: Node):
 		gravel_warning_sound.volume_db = volume_db
 		gravel_warning_sound.global_transform.origin = collider.global_transform.origin
 		gravel_warning_sound.play()
+
+func _on_area_3d_body_entered(body):
+	print("Area3D entered by:", body.name)  # Debug: Check which body entered the area
+	if body == self:  # Check if the player entered the area
+		spawn_rock()
+
+func check_area_collision():
+	if area_3d and area_3d.overlaps_body(self):
+		print("Player is inside Area3D!")  # Debug: Check if the player is inside the Area3D
+		if not rock_instance:  # Spawn rock only if it doesn't already exist
+			spawn_rock()
+
+func spawn_rock():
+	if rock_instance:  # Don't spawn a new rock if one already exists
+		print("Rock already exists.")
+		return
+	
+	if not rock_scene:
+		print("Rock scene is not assigned!")
+		return
+	
+	# Instantiate the rock scene
+	var rock_node = rock_scene.instantiate()
+	
+	# Find the RigidBody3D child node
+	var rigid_body = rock_node.find_child("RigidBody3D")  # Replace "RigidBody3D" with the actual name of your RigidBody3D node
+	if rigid_body is RigidBody3D:
+		rock_instance = rigid_body  # Assign the RigidBody3D to rock_instance
+		get_parent().add_child(rock_node)  # Add the entire rock scene to the parent
+		print("Rock spawned at:", rock_spawn_position)
+		
+		# Set the rock's initial position
+		rock_instance.global_position = rock_spawn_position
+		
+		# Apply initial velocity to make the rock fall slower
+		rock_instance.linear_velocity = Vector3(0, -2, 0)  # Reduced y velocity
+		
+		# Reduce the effect of gravity on the rock
+		rock_instance.gravity_scale = 0.5  # Half the gravity effect
+		
+		# Connect to the rock's tree_exited signal to reset the rock instance
+		rock_instance.connect("tree_exited", Callable(self, "_on_rock_destroyed"))
+		
+		# Connect to the rock's custom hit_player signal
+		rock_instance.connect("hit_player", Callable(self, "_on_rock_hit_player"))
+	else:
+		print("RigidBody3D child not found in rock scene!")
+		
+func _on_rock_hit_player(body: Node):
+	if body == self:  # Check if the colliding body is the player
+		print("Rock hit the player! Releasing grab...")
+		
+		# Release both hands if they are grabbing something
+		if left_hand_grabbing:
+			release_grab(true)  # Release left hand
+		if right_hand_grabbing:
+			release_grab(false)  # Release right hand
+
+func _on_rock_destroyed():
+	rock_instance = null  # Reset the rock instance
+	print("Rock destroyed.")  # Debug: Check if the rock is destroyed
+
+func check_rock_collision():
+	if rock_instance:
+		var collision = get_last_slide_collision()
+		if collision:
+			var collider = collision.get_collider()
+			if collider == rock_instance:
+				handle_rock_collision()
+
+func handle_rock_collision():
+	print("Hit by rock!")
+	# Apply knockback or damage
+	velocity += Vector3(randf_range(-5, 5), randf_range(5, 10), randf_range(-5, 5))  # Example knockback
+	# You can also reduce player health or trigger a death/respawn mechanic
