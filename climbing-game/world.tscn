@@ -1,4 +1,4 @@
-[gd_scene load_steps=88 format=3 uid="uid://daea0cguij4h2"]
+[gd_scene load_steps=90 format=3 uid="uid://daea0cguij4h2"]
 
 [ext_resource type="Material" uid="uid://rt8kwy52hryb" path="res://Materials/highlight.tres" id="1_lgiqj"]
 [ext_resource type="Script" path="res://Scripts/world.gd" id="1_q6rjl"]
@@ -22,6 +22,7 @@
 [ext_resource type="PackedScene" uid="uid://etpli0c68lgh" path="res://Models/hand_left_rigged.glb" id="17_mo8ux"]
 [ext_resource type="AudioStream" uid="uid://bgavthye0s68p" path="res://Sounds/SFX/gravel2.wav" id="17_qpw5a"]
 [ext_resource type="AudioStream" uid="uid://d22yewk558711" path="res://Sounds/Music/ambience_cave.mp3" id="18_6hcjt"]
+[ext_resource type="PackedScene" uid="uid://coo8lkytjjd5s" path="res://rock_scene.tscn" id="18_b0ql3"]
 [ext_resource type="AudioStream" uid="uid://chc0p6cm6070n" path="res://Sounds/SFX/reach2.mp3" id="18_ql2o4"]
 [ext_resource type="PackedScene" uid="uid://dlldw6fqobr1n" path="res://Models/hand_right_rigged.glb" id="19_icmgn"]
 [ext_resource type="AudioStream" uid="uid://neoe0qvse0ea" path="res://Sounds/SFX/reach3.mp3" id="19_iian6"]
@@ -199,6 +200,8 @@ uv1_triplanar = true
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4nmou"]
 albedo_texture = ExtResource("3_umbod")
 uv1_triplanar = true
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_vyqc8"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_4n5t3"]
 radius = 0.3
@@ -1653,6 +1656,12 @@ use_collision = true
 radius = 0.301674
 material = SubResource("StandardMaterial3D_ulsda")
 
+[node name="CSGSphere3D48" type="CSGSphere3D" parent="Map" groups=["Climbable"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.92794, 111.393, -0.37522)
+use_collision = true
+radius = 0.301674
+material = SubResource("StandardMaterial3D_ulsda")
+
 [node name="char_1" type="CSGSphere3D" parent="Map" groups=["Interactable"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1.5, -2.5)
 use_collision = true
@@ -1876,11 +1885,22 @@ use_collision = true
 size = Vector3(0.710815, 0.320435, 2.5)
 material = SubResource("StandardMaterial3D_knbx5")
 
+[node name="Area3D" type="Area3D" parent="Map"]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 113.5, 0)
+collision_mask = 256
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Map/Area3D"]
+shape = SubResource("BoxShape3D_vyqc8")
+
+[node name="rock_scene" parent="Map/Area3D" instance=ExtResource("18_b0ql3")]
+
 [node name="Player" type="CharacterBody3D" parent="."]
 script = ExtResource("1_vwaj1")
 grab_sounds = Array[AudioStream]([ExtResource("15_hj3ll"), ExtResource("13_k2b4s"), ExtResource("14_fw5k0")])
 rock_break_sounds = Array[AudioStream]([ExtResource("21_l2y3y"), ExtResource("16_5eljq")])
 gravel_warning_sounds = Array[AudioStream]([ExtResource("16_wagte"), ExtResource("17_qpw5a")])
+rock_scene = ExtResource("18_b0ql3")
+rock_spawn_position = Vector3(0, 140, 0)
 hand_reach_sounds = Array[AudioStream]([ExtResource("17_6qyhe"), ExtResource("18_ql2o4"), ExtResource("19_iian6")])
 landing_sounds = Array[AudioStream]([ExtResource("20_rexxv"), ExtResource("21_66pq6"), ExtResource("22_fq2a6"), ExtResource("23_7jinl")])
 wind_woosh_sounds = Array[AudioStream]([ExtResource("20_adhi5"), ExtResource("21_07f3h")])
@@ -2117,6 +2137,8 @@ transform = Transform3D(0.424264, 0, -0.424264, -0.104678, 0.581451, -0.104678, 
 transform = Transform3D(0.416593, 0.113581, -0.416593, -0.0803137, 0.589151, 0.0803137, 0.424264, 0, 0.424264, -1, 0, -2.78877)
 
 [node name="gravelwarningsound" type="AudioStreamPlayer3D" parent="."]
+
+[connection signal="body_entered" from="Map/Area3D" to="Player" method="_on_area_3d_body_entered"]
 
 [editable path="Player/lefthand/hand_left_rigged"]
 [editable path="Player/righthand/hand_right_rigged"]
