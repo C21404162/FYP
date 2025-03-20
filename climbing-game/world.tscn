@@ -1,4 +1,4 @@
-[gd_scene load_steps=90 format=3 uid="uid://daea0cguij4h2"]
+[gd_scene load_steps=91 format=3 uid="uid://daea0cguij4h2"]
 
 [ext_resource type="Material" uid="uid://rt8kwy52hryb" path="res://Materials/highlight.tres" id="1_lgiqj"]
 [ext_resource type="Script" path="res://Scripts/world.gd" id="1_q6rjl"]
@@ -34,6 +34,7 @@
 [ext_resource type="AudioStream" uid="uid://dkx22fn5swsh0" path="res://Sounds/SFX/landing_sound3.mp3" id="22_fq2a6"]
 [ext_resource type="AudioStream" uid="uid://b37cmqut0xsci" path="res://Sounds/SFX/landing_sound4.mp3" id="23_7jinl"]
 [ext_resource type="PackedScene" uid="uid://b8wksvfw0gewi" path="res://Models/Foliage/fol1_edit.glb" id="23_80ho2"]
+[ext_resource type="AudioStream" uid="uid://d16aq8r6d6ybt" path="res://Sounds/SFX/rockfall.mp3" id="31_atyem"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5qhtx"]
 albedo_texture = ExtResource("3_umbod")
@@ -1662,6 +1663,12 @@ use_collision = true
 radius = 0.301674
 material = SubResource("StandardMaterial3D_ulsda")
 
+[node name="CSGSphere3D49" type="CSGSphere3D" parent="Map" groups=["Climbable"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.07206, 114.393, -0.37522)
+use_collision = true
+radius = 0.301674
+material = SubResource("StandardMaterial3D_ulsda")
+
 [node name="char_1" type="CSGSphere3D" parent="Map" groups=["Interactable"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1.5, -2.5)
 use_collision = true
@@ -2050,6 +2057,9 @@ draw_pass_1 = SubResource("SphereMesh_icc2d")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 
 [node name="hand_reach_sound" type="AudioStreamPlayer3D" parent="Player"]
+
+[node name="rockfall" type="AudioStreamPlayer3D" parent="Player"]
+stream = ExtResource("31_atyem")
 
 [node name="Node3D" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 1.2, -0.6)

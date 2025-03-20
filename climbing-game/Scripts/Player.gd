@@ -75,11 +75,17 @@ var last_grab_sound_index = -1
 @export var gravel_warning_sounds: Array[AudioStream] = []
 @onready var gravel_warning_sound = $"../gravelwarningsound"
 
+@onready var rockfall_sound = $rockfall  # Reference to the rockfall audio file
+
 # Rock spawning variables
-@export var rock_scene: PackedScene  # Reference to a rock scene (e.g., a simple rock mesh)
+@export var rock_scene: PackedScene  # Reference to a rock scene 
 @export var rock_spawn_position: Vector3  # Position where the rock will fall from
 var rock_instance: RigidBody3D = null  # Track the active rock instance
 @onready var area_3d = $"../Map/Area3D"
+
+var left_hand_cooldown = 0.0
+var right_hand_cooldown = 0.0
+const GRAB_COOLDOWN_TIME = 0.3  # Cooldown time in seconds
 
 # Reach sounds
 @export var hand_reach_sounds: Array[AudioStream] = []
@@ -291,32 +297,23 @@ func _unhandled_input(event):
 
 func _physics_process(delta):
 	
+	if left_hand_cooldown > 0:
+		left_hand_cooldown -= delta
+	if right_hand_cooldown > 0:
+		right_hand_cooldown -= delta
+
+	# Existing collision check
 	var collision = get_last_slide_collision()
 	if collision:
 		var collider = collision.get_collider()
-		print("Player collided with:", collider.name)  # Debug: Check what the player collided with
 		if collider and collider.is_in_group("rock"):  # Ensure the rock is in the "Rock" group
-			if landing_sounds.size() > 0:
-				var random_index = randi() % landing_sounds.size()
-				# Ensure the same sound isn't played twice in a row
-				while random_index == last_landing_sound_index:
-					random_index = randi() % landing_sounds.size()
-				last_landing_sound_index = random_index
-
-				# Set random pitch and volume
-				var pitch = randf_range(1.0, 1.2)  # Random pitch between 0.9 and 1.1
-				var volume_db = -25  # Adjust volume as needed
-
-				# Play the sound
-				landing_sound.stream = landing_sounds[random_index]
-				landing_sound.volume_db = volume_db
-				landing_sound.pitch_scale = pitch
-				landing_sound.play()
 			print("Player collided with rock! Releasing grabs...")  # Debug: Confirm collision
 			if left_hand_grabbing:
 				release_grab(true)  # Release left hand
+				left_hand_cooldown = GRAB_COOLDOWN_TIME  # Start cooldown for left hand
 			if right_hand_grabbing:
 				release_grab(false)  # Release right hand
+				right_hand_cooldown = GRAB_COOLDOWN_TIME  # Start cooldown for right hand
 	
 	if left_hand_grabbing:
 		left_hand.global_transform.origin = grab_point_left
@@ -536,7 +533,7 @@ func handle_climbing(delta):
 
 func check_grab():
 	# Left hand grab logic
-	if left_hand_reaching and not left_hand_grabbing:
+	if left_hand_reaching and not left_hand_grabbing and left_hand_cooldown <= 0:
 		if left_hand_raycast.is_colliding():
 			var collider = left_hand_raycast.get_collider()
 			# Group check
@@ -553,7 +550,7 @@ func check_grab():
 					# grab_sound.play()
 
 	# Right hand grab logic
-	if right_hand_reaching and not right_hand_grabbing:
+	if right_hand_reaching and not right_hand_grabbing and right_hand_cooldown <= 0:
 		if right_hand_raycast.is_colliding():
 			var collider = right_hand_raycast.get_collider()
 			# Group check
@@ -786,6 +783,9 @@ func spawn_rock():
 		print("Rock already exists.")
 		return
 	
+	if not rock_scene:
+		print("Rock scene is not assigned!")
+		return
 	
 	# Instantiate the rock scene
 	var rock_node = rock_scene.instantiate()
@@ -808,6 +808,17 @@ func spawn_rock():
 		
 		# Connect to the rock's tree_exited signal to reset the rock instance
 		rock_instance.connect("tree_exited", Callable(self, "_on_rock_destroyed"))
+		
+		# Mark the rock as spawned
+		print("Rock spawned for the first time.")  # Debug: Confirm rock spawning
+		
+		# Play the rockfall sound with pitch variance
+		if rockfall_sound:
+			var pitch = randf_range(0.9, 1.1)  # Random pitch between 0.9 and 1.1
+			var volume_db = -35  # Adjust volume as needed
+			rockfall_sound.pitch_scale = pitch
+			rockfall_sound.volume_db = volume_db
+			rockfall_sound.play()
 
 func _on_rock_destroyed():
 	rock_instance = null  # Reset the rock instance
