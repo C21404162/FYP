@@ -1,20 +1,26 @@
-[gd_scene load_steps=4 format=3 uid="uid://coo8lkytjjd5s"]
+[gd_scene load_steps=6 format=3 uid="uid://coo8lkytjjd5s"]
 
 [ext_resource type="Script" path="res://rock.gd" id="1_avbhv"]
+[ext_resource type="Texture2D" uid="uid://dxn03o3k6f8d2" path="res://Textures/shitwall.png" id="2_uul3g"]
 
-[sub_resource type="BoxMesh" id="BoxMesh_t425t"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mli5r"]
+albedo_texture = ExtResource("2_uul3g")
+uv1_triplanar = true
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_5hqun"]
+[sub_resource type="SphereMesh" id="SphereMesh_q7ygc"]
+material = SubResource("StandardMaterial3D_mli5r")
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_g3oud"]
 
 [node name="rock_scene" type="Node3D"]
 
-[node name="RigidBody3D" type="RigidBody3D" parent="."]
+[node name="RigidBody3D" type="RigidBody3D" parent="." groups=["rock"]]
 script = ExtResource("1_avbhv")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="RigidBody3D"]
-mesh = SubResource("BoxMesh_t425t")
+mesh = SubResource("SphereMesh_q7ygc")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D"]
-shape = SubResource("BoxShape3D_5hqun")
+shape = SubResource("SphereShape3D_g3oud")
 
 [connection signal="body_entered" from="RigidBody3D" to="RigidBody3D" method="_on_body_entered"]
