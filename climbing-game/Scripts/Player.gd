@@ -124,21 +124,9 @@ func _ready():
 		area_3d.collision_mask = 1 | 4  # Include Layers 1 and 4
 	if area_3d:
 		area_3d.connect("body_entered", Callable(self, "_on_area_3d_body_entered"))
-	print("Area3D collision layer:", area_3d.collision_layer)
-	print("Area3D collision mask:", area_3d.collision_mask)
-	print("Player collision layer:", collision_layer)
-	print("Player collision mask:", collision_mask)
-	print("Player is a physics body:", self is PhysicsBody3D)
 	
 	setup_hands()
-	print("Player collision layer after setup_hands():", collision_layer)  # Debug: Check the player's collision layer
-	print("Player collision mask after setup_hands():", collision_mask)  # Debug: Check the player's collision mask
-	if area_3d:
-		print("Area3D collision mask:", area_3d.collision_mask)  # Debug: Check the Area3D's collision mask
-	else:
-		print("Area3D node not found!")  # Debug: Check if the Area3D node is missing
 
-	
 	SENSITIVITY = game_manager.sensitivity
 	game_manager.connect("sensitivity_updated", Callable(self, "_on_sensitivity_updated"))
 	
@@ -302,6 +290,33 @@ func _unhandled_input(event):
 			collision_mask = LAYER_WORLD
 
 func _physics_process(delta):
+	
+	var collision = get_last_slide_collision()
+	if collision:
+		var collider = collision.get_collider()
+		print("Player collided with:", collider.name)  # Debug: Check what the player collided with
+		if collider and collider.is_in_group("rock"):  # Ensure the rock is in the "Rock" group
+			if landing_sounds.size() > 0:
+				var random_index = randi() % landing_sounds.size()
+				# Ensure the same sound isn't played twice in a row
+				while random_index == last_landing_sound_index:
+					random_index = randi() % landing_sounds.size()
+				last_landing_sound_index = random_index
+
+				# Set random pitch and volume
+				var pitch = randf_range(1.0, 1.2)  # Random pitch between 0.9 and 1.1
+				var volume_db = -25  # Adjust volume as needed
+
+				# Play the sound
+				landing_sound.stream = landing_sounds[random_index]
+				landing_sound.volume_db = volume_db
+				landing_sound.pitch_scale = pitch
+				landing_sound.play()
+			print("Player collided with rock! Releasing grabs...")  # Debug: Confirm collision
+			if left_hand_grabbing:
+				release_grab(true)  # Release left hand
+			if right_hand_grabbing:
+				release_grab(false)  # Release right hand
 	
 	if left_hand_grabbing:
 		left_hand.global_transform.origin = grab_point_left
@@ -763,7 +778,6 @@ func _on_area_3d_body_entered(body):
 
 func check_area_collision():
 	if area_3d and area_3d.overlaps_body(self):
-		print("Player is inside Area3D!")  # Debug: Check if the player is inside the Area3D
 		if not rock_instance:  # Spawn rock only if it doesn't already exist
 			spawn_rock()
 
@@ -772,9 +786,6 @@ func spawn_rock():
 		print("Rock already exists.")
 		return
 	
-	if not rock_scene:
-		print("Rock scene is not assigned!")
-		return
 	
 	# Instantiate the rock scene
 	var rock_node = rock_scene.instantiate()
@@ -797,36 +808,7 @@ func spawn_rock():
 		
 		# Connect to the rock's tree_exited signal to reset the rock instance
 		rock_instance.connect("tree_exited", Callable(self, "_on_rock_destroyed"))
-		
-		# Connect to the rock's custom hit_player signal
-		rock_instance.connect("hit_player", Callable(self, "_on_rock_hit_player"))
-	else:
-		print("RigidBody3D child not found in rock scene!")
-		
-func _on_rock_hit_player(body: Node):
-	if body == self:  # Check if the colliding body is the player
-		print("Rock hit the player! Releasing grab...")
-		
-		# Release both hands if they are grabbing something
-		if left_hand_grabbing:
-			release_grab(true)  # Release left hand
-		if right_hand_grabbing:
-			release_grab(false)  # Release right hand
 
 func _on_rock_destroyed():
 	rock_instance = null  # Reset the rock instance
 	print("Rock destroyed.")  # Debug: Check if the rock is destroyed
-
-func check_rock_collision():
-	if rock_instance:
-		var collision = get_last_slide_collision()
-		if collision:
-			var collider = collision.get_collider()
-			if collider == rock_instance:
-				handle_rock_collision()
-
-func handle_rock_collision():
-	print("Hit by rock!")
-	# Apply knockback or damage
-	velocity += Vector3(randf_range(-5, 5), randf_range(5, 10), randf_range(-5, 5))  # Example knockback
-	# You can also reduce player health or trigger a death/respawn mechanic
