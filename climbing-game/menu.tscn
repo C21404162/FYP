@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3 uid="uid://cw5ty64yjmos8"]
+[gd_scene load_steps=30 format=3 uid="uid://cw5ty64yjmos8"]
 
 [ext_resource type="Script" path="res://Scripts/menu.gd" id="1_3ru06"]
 [ext_resource type="PackedScene" uid="uid://8qoj8306fs56" path="res://Models/well_model.glb" id="2_3qr0f"]
@@ -17,6 +17,7 @@
 [ext_resource type="AudioStream" uid="uid://chwnm5uwcahta" path="res://Sounds/Music/forest_sounds.mp3" id="14_05xk2"]
 [ext_resource type="PackedScene" uid="uid://b8wksvfw0gewi" path="res://Models/Foliage/fol1_edit.glb" id="16_3py14"]
 [ext_resource type="PackedScene" uid="uid://ceu435mpplepa" path="res://Models/Foliage/fol3_noback_edit.glb" id="17_bl3t0"]
+[ext_resource type="Texture2D" uid="uid://3t1ckcdb2quh" path="res://Fonts/titleactual.png" id="18_28pvu"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_iw7r8"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -592,6 +593,10 @@ text = "Sensitivity"
 [node name="Back" type="Button" parent="options_panel/VBoxContainer"]
 layout_mode = 2
 text = "Back"
+
+[node name="Titleactual" type="Sprite2D" parent="."]
+position = Vector2(1000, -750)
+texture = ExtResource("18_28pvu")
 
 [connection signal="mouse_entered" from="VBoxContainer/continue" to="." method="_on_mouse_entered_continue"]
 [connection signal="mouse_exited" from="VBoxContainer/continue" to="." method="_on_continue_mouse_exited"]
