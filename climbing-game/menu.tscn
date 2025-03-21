@@ -587,7 +587,7 @@ value = 0.001
 
 [node name="Label2" type="Label" parent="options_panel/VBoxContainer"]
 layout_mode = 2
-text = "SENS"
+text = "Sensitivity"
 
 [node name="Back" type="Button" parent="options_panel/VBoxContainer"]
 layout_mode = 2
