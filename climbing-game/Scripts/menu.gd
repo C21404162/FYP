@@ -84,7 +84,7 @@ func _on_start_pressed() -> void:
 
 	if Camera:
 		Camera.reset_camera_smoothly(0.8)  
-		await get_tree().create_timer(0.8).timeout  
+		await get_tree().create_timer(0.8).timeout  	
 
 	# Play the animation
 	animation_player.play("camera_into_well")
