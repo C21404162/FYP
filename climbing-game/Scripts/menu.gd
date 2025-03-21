@@ -82,12 +82,9 @@ func _on_start_pressed() -> void:
 	create_tween().tween_property($VBoxContainer/start, "position:x", $VBoxContainer/start.position.x, 0.05).set_trans(Tween.TRANS_SINE).set_delay(0.1)
 	await get_tree().create_timer(0.10).timeout
 
-	# Smoothly reset the camera's position and rotation
 	if Camera:
-		Camera.reset_camera_smoothly(0.8)  # Adjust duration as needed
-		await get_tree().create_timer(0.8).timeout  # Wait for the reset to complete
-	else:
-		print("Error: Camera node is not initialized!")
+		Camera.reset_camera_smoothly(0.8)  
+		await get_tree().create_timer(0.8).timeout  
 
 	# Play the animation
 	animation_player.play("camera_into_well")
@@ -180,10 +177,7 @@ func _on_back_pressed() -> void:
 func _on_fov_slider_value_changed(value: float) -> void:
 	game_manager.set_fov(value)
 	fov_label.text = "Fov: %.0f" % fov_slider.value
-	print("FOVCHANGED")
-
 
 func _on_sens_slider_value_changed(value: float) -> void:
 	game_manager.set_sensitivity(value)
 	sensitivity_label.text = "Sensitivity: %.3f" % sensitivity_slider.value
-	print("Sensitivity changed to: ", value)
