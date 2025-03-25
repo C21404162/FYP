@@ -10,7 +10,9 @@ extends Control
 @onready var sensitivity_slider = $options_panel/VBoxContainer/HSlider
 @onready var sensitivity_label = $options_panel/VBoxContainer/Label2
 
+
 func _ready():
+	
 	#Hide the pause menu and options panel when the scene starts
 	pause_panel.hide()
 	options_panel.hide()

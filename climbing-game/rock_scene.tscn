@@ -14,13 +14,13 @@ material = SubResource("StandardMaterial3D_mli5r")
 
 [node name="rock_scene" type="Node3D"]
 
-[node name="RigidBody3D" type="RigidBody3D" parent="." groups=["rock"]]
+[node name="RigidBody3D" type="RigidBody3D" parent="." groups=["Climbable", "rock"]]
 script = ExtResource("1_avbhv")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="RigidBody3D"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="RigidBody3D" groups=["Climbable"]]
 mesh = SubResource("SphereMesh_q7ygc")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D" groups=["Climbable"]]
 shape = SubResource("SphereShape3D_g3oud")
 
 [connection signal="body_entered" from="RigidBody3D" to="RigidBody3D" method="_on_body_entered"]

@@ -40,6 +40,10 @@ var original_camera_position: Vector3
 @onready var ogham_label_exit: Label = $VBoxContainer/exit/ogham_label_exit
 @onready var english_label_exit: Label = $VBoxContainer/exit/english_label_exit
 
+func _on_speedrun_checkbox_toggled(button_pressed):
+	# Just update the mode, no UI updates needed in menu
+	GameManager.speedrun_mode = button_pressed
+
 func _ready() -> void:
 	
 	if forest_ambience:
@@ -48,6 +52,9 @@ func _ready() -> void:
 	self.modulate = Color(1, 1, 1, 0)
 	fade_color_rect.modulate = Color(1, 1, 1, 0)
 	create_tween().tween_property(self, "modulate", Color(1, 1, 1, 1), 1.65)
+	
+	$options_panel/VBoxContainer/SpeedrunCheckbox.button_pressed = GameManager.speedrun_mode
+	$options_panel/VBoxContainer/SpeedrunCheckbox.toggled.connect(_on_speedrun_checkbox_toggled)
 	
 	options_panel.hide()
 	
@@ -131,6 +138,8 @@ func _on_mouse_entered_continue() -> void:
 		play_hover_sound()
 
 func _on_continue_pressed() -> void:
+	GameManager.speedrun_mode = false
+	print("LOADING GAME (Speedrun disabled for continues)")
 	print("LOADING GAME")
 	game_manager.load_game_data()
 	print("LOADED")
