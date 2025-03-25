@@ -1,4 +1,4 @@
-[gd_scene load_steps=91 format=3 uid="uid://daea0cguij4h2"]
+[gd_scene load_steps=93 format=3 uid="uid://daea0cguij4h2"]
 
 [ext_resource type="Material" uid="uid://rt8kwy52hryb" path="res://Materials/highlight.tres" id="1_lgiqj"]
 [ext_resource type="Script" path="res://Scripts/world.gd" id="1_q6rjl"]
@@ -1252,6 +1252,10 @@ _data = {
 "fade_in": SubResource("Animation_xbo6g")
 }
 
+[sub_resource type="BoxMesh" id="BoxMesh_reibu"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_fjfua"]
+
 [node name="World" type="Node3D"]
 script = ExtResource("1_q6rjl")
 
@@ -2147,6 +2151,20 @@ transform = Transform3D(0.424264, 0, -0.424264, -0.104678, 0.581451, -0.104678, 
 transform = Transform3D(0.416593, 0.113581, -0.416593, -0.0803137, 0.589151, 0.0803137, 0.424264, 0, 0.424264, -1, 0, -2.78877)
 
 [node name="gravelwarningsound" type="AudioStreamPlayer3D" parent="."]
+
+[node name="RigidBody3D" type="RigidBody3D" parent="." groups=["Climbable"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 4, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="RigidBody3D"]
+mesh = SubResource("BoxMesh_reibu")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D"]
+shape = SubResource("BoxShape3D_fjfua")
+
+[node name="SpeedrunTimer" type="Label" parent="."]
+custom_minimum_size = Vector2(200, 100)
+offset_right = 40.0
+offset_bottom = 23.0
 
 [connection signal="body_entered" from="Map/Area3D" to="Player" method="_on_area_3d_body_entered"]
 

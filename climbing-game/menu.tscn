@@ -594,6 +594,13 @@ text = "Sensitivity"
 layout_mode = 2
 text = "Back"
 
+[node name="Label3" type="Label" parent="options_panel/VBoxContainer"]
+layout_mode = 2
+text = "Speedrun Mode"
+
+[node name="SpeedrunCheckbox" type="CheckBox" parent="options_panel/VBoxContainer"]
+layout_mode = 2
+
 [node name="Titleactual" type="Sprite2D" parent="."]
 position = Vector2(1000, -750)
 texture = ExtResource("18_28pvu")

@@ -5,11 +5,14 @@ extends Resource
 @export var player_rotation: Basis = Basis()
 @export var fov = 75.0
 @export var sensitivity = 0.001
+@export var speedrun_mode: bool = false
+@export var best_time: float = 0.0
 
 const SAVE_GAME_PATH := "user://savegame.tres"
 
 func write_savegame() -> bool:
 	print("Attempting to save game data...")
+	print("Saving speedrun mode: ", speedrun_mode, " best time: ", best_time)
 	print("Position to save: ", player_position)
 	print("Rotation to save: ", player_rotation)
 	print("FOV to save: ", fov) 
