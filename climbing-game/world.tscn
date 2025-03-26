@@ -1,4 +1,4 @@
-[gd_scene load_steps=96 format=3 uid="uid://daea0cguij4h2"]
+[gd_scene load_steps=97 format=3 uid="uid://daea0cguij4h2"]
 
 [ext_resource type="Material" uid="uid://rt8kwy52hryb" path="res://Materials/highlight.tres" id="1_lgiqj"]
 [ext_resource type="Script" path="res://Scripts/world.gd" id="1_q6rjl"]
@@ -213,6 +213,10 @@ uv1_triplanar = true
 [sub_resource type="BoxShape3D" id="BoxShape3D_vyqc8"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ag44b"]
+albedo_texture = ExtResource("8_w86qp")
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tr2k8"]
 albedo_texture = ExtResource("8_w86qp")
 uv1_triplanar = true
 
@@ -1788,9 +1792,9 @@ size = Vector3(0.5, 0.5, 1)
 material = SubResource("StandardMaterial3D_oq7pb")
 
 [node name="CSGBox3D16" type="CSGBox3D" parent="Map" groups=["Breakable", "Climbable"]]
-transform = Transform3D(0.506236, 0.262883, -0.821351, -0.0669873, 0.961516, 0.266457, 0.85979, -0.0798699, 0.504364, -0.817275, 26.0343, 2.53566)
+transform = Transform3D(0.506236, 0.262883, -0.821351, 0.371882, 0.792762, 0.482941, 0.778094, -0.549927, 0.303564, -0.390062, 26.3293, 3.2161)
 use_collision = true
-size = Vector3(0.5, 0.316284, 2)
+size = Vector3(0.76709, 0.5, 0.618164)
 material = SubResource("StandardMaterial3D_oq7pb")
 
 [node name="CSGBox3D18" type="CSGBox3D" parent="Map" groups=["Breakable", "Climbable"]]
@@ -2023,12 +2027,6 @@ transform = Transform3D(1, 0, 0, 0, 0.866026, 0.5, 0, -0.5, 0.866025, -0.0784807
 size = Vector3(3.5, 0.295898, 4.5)
 material = SubResource("StandardMaterial3D_753br")
 
-[node name="CSGBox3D32" type="CSGBox3D" parent="Map/CSGCylinder3D3"]
-transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, -5.96046e-08, -0.0784807, 42.3507, -3.05669)
-operation = 2
-size = Vector3(2.5, 1.5, 2.5)
-material = SubResource("StandardMaterial3D_753br")
-
 [node name="CSGBox3D27" type="CSGBox3D" parent="Map/CSGCylinder3D3"]
 transform = Transform3D(-4.37114e-08, -1, 4.37114e-08, 0, -4.37114e-08, -1, 1, -4.37114e-08, 1.91069e-15, 1.72331, 36.8951, -4.92361)
 size = Vector3(4.1759, 0.450317, 16)
@@ -2081,7 +2079,7 @@ shape = SubResource("BoxShape3D_vyqc8")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 145.5, 0)
 use_collision = true
 radius = 3.5
-height = 4.0
+height = 5.0
 sides = 13
 material = SubResource("StandardMaterial3D_ag44b")
 
@@ -2091,6 +2089,12 @@ use_collision = true
 radius = 3.0
 height = 5.0
 material = SubResource("StandardMaterial3D_ag44b")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="Map/CSGCylinder3D4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, -2.75)
+operation = 2
+size = Vector3(3, 3.5, 1.5)
+material = SubResource("StandardMaterial3D_tr2k8")
 
 [node name="Player" type="CharacterBody3D" parent="."]
 script = ExtResource("1_vwaj1")
