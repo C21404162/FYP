@@ -309,9 +309,11 @@ func _physics_process(delta):
 		if collider and collider.is_in_group("rock"):  # Ensure the rock is in the "Rock" group
 			print("Player collided with rock! Releasing grabs...")  # Debug: Confirm collision
 			if left_hand_grabbing:
+				hand_animation_player_left.play("default")
 				release_grab(true)  # Release left hand
 				left_hand_cooldown = GRAB_COOLDOWN_TIME  # Start cooldown for left hand
 			if right_hand_grabbing:
+				hand_animation_player_right.play("default")
 				release_grab(false)  # Release right hand
 				right_hand_cooldown = GRAB_COOLDOWN_TIME  # Start cooldown for right hand
 	

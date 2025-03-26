@@ -1,4 +1,4 @@
-[gd_scene load_steps=93 format=3 uid="uid://daea0cguij4h2"]
+[gd_scene load_steps=96 format=3 uid="uid://daea0cguij4h2"]
 
 [ext_resource type="Material" uid="uid://rt8kwy52hryb" path="res://Materials/highlight.tres" id="1_lgiqj"]
 [ext_resource type="Script" path="res://Scripts/world.gd" id="1_q6rjl"]
@@ -194,6 +194,14 @@ uv1_triplanar = true
 albedo_texture = ExtResource("8_w86qp")
 uv1_triplanar = true
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_753br"]
+albedo_texture = ExtResource("8_w86qp")
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_a46bi"]
+albedo_texture = ExtResource("8_w86qp")
+uv1_triplanar = true
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_knbx5"]
 albedo_texture = ExtResource("3_umbod")
 uv1_triplanar = true
@@ -203,6 +211,10 @@ albedo_texture = ExtResource("3_umbod")
 uv1_triplanar = true
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_vyqc8"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ag44b"]
+albedo_texture = ExtResource("8_w86qp")
+uv1_triplanar = true
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_4n5t3"]
 radius = 0.3
@@ -1668,7 +1680,67 @@ radius = 0.301674
 material = SubResource("StandardMaterial3D_ulsda")
 
 [node name="CSGSphere3D49" type="CSGSphere3D" parent="Map" groups=["Climbable"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.07206, 114.393, -0.37522)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.07206, 112.893, -0.37522)
+use_collision = true
+radius = 0.301674
+material = SubResource("StandardMaterial3D_ulsda")
+
+[node name="CSGSphere3D50" type="CSGSphere3D" parent="Map" groups=["Climbable"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.71663, 115.893, -0.87522)
+use_collision = true
+radius = 0.301674
+material = SubResource("StandardMaterial3D_ulsda")
+
+[node name="CSGSphere3D51" type="CSGSphere3D" parent="Map" groups=["Climbable"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.283373, 118.893, -1.87522)
+use_collision = true
+radius = 0.301674
+material = SubResource("StandardMaterial3D_ulsda")
+
+[node name="CSGSphere3D54" type="CSGSphere3D" parent="Map" groups=["Climbable"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.78337, 121.893, -0.37522)
+use_collision = true
+radius = 0.301674
+material = SubResource("StandardMaterial3D_ulsda")
+
+[node name="CSGSphere3D52" type="CSGSphere3D" parent="Map" groups=["Climbable"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.283373, 128.393, -1.97563)
+use_collision = true
+radius = 0.301674
+material = SubResource("StandardMaterial3D_ulsda")
+
+[node name="CSGSphere3D53" type="CSGSphere3D" parent="Map" groups=["Climbable"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.283373, 129.893, 2.02437)
+use_collision = true
+radius = 0.301674
+material = SubResource("StandardMaterial3D_ulsda")
+
+[node name="CSGSphere3D55" type="CSGSphere3D" parent="Map" groups=["Climbable"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.21663, 132.893, 1.52437)
+use_collision = true
+radius = 0.301674
+material = SubResource("StandardMaterial3D_ulsda")
+
+[node name="CSGSphere3D57" type="CSGSphere3D" parent="Map" groups=["Climbable"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.216627, 143.893, -6.97563)
+use_collision = true
+radius = 0.301674
+material = SubResource("StandardMaterial3D_ulsda")
+
+[node name="CSGSphere3D58" type="CSGSphere3D" parent="Map" groups=["Climbable"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.783373, 145.981, -4.97563)
+use_collision = true
+radius = 0.301674
+material = SubResource("StandardMaterial3D_ulsda")
+
+[node name="CSGSphere3D59" type="CSGSphere3D" parent="Map" groups=["Climbable"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.716627, 146.791, -3.47563)
+use_collision = true
+radius = 0.301674
+material = SubResource("StandardMaterial3D_ulsda")
+
+[node name="CSGSphere3D56" type="CSGSphere3D" parent="Map" groups=["Climbable"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.21663, 132.893, 1.52437)
 use_collision = true
 radius = 0.301674
 material = SubResource("StandardMaterial3D_ulsda")
@@ -1751,11 +1823,59 @@ use_collision = true
 size = Vector3(0.5, 0.5, 0.521973)
 material = SubResource("StandardMaterial3D_oq7pb")
 
+[node name="CSGBox3D27" type="CSGBox3D" parent="Map" groups=["Breakable", "Climbable"]]
+transform = Transform3D(0.773035, -0.503444, 0.385955, 0.440846, 0.863833, 0.243817, -0.456149, -0.0183325, 0.889715, -0.268534, 125.071, 2.04861)
+use_collision = true
+size = Vector3(0.315552, 0.269531, 2)
+material = SubResource("StandardMaterial3D_oq7pb")
+
+[node name="CSGBox3D28" type="CSGBox3D" parent="Map" groups=["Breakable", "Climbable"]]
+transform = Transform3D(0.441393, -0.445162, 0.779104, 0.440846, 0.863833, 0.243817, -0.781554, 0.235846, 0.577538, 1.73147, 126.071, 1.04861)
+use_collision = true
+size = Vector3(0.315552, 0.269531, 2)
+material = SubResource("StandardMaterial3D_oq7pb")
+
+[node name="CSGBox3D29" type="CSGBox3D" parent="Map" groups=["Breakable", "Climbable"]]
+transform = Transform3D(-0.456149, -0.0183325, 0.889715, 0.440846, 0.863833, 0.243817, -0.773035, 0.503444, -0.385955, 1.73147, 127.071, -1.45139)
+use_collision = true
+size = Vector3(0.315552, 0.269531, 2)
+material = SubResource("StandardMaterial3D_oq7pb")
+
+[node name="CSGBox3D30" type="CSGBox3D" parent="Map" groups=["Breakable", "Climbable"]]
+transform = Transform3D(-0.869164, 0.343026, 0.356212, 0.440846, 0.863833, 0.243817, -0.224072, 0.368952, -0.902035, 0.55336, 134.949, -7.00037)
+use_collision = true
+size = Vector3(0.315552, 0.269531, 1)
+material = SubResource("StandardMaterial3D_oq7pb")
+
+[node name="CSGBox3D31" type="CSGBox3D" parent="Map" groups=["Breakable", "Climbable"]]
+transform = Transform3D(0.0085192, 0.267599, -0.963493, 0.440846, 0.863833, 0.243817, 0.897543, -0.426829, -0.110611, -1.81902, 136.449, -5.50037)
+use_collision = true
+size = Vector3(0.315552, 0.269531, 1)
+material = SubResource("StandardMaterial3D_oq7pb")
+
+[node name="CSGBox3D32" type="CSGBox3D" parent="Map" groups=["Breakable", "Climbable"]]
+transform = Transform3D(-0.228802, 0.370814, -0.900082, 0.440846, 0.863833, 0.243817, 0.867931, -0.341011, -0.361119, -1.76495, 138.449, -4.00037)
+use_collision = true
+size = Vector3(0.315552, 0.269531, 1)
+material = SubResource("StandardMaterial3D_oq7pb")
+
+[node name="CSGBox3D33" type="CSGBox3D" parent="Map" groups=["Breakable", "Climbable"]]
+transform = Transform3D(-0.897576, 0.425366, 0.115856, 0.440846, 0.863833, 0.243817, 0.00363161, 0.269919, -0.962877, -0.26495, 139.949, -3.21613)
+use_collision = true
+size = Vector3(0.315552, 0.269531, 1)
+material = SubResource("StandardMaterial3D_oq7pb")
+
+[node name="CSGBox3D34" type="CSGBox3D" parent="Map" groups=["Breakable", "Climbable"]]
+transform = Transform3D(-0.235818, -0.150629, 0.960053, 0.440846, 0.863833, 0.243817, -0.866051, 0.480732, -0.137303, 1.73505, 141.949, -4.71613)
+use_collision = true
+size = Vector3(0.315552, 0.269531, 1)
+material = SubResource("StandardMaterial3D_oq7pb")
+
 [node name="CSGCylinder3D3" type="CSGCylinder3D" parent="Map"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 102.5, 0)
 use_collision = true
 radius = 3.5
-height = 50.0
+height = 82.0
 sides = 13
 material = SubResource("StandardMaterial3D_l0vno")
 
@@ -1768,7 +1888,7 @@ material = SubResource("StandardMaterial3D_b3k2k")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
 operation = 2
 radius = 2.0
-height = 52.0
+height = 84.0
 material = SubResource("StandardMaterial3D_wqcqb")
 
 [node name="CSGBox3D" type="CSGBox3D" parent="Map/CSGCylinder3D3"]
@@ -1878,6 +1998,58 @@ transform = Transform3D(3.79927e-10, -1, 4.37097e-08, -0.00869171, -4.37114e-08,
 size = Vector3(2.5, 3, 0.269653)
 material = SubResource("StandardMaterial3D_80atp")
 
+[node name="CSGBox3D25" type="CSGBox3D" parent="Map/CSGCylinder3D3"]
+transform = Transform3D(1, 0, 0, 0, 0.707107, -0.707107, 0, 0.707107, 0.707107, 0, 32.0719, -1.65848)
+size = Vector3(3, 1, 1.20813)
+material = SubResource("StandardMaterial3D_753br")
+
+[node name="CSGBox3D24" type="CSGBox3D" parent="Map/CSGCylinder3D3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 28.7486, -1.48171)
+size = Vector3(3, 0.5, 1.20813)
+material = SubResource("StandardMaterial3D_753br")
+
+[node name="CSGBox3D26" type="CSGBox3D" parent="Map/CSGCylinder3D3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.122681, 28.7486, -5.12764)
+size = Vector3(3.19995, 0.5, 4.5)
+material = SubResource("StandardMaterial3D_753br")
+
+[node name="CSGBox3D30" type="CSGBox3D" parent="Map/CSGCylinder3D3"]
+transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, -1.38805, 38.3507, -6.65874)
+size = Vector3(3.11914, 0.295898, 2.5)
+material = SubResource("StandardMaterial3D_753br")
+
+[node name="CSGBox3D31" type="CSGBox3D" parent="Map/CSGCylinder3D3"]
+transform = Transform3D(1, 0, 0, 0, 0.866026, 0.5, 0, -0.5, 0.866025, -0.0784807, 43.3507, -5.15874)
+size = Vector3(3.5, 0.295898, 4.5)
+material = SubResource("StandardMaterial3D_753br")
+
+[node name="CSGBox3D32" type="CSGBox3D" parent="Map/CSGCylinder3D3"]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, -5.96046e-08, -0.0784807, 42.3507, -3.05669)
+operation = 2
+size = Vector3(2.5, 1.5, 2.5)
+material = SubResource("StandardMaterial3D_753br")
+
+[node name="CSGBox3D27" type="CSGBox3D" parent="Map/CSGCylinder3D3"]
+transform = Transform3D(-4.37114e-08, -1, 4.37114e-08, 0, -4.37114e-08, -1, 1, -4.37114e-08, 1.91069e-15, 1.72331, 36.8951, -4.92361)
+size = Vector3(4.1759, 0.450317, 16)
+material = SubResource("StandardMaterial3D_753br")
+
+[node name="CSGBox3D29" type="CSGBox3D" parent="Map/CSGCylinder3D3"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, -0.0282916, 35.6451, -7.01156)
+size = Vector3(4, 0.450317, 13.5)
+material = SubResource("StandardMaterial3D_753br")
+
+[node name="CSGBox3D28" type="CSGBox3D" parent="Map/CSGCylinder3D3"]
+transform = Transform3D(-4.37114e-08, -1, 4.37114e-08, 0, -4.37114e-08, -1, 1, -4.37114e-08, 1.91069e-15, -1.77669, 36.8951, -4.96853)
+size = Vector3(4.08606, 0.450317, 16)
+material = SubResource("StandardMaterial3D_753br")
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="Map/CSGCylinder3D3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 30.3577, -2.31824)
+operation = 2
+size = Vector3(3, 2.71533, 2.36353)
+material = SubResource("StandardMaterial3D_a46bi")
+
 [node name="CSGBox3D13" type="CSGBox3D" parent="Map" groups=["Climbable"]]
 transform = Transform3D(1, 0, 0, 0, -0.258819, 0.965926, 0, -0.965926, -0.258819, 0, 70.7415, 3.25969)
 use_collision = true
@@ -1897,13 +2069,28 @@ size = Vector3(0.710815, 0.320435, 2.5)
 material = SubResource("StandardMaterial3D_knbx5")
 
 [node name="Area3D" type="Area3D" parent="Map"]
-transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 113.5, 0)
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 112.5, 0)
 collision_mask = 256
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Map/Area3D"]
 shape = SubResource("BoxShape3D_vyqc8")
 
 [node name="rock_scene" parent="Map/Area3D" instance=ExtResource("18_b0ql3")]
+
+[node name="CSGCylinder3D4" type="CSGCylinder3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 145.5, 0)
+use_collision = true
+radius = 3.5
+height = 4.0
+sides = 13
+material = SubResource("StandardMaterial3D_ag44b")
+
+[node name="CSGCylinder3D5" type="CSGCylinder3D" parent="Map/CSGCylinder3D4"]
+operation = 2
+use_collision = true
+radius = 3.0
+height = 5.0
+material = SubResource("StandardMaterial3D_ag44b")
 
 [node name="Player" type="CharacterBody3D" parent="."]
 script = ExtResource("1_vwaj1")
