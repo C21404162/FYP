@@ -223,9 +223,6 @@ uv1_triplanar = true
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_4n5t3"]
 radius = 0.3
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_vkgnv"]
-size = Vector3(0.239258, 0.0667173, 0.601501)
-
 [sub_resource type="Animation" id="Animation_dqrs5"]
 length = 0.001
 tracks/0/type = "position_3d"
@@ -694,10 +691,10 @@ _data = {
 "open": SubResource("Animation_eivq2")
 }
 
-[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_jj8ub"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_bhyjm"]
+size = Vector3(0.15, 0.05, 0.55)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_6u2uw"]
-size = Vector3(0.374634, 0.109381, 0.841675)
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_jj8ub"]
 
 [sub_resource type="Animation" id="Animation_duli6"]
 length = 0.001
@@ -1194,6 +1191,9 @@ _data = {
 "default": SubResource("Animation_pglcj"),
 "open": SubResource("Animation_rvxag")
 }
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_knq0y"]
+size = Vector3(0.15, 0.05, 0.55)
 
 [sub_resource type="Gradient" id="Gradient_r4ykm"]
 colors = PackedColorArray(0.222656, 0.222656, 0.222656, 1, 1, 1, 1, 0)
@@ -2079,7 +2079,7 @@ shape = SubResource("BoxShape3D_vyqc8")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 145.5, 0)
 use_collision = true
 radius = 3.5
-height = 5.0
+height = 0.002
 sides = 13
 material = SubResource("StandardMaterial3D_ag44b")
 
@@ -2134,10 +2134,6 @@ collision_layer = 2
 transform = Transform3D(10.5, 0, 0, 0, 6, 0, 0, 0, 1, 0, -0.01, 0.245)
 target_position = Vector3(0, 0, -0.6)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Player/lefthand"]
-transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, -0.04)
-shape = SubResource("BoxShape3D_vkgnv")
-
 [node name="grab_sound_left" type="AudioStreamPlayer3D" parent="Player/lefthand"]
 
 [node name="hand_left_rigged" parent="Player/lefthand" instance=ExtResource("17_mo8ux")]
@@ -2184,6 +2180,10 @@ libraries = {
 "": SubResource("AnimationLibrary_3o5uf")
 }
 
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="Player/lefthand"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.04)
+shape = SubResource("BoxShape3D_bhyjm")
+
 [node name="righthand" type="RigidBody3D" parent="Player"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 1.2, -0.6)
 collision_layer = 2
@@ -2192,10 +2192,6 @@ physics_material_override = SubResource("PhysicsMaterial_jj8ub")
 [node name="right_hand_raycast" type="RayCast3D" parent="Player/righthand"]
 transform = Transform3D(10.5, 0, 0, 0, 6, 0, 0, 0, 1, 0, -0.01, 0.245)
 target_position = Vector3(0, 0, -0.6)
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Player/righthand"]
-transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, -5.00679e-05, 0, -0.0401113)
-shape = SubResource("BoxShape3D_6u2uw")
 
 [node name="grab_sound_right" type="AudioStreamPlayer3D" parent="Player/righthand"]
 
@@ -2231,6 +2227,10 @@ bones/16/rotation = Quaternion(-0.0427358, -0.0363961, -0.0107215, 0.998366)
 libraries = {
 "": SubResource("AnimationLibrary_tvhk8")
 }
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="Player/righthand"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.04)
+shape = SubResource("BoxShape3D_knq0y")
 
 [node name="LandingParticles" type="GPUParticles3D" parent="Player"]
 emitting = false
