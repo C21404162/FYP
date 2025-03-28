@@ -11,6 +11,7 @@
 [ext_resource type="Texture2D" uid="uid://c8lm8hg8qpmyg" path="res://Textures/well_model_cobble_wall.png" id="8_irqvw"]
 [ext_resource type="Texture2D" uid="uid://dxn03o3k6f8d2" path="res://Textures/shitwall.png" id="8_w86qp"]
 [ext_resource type="Script" path="res://Scripts/interactray.gd" id="9_bfa6a"]
+[ext_resource type="Texture2D" uid="uid://dd2b1oksuqurn" path="res://Textures/doortex2.jpg" id="11_4660g"]
 [ext_resource type="AudioStream" uid="uid://ndcgjfycqb4i" path="res://Sounds/SFX/grab_real_2.mp3" id="13_k2b4s"]
 [ext_resource type="Texture2D" uid="uid://p4e38kfwdxfq" path="res://Textures/icon.svg" id="14_3x2jh"]
 [ext_resource type="AudioStream" uid="uid://dccu8dppqk7x4" path="res://Sounds/SFX/grab_real_3.mp3" id="14_fw5k0"]
@@ -218,6 +219,10 @@ uv1_triplanar = true
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tr2k8"]
 albedo_texture = ExtResource("8_w86qp")
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4qspn"]
+albedo_texture = ExtResource("11_4660g")
 uv1_triplanar = true
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_4n5t3"]
@@ -1268,10 +1273,6 @@ _data = {
 "fade_in": SubResource("Animation_xbo6g")
 }
 
-[sub_resource type="BoxMesh" id="BoxMesh_reibu"]
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_fjfua"]
-
 [node name="World" type="Node3D"]
 script = ExtResource("1_q6rjl")
 
@@ -2096,6 +2097,12 @@ operation = 2
 size = Vector3(3, 3.5, 1.5)
 material = SubResource("StandardMaterial3D_tr2k8")
 
+[node name="door" type="CSGBox3D" parent="Map" groups=["Climbable", "Wood"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.25, 91, 9.19127)
+use_collision = true
+size = Vector3(2.5, 4, 1)
+material = SubResource("StandardMaterial3D_4qspn")
+
 [node name="Player" type="CharacterBody3D" parent="."]
 script = ExtResource("1_vwaj1")
 grab_sounds = Array[AudioStream]([ExtResource("15_hj3ll"), ExtResource("13_k2b4s"), ExtResource("14_fw5k0")])
@@ -2342,15 +2349,6 @@ transform = Transform3D(0.424264, 0, -0.424264, -0.104678, 0.581451, -0.104678, 
 transform = Transform3D(0.416593, 0.113581, -0.416593, -0.0803137, 0.589151, 0.0803137, 0.424264, 0, 0.424264, -1, 0, -2.78877)
 
 [node name="gravelwarningsound" type="AudioStreamPlayer3D" parent="."]
-
-[node name="RigidBody3D" type="RigidBody3D" parent="." groups=["Climbable"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 4, 0)
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="RigidBody3D"]
-mesh = SubResource("BoxMesh_reibu")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D"]
-shape = SubResource("BoxShape3D_fjfua")
 
 [node name="SpeedrunTimer" type="Label" parent="."]
 custom_minimum_size = Vector2(200, 100)
