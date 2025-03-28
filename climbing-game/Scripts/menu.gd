@@ -82,6 +82,13 @@ func _ready() -> void:
 	#Focus the first button
 	#$VBoxContainer/start.grab_focus()
 
+func _process(delta):
+	var day_length = 120.0 # seconds for full cycle
+	var time = 0.0
+	time += delta
+	var cycle_pos = fmod(time, day_length)/day_length
+	$WorldEnvironment.environment.ambient_light_energy = lerp(1.0, 0.2, abs(cycle_pos-0.5)*2)
+
 func _on_start_pressed() -> void:
 	var shake_amount = 5.0
 	create_tween().tween_property($VBoxContainer/start, "position:x", $VBoxContainer/start.position.x + shake_amount, 0.05).set_trans(Tween.TRANS_SINE)
