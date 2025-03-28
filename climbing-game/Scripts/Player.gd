@@ -121,6 +121,14 @@ const FALL_SHAKE_SPEED = 10.0
 const MIN_FALL_TIME = 2.0
 var last_landing_sound_index = -1
 
+# Breakable wood variables
+const WOOD_BREAK_FORCE = 40.0  # Minimum force required to break wood
+const WOOD_BREAK_TORQUE = 20.0   # Minimum torque required to break wood
+var left_hand_pull_force = Vector3.ZERO
+var right_hand_pull_force = Vector3.ZERO
+var left_hand_torque = 0.0
+var right_hand_torque = 0.0
+
 func _ready():
 	# Set FOV from GameManager
 	camera.fov = GameManager.fov
@@ -479,6 +487,12 @@ func handle_movement(delta):
 func handle_climbing(delta):
 	velocity.y -= gravity * delta
 	
+	# Reset force tracking each frame
+	left_hand_pull_force = Vector3.ZERO
+	right_hand_pull_force = Vector3.ZERO
+	left_hand_torque = 0.0
+	right_hand_torque = 0.0
+	
 	if left_hand_grabbing or right_hand_grabbing:
 		# Apply velocity decay only if the player is falling and has been falling for a certain duration
 		if is_falling and fall_time >= MIN_FALL_TIME:
@@ -513,9 +527,10 @@ func handle_climbing(delta):
 						global_position += dir_to_grab * overreach
 						distance_to_grab = MAX_GRAB_DISTANCE
 					if distance_to_grab > reach_distance:
-						pull_force += dir_to_grab * (distance_to_grab - reach_distance) * climb_force
-				else:
-					release_grab(true) 
+						var current_pull = dir_to_grab * (distance_to_grab - reach_distance) * climb_force
+						pull_force += current_pull
+						left_hand_pull_force = current_pull  # Track the force
+						left_hand_torque = current_pull.length() * distance_to_grab  # Simple torque approximation
 			
 			if right_hand_grabbing:
 				var collider = get_node(grab_joint_right.node_b) if grab_joint_right.node_b != NodePath("") else null
@@ -527,11 +542,62 @@ func handle_climbing(delta):
 						global_position += dir_to_grab * overreach
 						distance_to_grab = MAX_GRAB_DISTANCE
 					if distance_to_grab > reach_distance:
-						pull_force += dir_to_grab * (distance_to_grab - reach_distance) * climb_force
-				else:
-					release_grab(false)  
+						var current_pull = dir_to_grab * (distance_to_grab - reach_distance) * climb_force
+						pull_force += current_pull
+						right_hand_pull_force = current_pull  # Track the force
+						right_hand_torque = current_pull.length() * distance_to_grab  # Simple torque approximation
 			
 			velocity += pull_force * delta
+			
+			# Check for wood breaking
+			check_wood_break()
+			
+func check_wood_break():
+	# Check left hand
+	if left_hand_grabbing:
+		var collider = get_node(grab_joint_left.node_b) if grab_joint_left.node_b != NodePath("") else null
+		if collider and collider.is_in_group("Wood"):
+			# Check if force exceeds threshold
+			if left_hand_pull_force.length() > WOOD_BREAK_FORCE or left_hand_torque > WOOD_BREAK_TORQUE:
+				break_wood(collider, true)
+	
+	# Check right hand
+	if right_hand_grabbing:
+		var collider = get_node(grab_joint_right.node_b) if grab_joint_right.node_b != NodePath("") else null
+		if collider and collider.is_in_group("Wood"):
+			# Check if force exceeds threshold
+			if right_hand_pull_force.length() > WOOD_BREAK_FORCE or right_hand_torque > WOOD_BREAK_TORQUE:
+				break_wood(collider, false)
+				
+func break_wood(collider: Node, is_left_hand: bool):
+	print("Wood broke from pulling!")
+	
+	# Play breaking sound
+	if rock_break_sounds.size() > 0:
+		var random_index = randi() % rock_break_sounds.size()
+		rock_break_sound.stream = rock_break_sounds[random_index]
+		rock_break_sound.pitch_scale = randf_range(0.8, 1.2)
+		rock_break_sound.volume_db = -15
+		rock_break_sound.global_position = collider.global_transform.origin
+		rock_break_sound.play()
+	
+	# Hide and disable collision
+	collider.visible = false
+	collider.set_collision_layer_value(LAYER_WORLD, false)
+	
+	# Release the grab
+	release_grab(is_left_hand)
+	
+	# Add some visual effects
+	particles_hand(collider.global_transform.origin)
+	
+	# Apply a small force to the player in the opposite direction
+	var break_force = left_hand_pull_force if is_left_hand else right_hand_pull_force
+	velocity += -break_force.normalized() * 2.0  # Small recoil
+	
+	# Schedule respawn if needed
+	var collider_id = collider.get_instance_id()
+	broken_surfaces[collider_id] = RESPAWN_TIME
 
 func check_grab():
 	# Left hand grab logic
