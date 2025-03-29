@@ -584,7 +584,7 @@ func break_wood(collider: Node, is_left_hand: bool):
 		
 		# Set random pitch and volume
 		var pitch = randf_range(0.8, 1.2)  # Slightly wider range for wood sounds
-		var volume_db = -15  # Adjust volume as needed
+		var volume_db = -20  # Adjust volume as needed
 		
 		# Play the sound
 		wood_break_sound.stream = wood_break_sounds[random_index]

@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cf6nlhyh4hp0v"
-path.s3tc="res://.godot/imported/colormap.png-4d3010a0b5f96e5a1a2a5a260bb10630.s3tc.ctex"
+uid="uid://bnyiyj3ewc1j2"
+path.s3tc="res://.godot/imported/_albedo000.png-7e79089dbf563cacc97c570a27e240ae.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://Textures/colormap.png"
-dest_files=["res://.godot/imported/colormap.png-4d3010a0b5f96e5a1a2a5a260bb10630.s3tc.ctex"]
+source_file="res://Models/Foliage/textures/_albedo000.png"
+dest_files=["res://.godot/imported/_albedo000.png-7e79089dbf563cacc97c570a27e240ae.s3tc.ctex"]
 
 [params]
 
