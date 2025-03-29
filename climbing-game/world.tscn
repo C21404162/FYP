@@ -1,4 +1,4 @@
-[gd_scene load_steps=97 format=3 uid="uid://daea0cguij4h2"]
+[gd_scene load_steps=100 format=3 uid="uid://daea0cguij4h2"]
 
 [ext_resource type="Material" uid="uid://rt8kwy52hryb" path="res://Materials/highlight.tres" id="1_lgiqj"]
 [ext_resource type="Script" path="res://Scripts/world.gd" id="1_q6rjl"]
@@ -35,6 +35,8 @@
 [ext_resource type="AudioStream" uid="uid://dkx22fn5swsh0" path="res://Sounds/SFX/landing_sound3.mp3" id="22_fq2a6"]
 [ext_resource type="AudioStream" uid="uid://b37cmqut0xsci" path="res://Sounds/SFX/landing_sound4.mp3" id="23_7jinl"]
 [ext_resource type="PackedScene" uid="uid://b8wksvfw0gewi" path="res://Models/Foliage/fol1_edit.glb" id="23_80ho2"]
+[ext_resource type="AudioStream" uid="uid://dj31p3pl1wn06" path="res://Sounds/SFX/wood_break1.wav" id="29_t11ei"]
+[ext_resource type="AudioStream" uid="uid://ki020kbqpg4t" path="res://Sounds/SFX/wood_break2.wav" id="30_bubgw"]
 [ext_resource type="AudioStream" uid="uid://d16aq8r6d6ybt" path="res://Sounds/SFX/rockfall.mp3" id="31_atyem"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5qhtx"]
@@ -200,6 +202,10 @@ albedo_texture = ExtResource("8_w86qp")
 uv1_triplanar = true
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_a46bi"]
+albedo_texture = ExtResource("8_w86qp")
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gyryj"]
 albedo_texture = ExtResource("8_w86qp")
 uv1_triplanar = true
 
@@ -2049,6 +2055,13 @@ operation = 2
 size = Vector3(3, 2.71533, 2.36353)
 material = SubResource("StandardMaterial3D_a46bi")
 
+[node name="CSGBox3D35" type="CSGBox3D" parent="Map/CSGCylinder3D3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.25, -11.5, 8.97)
+operation = 2
+use_collision = true
+size = Vector3(2.5, 4, 0.557)
+material = SubResource("StandardMaterial3D_gyryj")
+
 [node name="CSGBox3D13" type="CSGBox3D" parent="Map" groups=["Climbable"]]
 transform = Transform3D(1, 0, 0, 0, -0.258819, 0.965926, 0, -0.965926, -0.258819, 0, 70.7415, 3.25969)
 use_collision = true
@@ -2098,10 +2111,16 @@ size = Vector3(3, 3.5, 1.5)
 material = SubResource("StandardMaterial3D_tr2k8")
 
 [node name="door" type="CSGBox3D" parent="Map" groups=["Climbable", "Wood"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.25, 91, 9.19127)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.25, 91, 8.96953)
 use_collision = true
-size = Vector3(2.5, 4, 1)
+size = Vector3(2.5, 4, 0.556519)
 material = SubResource("StandardMaterial3D_4qspn")
+
+[node name="CSGBox3D26" type="CSGBox3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 88.6195, 11.607)
+use_collision = true
+size = Vector3(4, 1, 6)
+material = SubResource("StandardMaterial3D_gyryj")
 
 [node name="Player" type="CharacterBody3D" parent="."]
 script = ExtResource("1_vwaj1")
@@ -2113,6 +2132,7 @@ rock_spawn_position = Vector3(0, 140, 0)
 hand_reach_sounds = Array[AudioStream]([ExtResource("17_6qyhe"), ExtResource("18_ql2o4"), ExtResource("19_iian6")])
 landing_sounds = Array[AudioStream]([ExtResource("20_rexxv"), ExtResource("21_66pq6"), ExtResource("22_fq2a6"), ExtResource("23_7jinl")])
 wind_woosh_sounds = Array[AudioStream]([ExtResource("20_adhi5"), ExtResource("21_07f3h")])
+wood_break_sounds = Array[AudioStream]([ExtResource("29_t11ei"), ExtResource("30_bubgw")])
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Player"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
@@ -2342,13 +2362,15 @@ parameters/looping = true
 
 [node name="rock_break_sound" type="AudioStreamPlayer3D" parent="."]
 
+[node name="wood_break_sound" type="AudioStreamPlayer3D" parent="."]
+
+[node name="gravelwarningsound" type="AudioStreamPlayer3D" parent="."]
+
 [node name="fol1_edit" parent="." instance=ExtResource("23_80ho2")]
 transform = Transform3D(0.424264, 0, -0.424264, -0.104678, 0.581451, -0.104678, 0.411148, 0.148037, 0.411148, -1, 0, -2.82368)
 
 [node name="fol1_edit2" parent="." instance=ExtResource("23_80ho2")]
 transform = Transform3D(0.416593, 0.113581, -0.416593, -0.0803137, 0.589151, 0.0803137, 0.424264, 0, 0.424264, -1, 0, -2.78877)
-
-[node name="gravelwarningsound" type="AudioStreamPlayer3D" parent="."]
 
 [node name="SpeedrunTimer" type="Label" parent="."]
 custom_minimum_size = Vector2(200, 100)

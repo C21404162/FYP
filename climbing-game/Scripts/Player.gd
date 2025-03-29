@@ -75,17 +75,17 @@ var last_grab_sound_index = -1
 @export var gravel_warning_sounds: Array[AudioStream] = []
 @onready var gravel_warning_sound = $"../gravelwarningsound"
 
-@onready var rockfall_sound = $rockfall  # Reference to the rockfall audio file
 
 # Rock spawning variables
-@export var rock_scene: PackedScene  # Reference to a rock scene 
-@export var rock_spawn_position: Vector3  # Position where the rock will fall from
-var rock_instance: RigidBody3D = null  # Track the active rock instance
+@export var rock_scene: PackedScene 
+@export var rock_spawn_position: Vector3  
+var rock_instance: RigidBody3D = null  
 @onready var area_3d = $"../Map/Area3D"
+@onready var rockfall_sound = $rockfall
 
 var left_hand_cooldown = 0.0
 var right_hand_cooldown = 0.0
-const GRAB_COOLDOWN_TIME = 0.3  # Cooldown time in seconds
+const GRAB_COOLDOWN_TIME = 0.3  
 
 # Reach sounds
 @export var hand_reach_sounds: Array[AudioStream] = []
@@ -106,8 +106,8 @@ var grab_timers: Dictionary = {}
 var broken_surfaces: Dictionary = {}  
 const BREAK_TIME: float = 3.0  
 const RESPAWN_TIME: float = 5.0  
-const WARNING_TIME: float = 1.0  # Time before break when the warning sound plays
-var warning_sound_played: Dictionary = {}  # Tracks if the warning sound has been played for each surface
+const WARNING_TIME: float = 1.0  
+var warning_sound_played: Dictionary = {}  
 
 # Falling effects
 @export var landing_sounds: Array[AudioStream] = []
@@ -122,6 +122,8 @@ const MIN_FALL_TIME = 2.0
 var last_landing_sound_index = -1
 
 # Breakable wood variables
+@export var wood_break_sounds: Array[AudioStream] = []
+@onready var wood_break_sound = $"../gravelwarningsound"
 const WOOD_BREAK_FORCE = 40.0  # Minimum force required to break wood
 const WOOD_BREAK_TORQUE = 20.0   # Minimum torque required to break wood
 var left_hand_pull_force = Vector3.ZERO
@@ -570,16 +572,26 @@ func check_wood_break():
 				break_wood(collider, false)
 				
 func break_wood(collider: Node, is_left_hand: bool):
-	print("Wood broke from pulling!")
+	print("WOOD HAS BROKEN FROM PULL")
 	
-	# Play breaking sound
-	if rock_break_sounds.size() > 0:
-		var random_index = randi() % rock_break_sounds.size()
-		rock_break_sound.stream = rock_break_sounds[random_index]
-		rock_break_sound.pitch_scale = randf_range(0.8, 1.2)
-		rock_break_sound.volume_db = -15
-		rock_break_sound.global_position = collider.global_transform.origin
-		rock_break_sound.play()
+	# Play wood-specific breaking sound with randomization
+	if wood_break_sounds.size() > 0:
+		var random_index = randi() % wood_break_sounds.size()
+		# Ensure we don't play the same sound twice in a row
+		while random_index == last_grab_sound_index:
+			random_index = randi() % wood_break_sounds.size()
+		last_grab_sound_index = random_index
+		
+		# Set random pitch and volume
+		var pitch = randf_range(0.8, 1.2)  # Slightly wider range for wood sounds
+		var volume_db = -15  # Adjust volume as needed
+		
+		# Play the sound
+		wood_break_sound.stream = wood_break_sounds[random_index]
+		wood_break_sound.pitch_scale = pitch
+		wood_break_sound.volume_db = volume_db
+		wood_break_sound.global_position = collider.global_transform.origin
+		wood_break_sound.play()
 	
 	# Hide and disable collision
 	collider.visible = false
