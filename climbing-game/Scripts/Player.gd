@@ -61,6 +61,9 @@ var velocity_decay_rate: float = 5.0
 # Landing 
 var was_in_air = false
 @onready var landing_particles = $LandingParticles
+var is_falling_spawn = false  # Controls if player is in initial fall state
+const FALL_DURATION = 6.0  # Time in seconds to disable movement
+var fall_timer = 0.0
 
 # Grab sounds
 @export var grab_sounds: Array[AudioStream] = []
@@ -78,9 +81,10 @@ var last_grab_sound_index = -1
 
 # Rock spawning variables
 @export var rock_scene: PackedScene 
-@export var rock_spawn_position: Vector3  
+#@export var rock_spawn_position: Vector3  
 var rock_instance: RigidBody3D = null  
 @onready var area_3d = $"../Map/Area3D"
+@onready var area_3d2 = $"../Map/Area3D2"
 @onready var rockfall_sound = $rockfall
 
 var left_hand_cooldown = 0.0
@@ -140,6 +144,11 @@ func _ready():
 		area_3d.collision_mask = 1 | 4  # Include Layers 1 and 4
 	if area_3d:
 		area_3d.connect("body_entered", Callable(self, "_on_area_3d_body_entered"))
+		
+	if area_3d2:
+		area_3d2.collision_mask = 1 | 4  # Include Layers 1 and 4
+	if area_3d2:
+		area_3d2.connect("body_entered", Callable(self, "_on_area_3d_body_entered"))
 	
 	setup_hands()
 
@@ -186,6 +195,9 @@ func configure_hinge_joint(joint: HingeJoint3D):
 
 func spawn_falling():
 	global_transform.origin = $"/root/World/Map/SpawnPoint".global_transform.origin
+	is_falling_spawn = true
+	fall_timer = FALL_DURATION
+	velocity = Vector3.ZERO  # Reset any existing velocity
 
 func _on_fov_updated(new_fov: float):
 	camera.fov = new_fov
@@ -307,6 +319,12 @@ func _unhandled_input(event):
 
 func _physics_process(delta):
 	
+	
+	if is_falling_spawn:
+		fall_timer -= delta
+		if fall_timer <= 0 or is_on_floor():
+			is_falling_spawn = false
+	
 	if left_hand_cooldown > 0:
 		left_hand_cooldown -= delta
 	if right_hand_cooldown > 0:
@@ -332,7 +350,7 @@ func _physics_process(delta):
 	if right_hand_grabbing:
 		right_hand.global_transform.origin = grab_point_right
 	
-	check_area_collision()
+	#check_area_collision()
 	
 	check_grab()
 	
@@ -454,9 +472,13 @@ func handle_noclip(delta):
 	velocity.y = vertical_input * noclip_speed
 
 func handle_movement(delta):
+	
+	
 	if not is_on_floor():
 		velocity.y -= gravity * delta
 		
+	# Only process movement if not in initial fall state
+	if not is_falling_spawn:
 		# Movement input
 		var input_dir = Input.get_vector("left", "right", "up", "down")
 		var direction = (head.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
@@ -612,6 +634,9 @@ func break_wood(collider: Node, is_left_hand: bool):
 	broken_surfaces[collider_id] = RESPAWN_TIME
 
 func check_grab():
+	
+	if is_falling_spawn:
+		return
 	# Left hand grab logic
 	if left_hand_reaching and not left_hand_grabbing and left_hand_cooldown <= 0:
 		if left_hand_raycast.is_colliding():
@@ -848,18 +873,13 @@ func play_gravel_warning_sound(collider: Node):
 		gravel_warning_sound.global_transform.origin = collider.global_transform.origin
 		gravel_warning_sound.play()
 
-func _on_area_3d_body_entered(body):
-	print("Area3D entered by:", body.name)  # Debug: Check which body entered the area
-	if body == self:  # Check if the player entered the area
-		spawn_rock()
+#func check_area_collision():
+	#if area_3d and area_3d.overlaps_body(self):
+		#if not rock_instance: 
+			#spawn_rock()
 
-func check_area_collision():
-	if area_3d and area_3d.overlaps_body(self):
-		if not rock_instance:  # Spawn rock only if it doesn't already exist
-			spawn_rock()
-
-func spawn_rock():
-	if rock_instance:  # Don't spawn a new rock if one already exists
+func spawn_rock(spawn_position: Vector3):
+	if rock_instance:  
 		print("Rock already exists.")
 		return
 	
@@ -867,39 +887,35 @@ func spawn_rock():
 		print("Rock scene is not assigned!")
 		return
 	
-	# Instantiate the rock scene
 	var rock_node = rock_scene.instantiate()
-	
-	# Find the RigidBody3D child node
-	var rigid_body = rock_node.find_child("RigidBody3D")  # Replace "RigidBody3D" with the actual name of your RigidBody3D node
+	var rigid_body = rock_node.find_child("RigidBody3D")  
 	if rigid_body is RigidBody3D:
-		rock_instance = rigid_body  # Assign the RigidBody3D to rock_instance
-		get_parent().add_child(rock_node)  # Add the entire rock scene to the parent
-		print("Rock spawned at:", rock_spawn_position)
+		rock_instance = rigid_body  
+		get_parent().add_child(rock_node)  
+		print("Rock spawned at:", spawn_position)
 		
-		# Set the rock's initial position
-		rock_instance.global_position = rock_spawn_position
-		
-		# Apply initial velocity to make the rock fall slower
-		rock_instance.linear_velocity = Vector3(0, -2, 0)  # Reduced y velocity
-		
-		# Reduce the effect of gravity on the rock
-		rock_instance.gravity_scale = 0.5  # Half the gravity effect
-		
-		# Connect to the rock's tree_exited signal to reset the rock instance
+		rock_instance.global_position = spawn_position
+		rock_instance.linear_velocity = Vector3(0, -2, 0)  
+		rock_instance.gravity_scale = 0.5  
 		rock_instance.connect("tree_exited", Callable(self, "_on_rock_destroyed"))
 		
-		# Mark the rock as spawned
-		print("Rock spawned for the first time.")  # Debug: Confirm rock spawning
-		
-		# Play the rockfall sound with pitch variance
+		# Play sound with randomization
 		if rockfall_sound:
-			var pitch = randf_range(0.9, 1.1)  # Random pitch between 0.9 and 1.1
-			var volume_db = -35  # Adjust volume as needed
-			rockfall_sound.pitch_scale = pitch
-			rockfall_sound.volume_db = volume_db
+			rockfall_sound.pitch_scale = randf_range(0.9, 1.1)
+			rockfall_sound.volume_db = -35 
 			rockfall_sound.play()
 
+func _on_area_3d_body_entered(body):
+	if body == self: 
+		var spawn_pos = area_3d.global_position + Vector3(0, 40, 0)
+		spawn_rock(spawn_pos)
+
+func _on_area_3d_2_body_entered(body):
+	if body == self:
+		# Hardcoded different position for testing
+		var spawn_pos = Vector3(0, 240, 0)  # Noticeably different position
+		spawn_rock(spawn_pos)
+
 func _on_rock_destroyed():
-	rock_instance = null  # Reset the rock instance
-	print("Rock destroyed.")  # Debug: Check if the rock is destroyed
+	rock_instance = null 
+	print("Rock destroyed.")  
