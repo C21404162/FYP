@@ -37,10 +37,10 @@
 [ext_resource type="AudioStream" uid="uid://cdm7k126sa6th" path="res://Sounds/SFX/rock_break1.mp3" id="21_l2y3y"]
 [ext_resource type="AudioStream" uid="uid://dkx22fn5swsh0" path="res://Sounds/SFX/landing_sound3.mp3" id="22_fq2a6"]
 [ext_resource type="AudioStream" uid="uid://b37cmqut0xsci" path="res://Sounds/SFX/landing_sound4.mp3" id="23_7jinl"]
-[ext_resource type="PackedScene" uid="uid://b8wksvfw0gewi" path="res://Models/Foliage/fol1_edit.glb" id="23_80ho2"]
 [ext_resource type="AudioStream" uid="uid://dj31p3pl1wn06" path="res://Sounds/SFX/wood_break1.wav" id="29_t11ei"]
 [ext_resource type="AudioStream" uid="uid://ki020kbqpg4t" path="res://Sounds/SFX/wood_break2.wav" id="30_bubgw"]
 [ext_resource type="AudioStream" uid="uid://d16aq8r6d6ybt" path="res://Sounds/SFX/rockfall.mp3" id="31_atyem"]
+[ext_resource type="PackedScene" uid="uid://bhf3jxhqefcyh" path="res://Models/Foliage/grass_final.glb" id="42_unh21"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5qhtx"]
 albedo_texture = ExtResource("3_umbod")
@@ -76,6 +76,7 @@ volumetric_fog_detail_spread = 0.675938
 volumetric_fog_ambient_inject = 1.74
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3ahdk"]
+albedo_color = Color(0.3125, 0.242007, 0.0569091, 1)
 albedo_texture = ExtResource("4_oki8d")
 uv1_triplanar = true
 
@@ -2974,16 +2975,19 @@ parameters/looping = true
 
 [node name="gravelwarningsound" type="AudioStreamPlayer3D" parent="."]
 
-[node name="fol1_edit" parent="." instance=ExtResource("23_80ho2")]
-transform = Transform3D(0.424264, 0, -0.424264, -0.104678, 0.581451, -0.104678, 0.411148, 0.148037, 0.411148, -1, 0, -2.82368)
-
-[node name="fol1_edit2" parent="." instance=ExtResource("23_80ho2")]
-transform = Transform3D(0.416593, 0.113581, -0.416593, -0.0803137, 0.589151, 0.0803137, 0.424264, 0, 0.424264, -1, 0, -2.78877)
-
 [node name="SpeedrunTimer" type="Label" parent="."]
 custom_minimum_size = Vector2(200, 100)
 offset_right = 40.0
 offset_bottom = 23.0
+
+[node name="grass_final" parent="." instance=ExtResource("42_unh21")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.937892, -0.699615, -1.5)
+
+[node name="grass_final2" parent="." instance=ExtResource("42_unh21")]
+transform = Transform3D(0.887952, 0, -0.459936, 0, 1, 0, 0.459936, 0, 0.887952, -0.937892, -0.873637, 0.326171)
+
+[node name="grass_final3" parent="." instance=ExtResource("42_unh21")]
+transform = Transform3D(0.336389, 0, -0.941723, 0, 1, 0, 0.941723, 0, 0.336389, 0.865201, -0.479214, -1.60226)
 
 [connection signal="body_entered" from="Map/Area3D" to="Player" method="_on_area_3d_body_entered"]
 [connection signal="body_entered" from="Map/Area3D2" to="Player" method="_on_area_3d_2_body_entered"]

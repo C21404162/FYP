@@ -197,7 +197,9 @@ func spawn_falling():
 	global_transform.origin = $"/root/World/Map/SpawnPoint".global_transform.origin
 	is_falling_spawn = true
 	fall_timer = FALL_DURATION
-	velocity = Vector3.ZERO  # Reset any existing velocity
+	velocity = Vector3.ZERO  # Clear any existing momentum
+	is_falling = false  # Reset falling state
+	fall_time = 0.0
 
 func _on_fov_updated(new_fov: float):
 	camera.fov = new_fov
@@ -472,34 +474,30 @@ func handle_noclip(delta):
 	velocity.y = vertical_input * noclip_speed
 
 func handle_movement(delta):
-	
-	
 	if not is_on_floor():
 		velocity.y -= gravity * delta
 		
+	# Movement input
+	var input_dir = Input.get_vector("left", "right", "up", "down")
+	var direction = (head.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
+	var speed = SPRINT_SPEED if Input.is_action_pressed("sprint") else WALK_SPEED
+	
 	# Only process movement if not in initial fall state
 	if not is_falling_spawn:
-		# Movement input
-		var input_dir = Input.get_vector("left", "right", "up", "down")
-		var direction = (head.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
-		var speed = SPRINT_SPEED if Input.is_action_pressed("sprint") else WALK_SPEED
-		
 		# Lerp for movement
 		if direction:
 			velocity.x = lerp(velocity.x, direction.x * speed, delta * 2.0)
 			velocity.z = lerp(velocity.z, direction.z * speed, delta * 2.0)
-	elif Input.is_action_just_pressed("jump"):
+	
+	# Jump handling (works regardless of is_falling_spawn, but only when grounded)
+	if Input.is_action_just_pressed("jump") and is_on_floor():
 		velocity.y = JUMP_VELOCITY
 	
-	# Sprint (should remove probs)
-	var speed = SPRINT_SPEED if Input.is_action_pressed("sprint") else WALK_SPEED
-	var input_dir = Input.get_vector("left", "right", "up", "down")
-	var direction = (head.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
-	
-	# Crouch
+	# Crouch (preserved from original)
 	if Input.is_action_pressed("crouch"):
 		speed *= 0.6
 	
+	# Ground movement handling (preserved from original)
 	if direction:
 		if is_on_floor():
 			velocity.x = lerp(velocity.x, direction.x * speed, delta * 12.0)
