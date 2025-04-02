@@ -911,7 +911,7 @@ func _on_area_3d_body_entered(body):
 func _on_area_3d_2_body_entered(body):
 	if body == self:
 		# Hardcoded different position for testing
-		var spawn_pos = Vector3(0, 240, 0)  # Noticeably different position
+		var spawn_pos = Vector3(0, 219, 0)  # Noticeably different position
 		spawn_rock(spawn_pos)
 
 func _on_rock_destroyed():
