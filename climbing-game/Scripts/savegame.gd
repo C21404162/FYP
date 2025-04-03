@@ -11,33 +11,30 @@ extends Resource
 const SAVE_GAME_PATH := "user://savegame.tres"
 
 func write_savegame() -> bool:
-	print("Attempting to save game data...")
-	print("Saving speedrun mode: ", speedrun_mode, " best time: ", best_time)
-	print("Position to save: ", player_position)
-	print("Rotation to save: ", player_rotation)
-	print("FOV to save: ", fov) 
-	print("Sensitivity to save: ", sensitivity)
+	print("Pos to save: ", player_position)
+	print("Rot to save: ", player_rotation)
+	print("fov to save: ", fov) 
+	print("Sens to savbe: ", sensitivity)
 	var save_result = ResourceSaver.save(self, SAVE_GAME_PATH)
 	if save_result == OK:
-		print("Game saved successfully!")
+		print("GAME SAVE SUCCESSFUL")
 		return true
 	else:
-		print("ERROR: Failed to save game. Error code: ", save_result)
+		print("ERROR SAVING")
 		return false
 
 static func load_savegame() -> SaveGame:
-	print("Attempting to load game data...")
 	if not ResourceLoader.exists(SAVE_GAME_PATH):
-		print("No save game file found!")
+		print("NO FILE FOUND TO SAVE")
 		return null
 	var loaded_resource = load(SAVE_GAME_PATH)
 	if loaded_resource is SaveGame:
-		print("Successfully loaded save game!")
-		print("Loaded Position: ", loaded_resource.player_position)
-		print("Loaded Rotation: ", loaded_resource.player_rotation)
-		print("Loaded FOV: ", loaded_resource.fov)
-		print("Loaded Sensitivity: ", loaded_resource.sensitivity)
+		print("LOADED GAME SUCCESSFUL")
+		print("Loaded pos: ", loaded_resource.player_position)
+		print("Loaded rot: ", loaded_resource.player_rotation)
+		print("Loaded fov: ", loaded_resource.fov)
+		print("Loaded sens: ", loaded_resource.sensitivity)
 		return loaded_resource
 	else:
-		print("ERROR: Loaded resource is not a valid SaveGame!")
+		print("ERROR LOADING")
 		return null

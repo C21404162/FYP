@@ -1,5 +1,6 @@
 extends RayCast3D
 
+
 @onready var interaction_icon: TextureRect = $"../../../../Fade_interact/interaction_icon"
 @onready var dialogue_label: Label = $"../../../../Dialogue/Panel/dialogue_label"
 @onready var dialogue_panel: Panel = $"../../../../Dialogue/Panel"

@@ -13,17 +13,18 @@ extends Control
 
 func _ready():
 	
-	#Hide the pause menu and options panel when the scene starts
+	#hides
 	pause_panel.hide()
 	options_panel.hide()
 	saveload_panel.hide()
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	
-	#Load the saved FOV value 
+	#loadfov
 	fov_slider.value = game_manager.fov
 	fov_slider.connect("value_changed", Callable(self, "_on_fov_changed"))
 	fov_label.text = "Fov: %.0f" % fov_slider.value
 	
+	#loadsens
 	sensitivity_label.text = "Sensitivity: %.3f" % sensitivity_slider.value
 	sensitivity_slider.value = game_manager.sensitivity
 	sensitivity_slider.connect("value_changed", Callable(self, "_on_sensitivity_changed"))

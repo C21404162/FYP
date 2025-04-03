@@ -2639,6 +2639,15 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00300217, 0.131638, 0)
 light_color = Color(1, 0.854076, 0.458509, 1)
 light_energy = 0.3
 
+[node name="MeshInstance3D6" type="MeshInstance3D" parent="Map"]
+transform = Transform3D(0.866025, 0.5, 0, -0.5, 0.866025, 0, 0, 0, 1, -2.55707, 91.8539, 6)
+mesh = SubResource("BoxMesh_3sv7r")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="Map/MeshInstance3D6"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00300217, 0.131638, 0)
+light_color = Color(1, 0.854076, 0.458509, 1)
+light_energy = 0.3
+
 [node name="MeshInstance3D3" type="MeshInstance3D" parent="Map"]
 transform = Transform3D(-0.836516, -0.482963, 0.258819, -0.5, 0.866025, 1.49101e-08, -0.224144, -0.129409, -0.965926, 2.97288, 214, 1)
 mesh = SubResource("BoxMesh_3sv7r")

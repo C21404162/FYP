@@ -136,17 +136,16 @@ var left_hand_torque = 0.0
 var right_hand_torque = 0.0
 
 func _ready():
-	# Set FOV from GameManager
 	camera.fov = GameManager.fov
 	GameManager.connect("fov_updated", Callable(self, "_on_fov_updated"))
 	
 	if area_3d:
-		area_3d.collision_mask = 1 | 4  # Include Layers 1 and 4
+		area_3d.collision_mask = 1 | 4  
 	if area_3d:
 		area_3d.connect("body_entered", Callable(self, "_on_area_3d_body_entered"))
 		
 	if area_3d2:
-		area_3d2.collision_mask = 1 | 4  # Include Layers 1 and 4
+		area_3d2.collision_mask = 1 | 4  
 	if area_3d2:
 		area_3d2.connect("body_entered", Callable(self, "_on_area_3d_body_entered"))
 	
@@ -683,9 +682,9 @@ func grab_object(hand_raycast: RayCast3D, is_left_hand: bool):
 
 		grab_joint.global_transform.origin = grab_point
 
-		# NodeA is player
+		#nodea is player
 		grab_joint.node_a = self.get_path() 
-		# Collision is nodeB
+		#grabpoint is nodeB
 		grab_joint.node_b = collider.get_path()
 		
 		configure_hinge_joint(grab_joint)
@@ -804,12 +803,12 @@ func respawn_surface(collider_id: int):
 func update_hands(delta):
 	var cam_basis = camera.global_transform.basis
 	
-	# Left hand position
+	#lh pos
 	var left_target = grab_point_left if left_hand_grabbing else \
 		camera.global_position + cam_basis * left_hand_initial_offset + \
 		(-cam_basis.z * reach_distance if left_hand_reaching else Vector3.ZERO)
 	
-	# Right hand position
+	#rh pos
 	var right_target = grab_point_right if right_hand_grabbing else \
 		camera.global_position + cam_basis * right_hand_initial_offset + \
 		(-cam_basis.z * reach_distance if right_hand_reaching else Vector3.ZERO)
@@ -897,7 +896,7 @@ func spawn_rock(spawn_position: Vector3):
 		rock_instance.gravity_scale = 0.5  
 		rock_instance.connect("tree_exited", Callable(self, "_on_rock_destroyed"))
 		
-		# Play sound with randomization
+		#sound handle
 		if rockfall_sound:
 			rockfall_sound.pitch_scale = randf_range(0.9, 1.1)
 			rockfall_sound.volume_db = -35 
@@ -910,8 +909,7 @@ func _on_area_3d_body_entered(body):
 
 func _on_area_3d_2_body_entered(body):
 	if body == self:
-		# Hardcoded different position for testing
-		var spawn_pos = Vector3(0, 219, 0)  # Noticeably different position
+		var spawn_pos = Vector3(0, 219, 0) 
 		spawn_rock(spawn_pos)
 
 func _on_rock_destroyed():

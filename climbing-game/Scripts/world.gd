@@ -7,7 +7,6 @@ extends Node3D
 @onready var speedrun_timer_label = $SpeedrunTimer
 
 func _process(delta):
-	# Only update time if active
 	if GameManager.speedrun_active:
 		GameManager.speedrun_time += delta
 		speedrun_timer_label.text = GameManager.get_formatted_time()

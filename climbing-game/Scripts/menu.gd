@@ -41,7 +41,6 @@ var original_camera_position: Vector3
 @onready var english_label_exit: Label = $VBoxContainer/exit/english_label_exit
 
 func _on_speedrun_checkbox_toggled(button_pressed):
-	# Just update the mode, no UI updates needed in menu
 	GameManager.speedrun_mode = button_pressed
 
 func _ready() -> void:
@@ -83,11 +82,12 @@ func _ready() -> void:
 	#$VBoxContainer/start.grab_focus()
 
 func _process(delta):
-	var day_length = 120.0 # seconds for full cycle
-	var time = 0.0
-	time += delta
-	var cycle_pos = fmod(time, day_length)/day_length
-	$WorldEnvironment.environment.ambient_light_energy = lerp(1.0, 0.2, abs(cycle_pos-0.5)*2)
+	pass
+	#var day_length = 120.0 
+	#var time = 0.0
+	#time += delta
+	#var cycle_pos = fmod(time, day_length)/day_length
+	#$WorldEnvironment.environment.ambient_light_energy = lerp(1.0, 0.2, abs(cycle_pos-0.5)*2)
 
 func _on_start_pressed() -> void:
 	var shake_amount = 5.0
@@ -100,11 +100,11 @@ func _on_start_pressed() -> void:
 		Camera.reset_camera_smoothly(0.8)  
 		await get_tree().create_timer(0.8).timeout  	
 
-	# Play the animation
+	#cam animation
 	animation_player.play("camera_into_well")
 	await animation_player.animation_finished
 
-	# Change scene
+	#Change scene
 	get_tree().change_scene_to_file("res://world.tscn")
 
 func _on_exit_pressed() -> void:
@@ -146,7 +146,6 @@ func _on_mouse_entered_continue() -> void:
 
 func _on_continue_pressed() -> void:
 	GameManager.speedrun_mode = false
-	print("LOADING GAME (Speedrun disabled for continues)")
 	print("LOADING GAME")
 	game_manager.load_game_data()
 	print("LOADED")

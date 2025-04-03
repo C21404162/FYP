@@ -12,11 +12,11 @@ var sensitivity: float = 0.001
 var speedrun_mode := false
 var speedrun_time := 0.0
 var speedrun_active := false
-var best_time := 0.0
+#var best_time := 0.0
 
 func start_speedrun():
 	print("Starting speedrun. Mode: ", speedrun_mode, " Active: ", speedrun_active)
-	if speedrun_mode and not speedrun_active:  # Only start if not already running
+	if speedrun_mode and not speedrun_active:
 		speedrun_time = 0.0
 		speedrun_active = true
 		if is_instance_valid(get_tree().current_scene):
@@ -25,9 +25,8 @@ func start_speedrun():
 func stop_speedrun():
 	if speedrun_active:
 		speedrun_active = false
-		if speedrun_time < best_time or best_time == 0.0:
-			best_time = speedrun_time
-		# Hide timer
+		#if speedrun_time < best_time or best_time == 0.0:
+			#best_time = speedrun_time
 		if is_instance_valid(get_tree().current_scene):
 			get_tree().current_scene.update_speedrun_ui(false)
 
@@ -36,7 +35,6 @@ func set_speedrun_mode(enabled: bool):
 	if !speedrun_mode and speedrun_active:
 		stop_speedrun()
 	
-	# Only update UI if we're in the game world
 	var current_scene = get_tree().current_scene
 	if current_scene.has_method("update_speedrun_ui"):
 		current_scene.update_speedrun_ui(enabled)
@@ -44,7 +42,7 @@ func set_speedrun_mode(enabled: bool):
 func get_formatted_time() -> String:
 	var minutes := int(speedrun_time / 60)
 	var seconds := fmod(speedrun_time, 60)
-	return "%02d:%05.2f" % [minutes, seconds]  # MM:SS.mm format
+	return "%02d:%05.2f" % [minutes, seconds]
 
 func update_player_position(new_position: Vector3):
 	player_position = new_position
@@ -58,39 +56,37 @@ func set_fov(new_fov: float):
 	fov = new_fov
 	emit_signal("fov_updated", fov)
 
-func set_sensitivity(new_sensitivity: float):  # Add sensitivity setter
+func set_sensitivity(new_sensitivity: float):
 	sensitivity = new_sensitivity
 	emit_signal("sensitivity_updated", sensitivity)
 
 func save_game_data():
-	
 	print("Saving game data... Player position: ", player_position)
 	print("Saving game data... Player rotation: ", player_rotation)
-	print("Saving game data... FOV: ", fov)  # Log FOV
+	print("Saving game data... FOV: ", fov)  
 	print("Saving game data... Sensitivity: ", sensitivity)
 	var save_game = SaveGame.new()
 	save_game.speedrun_mode = speedrun_mode
-	save_game.best_time = best_time
+	#save_game.best_time = best_time
 	save_game.player_position = player_position
 	save_game.player_rotation = player_rotation
-	save_game.fov = fov  # Save FOV
+	save_game.fov = fov
 	save_game.sensitivity = sensitivity
 	if save_game.write_savegame():
-		print("Game saved successfully!")
+		print("GAME SAVED")
 	else:
-		print("Failed to save game.")
+		print("GAME SAVE FAILED")
 
 func load_game_data():
-	print("Attempting to load game data...")
 	var loaded_save = SaveGame.load_savegame()
 	if loaded_save:
 		print("Loaded player position: ", loaded_save.player_position)
 		print("Loaded player rotation: ", loaded_save.player_rotation)
-		print("Loaded FOV: ", loaded_save.fov)  # Log FOV
+		print("Loaded FOV: ", loaded_save.fov) 
 		print("Loaded Sensitivity: ", loaded_save.sensitivity)
 		update_player_position(loaded_save.player_position)
 		update_player_rotation(loaded_save.player_rotation)
-		set_fov(loaded_save.fov)  # Load FOV
+		set_fov(loaded_save.fov) 
 		set_sensitivity(loaded_save.sensitivity)
 	else:
-		print("Failed to load game data.")
+		print("GAME LOAD FAILED")
