@@ -128,8 +128,8 @@ var last_landing_sound_index = -1
 # Breakable wood variables
 @export var wood_break_sounds: Array[AudioStream] = []
 @onready var wood_break_sound = $"../gravelwarningsound"
-const WOOD_BREAK_FORCE = 40.0  # Minimum force required to break wood
-const WOOD_BREAK_TORQUE = 20.0   # Minimum torque required to break wood
+const WOOD_BREAK_FORCE = 40.0
+const WOOD_BREAK_TORQUE = 20.0   
 var left_hand_pull_force = Vector3.ZERO
 var right_hand_pull_force = Vector3.ZERO
 var left_hand_torque = 0.0
@@ -320,7 +320,7 @@ func _unhandled_input(event):
 
 func _physics_process(delta):
 	
-	
+		
 	if is_falling_spawn:
 		fall_timer -= delta
 		if fall_timer <= 0 or is_on_floor():
@@ -331,20 +331,19 @@ func _physics_process(delta):
 	if right_hand_cooldown > 0:
 		right_hand_cooldown -= delta
 
-	# Existing collision check
 	var collision = get_last_slide_collision()
 	if collision:
 		var collider = collision.get_collider()
-		if collider and collider.is_in_group("rock"):  # Ensure the rock is in the "Rock" group
-			print("Player collided with rock! Releasing grabs...")  # Debug: Confirm collision
+		if collider and collider.is_in_group("rock"):
+			print("COLLIDED! Releasing grab")
 			if left_hand_grabbing:
 				hand_animation_player_left.play("default")
-				release_grab(true)  # Release left hand
-				left_hand_cooldown = GRAB_COOLDOWN_TIME  # Start cooldown for left hand
+				release_grab(true)  
+				left_hand_cooldown = GRAB_COOLDOWN_TIME 
 			if right_hand_grabbing:
 				hand_animation_player_right.play("default")
-				release_grab(false)  # Release right hand
-				right_hand_cooldown = GRAB_COOLDOWN_TIME  # Start cooldown for right hand
+				release_grab(false) 
+				right_hand_cooldown = GRAB_COOLDOWN_TIME 
 	
 	if left_hand_grabbing:
 		left_hand.global_transform.origin = grab_point_left
@@ -451,7 +450,6 @@ func _physics_process(delta):
 				camera.transform.origin = camera.transform.origin.lerp(shake_offset, delta * FALL_SHAKE_SPEED)
 	else:
 		if is_falling:
-			# Stop falling effects when not falling
 			is_falling = false
 			fall_time = 0.0
 			wind_woosh_sound.stop()
@@ -588,19 +586,14 @@ func check_wood_break():
 				break_wood(collider, false)
 				
 func break_wood(collider: Node, is_left_hand: bool):
-	print("WOOD HAS BROKEN FROM PULL")
-	
-	# Play wood-specific breaking sound with randomization
 	if wood_break_sounds.size() > 0:
 		var random_index = randi() % wood_break_sounds.size()
-		# Ensure we don't play the same sound twice in a row
 		while random_index == last_grab_sound_index:
 			random_index = randi() % wood_break_sounds.size()
 		last_grab_sound_index = random_index
 		
-		# Set random pitch and volume
-		var pitch = randf_range(0.8, 1.2)  # Slightly wider range for wood sounds
-		var volume_db = -20  # Adjust volume as needed
+		var pitch = randf_range(0.8, 1.2)  
+		var volume_db = -30 
 		
 		# Play the sound
 		wood_break_sound.stream = wood_break_sounds[random_index]
@@ -609,23 +602,17 @@ func break_wood(collider: Node, is_left_hand: bool):
 		wood_break_sound.global_position = collider.global_transform.origin
 		wood_break_sound.play()
 	
-	# Hide and disable collision
+	#hide object
 	collider.visible = false
 	collider.set_collision_layer_value(LAYER_WORLD, false)
-	
-	# Release the grab
 	release_grab(is_left_hand)
-	
-	# Add some visual effects
 	particles_hand(collider.global_transform.origin)
 	
-	# Apply a small force to the player in the opposite direction
-	var break_force = left_hand_pull_force if is_left_hand else right_hand_pull_force
-	velocity += -break_force.normalized() * 2.0  # Small recoil
-	
+	#var break_force = left_hand_pull_force if is_left_hand else right_hand_pull_force
+	#velocity += -break_force.normalized() * 2.0
 	# Schedule respawn if needed
-	var collider_id = collider.get_instance_id()
-	broken_surfaces[collider_id] = RESPAWN_TIME
+	#var collider_id = collider.get_instance_id()
+	#broken_surfaces[collider_id] = RESPAWN_TIME
 
 func check_grab():
 	
@@ -874,11 +861,11 @@ func play_gravel_warning_sound(collider: Node):
 
 func spawn_rock(spawn_position: Vector3):
 	if rock_instance:  
-		print("Rock already exists.")
+		print("Rock already exists")
 		return
 	
 	if not rock_scene:
-		print("Rock scene is not assigned!")
+		print("Rock isnt assigned")
 		return
 	
 	var rock_node = rock_scene.instantiate()
@@ -886,12 +873,12 @@ func spawn_rock(spawn_position: Vector3):
 	if rigid_body is RigidBody3D:
 		rock_instance = rigid_body  
 		get_parent().add_child(rock_node)  
-		print("Rock spawned", spawn_position)
+		print("Rock spawned here", spawn_position)
 		
 		rock_instance.global_position = spawn_position
 		rock_instance.linear_velocity = Vector3(0, -2, 0)  
 		rock_instance.gravity_scale = 0.5  
-		#rock_instance.connect("tree_exited", Callable(self, "_on_rock_destroyed"))
+		rock_instance.connect("tree_exited", Callable(self, "_on_rock_destroyed"))
 		
 		#sound handle
 		if rockfall_sound:

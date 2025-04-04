@@ -1,4 +1,4 @@
-[gd_scene load_steps=34 format=3 uid="uid://cw5ty64yjmos8"]
+[gd_scene load_steps=36 format=3 uid="uid://cw5ty64yjmos8"]
 
 [ext_resource type="Script" path="res://Scripts/menu.gd" id="1_3ru06"]
 [ext_resource type="PackedScene" uid="uid://8qoj8306fs56" path="res://Models/well_model.glb" id="2_3qr0f"]
@@ -239,6 +239,14 @@ size = Vector2(200, 40)
 albedo_color = Color(0.3125, 0.242007, 0.0569091, 1)
 albedo_texture = ExtResource("2_wnj5a")
 uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6ilt0"]
+albedo_color = Color(0, 0, 0, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_u4pu3"]
+material = SubResource("StandardMaterial3D_6ilt0")
+radius = 2.1
+height = 0.1
 
 [node name="menu" type="Control"]
 layout_mode = 3
@@ -4149,6 +4157,10 @@ transform = Transform3D(0.444424, 0.116438, -0.888217, -0.0504869, 0.993196, 0.1
 
 [node name="fol3_noback_edit13" parent="." instance=ExtResource("18_qnmy6")]
 transform = Transform3D(0.444424, 0.116438, -0.888217, -0.0504869, 0.993196, 0.104939, 0.894393, -0.00179397, 0.447279, 1.4577, -0.517417, -8.87068)
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0.502193, -11.5)
+mesh = SubResource("SphereMesh_u4pu3")
 
 [connection signal="mouse_entered" from="VBoxContainer/continue" to="." method="_on_mouse_entered_continue"]
 [connection signal="mouse_exited" from="VBoxContainer/continue" to="." method="_on_continue_mouse_exited"]
