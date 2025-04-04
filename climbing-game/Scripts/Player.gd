@@ -355,28 +355,25 @@ func _physics_process(delta):
 	
 	check_grab()
 	
-	# Grab timer + break_surface
+	#grab timer + break_surface
 	for collider_id in grab_timers.keys():
 		var collider = instance_from_id(collider_id)
-		if collider and collider.is_in_group("Breakable"):  # Ensure the collider is valid
+		if collider and collider.is_in_group("Breakable"): 
 			grab_timers[collider_id] += delta
 			
-			# Check if the warning sound should play
 			if grab_timers[collider_id] >= BREAK_TIME - WARNING_TIME and not warning_sound_played.get(collider_id, false):
 				play_gravel_warning_sound(collider)
-				warning_sound_played[collider_id] = true  # Mark that the warning sound has been played
+				warning_sound_played[collider_id] = true 
 			
-			# Check if the surface should break
 			if grab_timers[collider_id] >= BREAK_TIME:
 				break_surface(collider)
 				grab_timers.erase(collider_id)
-				warning_sound_played.erase(collider_id)  # Remove the warning flag
+				warning_sound_played.erase(collider_id)  
 		else:
-			# If the collider is invalid, remove it from the dictionaries
 			grab_timers.erase(collider_id)
 			warning_sound_played.erase(collider_id)
 	
-	# Breakable respawn
+	#breakable respawn
 	for collider_id in broken_surfaces.keys():
 		broken_surfaces[collider_id] -= delta
 		if broken_surfaces[collider_id] <= 0:
@@ -774,11 +771,11 @@ func break_surface(collider: Node):
 		collider.visible = false
 		collider.set_collision_layer_value(LAYER_WORLD, false)
 		
-		# Release both hands if they are grabbing the broken surface
+		#release both 
 		if left_hand_grabbing and grab_joint_left.node_b == collider.get_path():
-			release_grab(true)  # Release left hand
+			release_grab(true)
 		if right_hand_grabbing and grab_joint_right.node_b == collider.get_path():
-			release_grab(false)  # Release right hand
+			release_grab(false)  
 		
 		# Clean up dictionaries
 		var collider_id = collider.get_instance_id()
@@ -798,7 +795,7 @@ func respawn_surface(collider_id: int):
 		collider.visible = true
 		collider.set_collision_layer_value(LAYER_WORLD, true)
 		broken_surfaces.erase(collider_id)
-		warning_sound_played.erase(collider_id)  # Reset the warning flag
+		warning_sound_played.erase(collider_id)
 
 func update_hands(delta):
 	var cam_basis = camera.global_transform.basis
@@ -889,12 +886,12 @@ func spawn_rock(spawn_position: Vector3):
 	if rigid_body is RigidBody3D:
 		rock_instance = rigid_body  
 		get_parent().add_child(rock_node)  
-		print("Rock spawned at:", spawn_position)
+		print("Rock spawned", spawn_position)
 		
 		rock_instance.global_position = spawn_position
 		rock_instance.linear_velocity = Vector3(0, -2, 0)  
 		rock_instance.gravity_scale = 0.5  
-		rock_instance.connect("tree_exited", Callable(self, "_on_rock_destroyed"))
+		#rock_instance.connect("tree_exited", Callable(self, "_on_rock_destroyed"))
 		
 		#sound handle
 		if rockfall_sound:
