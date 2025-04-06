@@ -11,10 +11,10 @@ extends Resource
 const SAVE_GAME_PATH := "user://savegame.tres"
 
 func write_savegame() -> bool:
-	print("Pos to save: ", player_position)
-	print("Rot to save: ", player_rotation)
+	print("pos to save: ", player_position)
+	print("rot to save: ", player_rotation)
 	print("fov to save: ", fov) 
-	print("Sens to savbe: ", sensitivity)
+	print("sens to savbe: ", sensitivity)
 	var save_result = ResourceSaver.save(self, SAVE_GAME_PATH)
 	if save_result == OK:
 		print("GAME SAVE SUCCESSFUL")
@@ -30,10 +30,10 @@ static func load_savegame() -> SaveGame:
 	var loaded_resource = load(SAVE_GAME_PATH)
 	if loaded_resource is SaveGame:
 		print("LOADED GAME SUCCESSFUL")
-		print("Loaded pos: ", loaded_resource.player_position)
-		print("Loaded rot: ", loaded_resource.player_rotation)
-		print("Loaded fov: ", loaded_resource.fov)
-		print("Loaded sens: ", loaded_resource.sensitivity)
+		print("loaded pos: ", loaded_resource.player_position)
+		print("loaded rot: ", loaded_resource.player_rotation)
+		print("loaded fov: ", loaded_resource.fov)
+		print("loaded sens: ", loaded_resource.sensitivity)
 		return loaded_resource
 	else:
 		print("ERROR LOADING")

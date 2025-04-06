@@ -15,14 +15,14 @@ const LAYER_WORLD = 1
 const LAYER_HANDS = 2
 const LAYER_PLAYER = 4
 
-# Physics stuff
+#physics stuff
 @export var hand_smoothing = 20
 @export var reach_distance = 0.6
 @export var reach_speed = 10.0
 @export var climb_force = 5.0
 @export var hang_offset = Vector3(0, -1.8, 0)
 
-# Nodes
+#nodes ig
 @onready var head = $Head
 @onready var camera = $Head/Camera3D
 @onready var left_hand = $lefthand
@@ -30,18 +30,18 @@ const LAYER_PLAYER = 4
 @onready var grab_sound = $"../grabsound"
 @onready var hand_fx = $"../Map/GPUParticles3D"
 
-# Raycasts
+#raycasts
 @onready var left_hand_raycast = $lefthand/left_hand_raycast
 @onready var right_hand_raycast = $righthand/right_hand_raycast
 
-# Joints for climbing
+#arm joints
 @onready var grab_joint_left = $HingeJoint3D_Left
 @onready var grab_joint_right = $HingeJoint3D_Right
 
 @onready var hand_animation_player_left = $lefthand/hand_left_rigged/AnimationPlayer
 @onready var hand_animation_player_right = $righthand/hand_right_rigged/AnimationPlayer
 
-# Climb variables
+#climbing stuff
 var left_hand_initial_offset: Vector3
 var right_hand_initial_offset: Vector3
 var left_hand_reaching = false
@@ -58,11 +58,11 @@ var right_hand_rotation_locked = false
 
 var velocity_decay_rate: float = 5.0 
 
-# Landing 
+#landing
 var was_in_air = false
 @onready var landing_particles = $LandingParticles
-var is_falling_spawn = false  # Controls if player is in initial fall state
-const FALL_DURATION = 6.0  # Time in seconds to disable movement
+var is_falling_spawn = false  
+const FALL_DURATION = 6.0 
 var fall_timer = 0.0
 
 # Grab sounds
@@ -147,48 +147,40 @@ func _ready():
 	if area_3d2:
 		area_3d2.collision_mask = 1 | 4  
 	if area_3d2:
-		area_3d2.connect("body_entered", Callable(self, "_on_area_3d_body_entered"))
+		area_3d2.connect("body_entered", Callable(self, "_on_area_3d2_body_entered"))
 	
 	setup_hands()
 
 	SENSITIVITY = game_manager.sensitivity
 	game_manager.connect("sensitivity_updated", Callable(self, "_on_sensitivity_updated"))
 	
-	# Load pause menu
+	#load pause menu
 	var pause_menu_scene = load(pause_menu_scene_path)
 	if pause_menu_scene:
 		pause_menu_instance = pause_menu_scene.instantiate()
 		if pause_menu_instance:
 			add_child(pause_menu_instance)
 			pause_menu_instance.hide()
-		else:
-			print("Failed to instantiate pause menu scene.")
-	else:
-		print("Failed to load pause menu scene.")
 	
-	# Cam setup
+	#cam setup
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	left_hand_initial_offset = left_hand.global_position - camera.global_position
 	right_hand_initial_offset = right_hand.global_position - camera.global_position
 	setup_game_manager_connection()
 	
-	# Spawn falling if no save
+	#spawn falling if no save
 	if GameManager.player_position == Vector3.ZERO:
 		spawn_falling()
 	else:
-		# Saved pos and rot
+		#saved pos and rot
 		global_transform.origin = GameManager.player_position
 		$Head.global_transform.basis = GameManager.player_rotation
 
 func configure_hinge_joint(joint: HingeJoint3D):
-	# Enable angular limits
+	#params i dont think work
 	joint.set_flag(HingeJoint3D.FLAG_USE_LIMIT, true)
-	
-	# Set angular limits
 	joint.set_param(HingeJoint3D.PARAM_LIMIT_LOWER, -0.1) 
 	joint.set_param(HingeJoint3D.PARAM_LIMIT_UPPER, 0.1) 
-	
-	# Set bias and relaxation for stiffness
 	joint.set_param(HingeJoint3D.PARAM_LIMIT_BIAS, 10)  
 	joint.set_param(HingeJoint3D.PARAM_LIMIT_RELAXATION, 0.1) 
 
@@ -196,8 +188,8 @@ func spawn_falling():
 	global_transform.origin = $"/root/World/Map/SpawnPoint".global_transform.origin
 	is_falling_spawn = true
 	fall_timer = FALL_DURATION
-	velocity = Vector3.ZERO  # Clear any existing momentum
-	is_falling = false  # Reset falling state
+	velocity = Vector3.ZERO 
+	is_falling = false 
 	fall_time = 0.0
 
 func _on_fov_updated(new_fov: float):
@@ -243,36 +235,32 @@ func setup_hands():
 	right_hand.inertia = Vector3(1, 1, 1)
 
 func _unhandled_input(event):
-	# Pause
+	#pause
 	if event.is_action_pressed("esc"):
 		if pause_menu_instance:
 			if pause_menu_instance.is_inside_tree():
 				pause_menu_instance.toggle_pause()
 	
-	# Mouse movement
+	#mouse movement
 	if event is InputEventMouseMotion:
 		head.rotate_y(-event.relative.x * SENSITIVITY)
 		camera.rotate_x(-event.relative.y * SENSITIVITY)
 		camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-90), deg_to_rad(90))
 	
-	# Grab binds
+	#grab binds
 	if event.is_action_pressed("grab_left"):
 		hand_animation_player_left.play("open")
 		left_hand_reaching = true
-		
-		# Play random reach sound for left hand
+	
 		if hand_reach_sounds.size() > 0:
 			var random_index = randi() % hand_reach_sounds.size()
-			# Ensure the same sound isn't played twice in a row
 			while random_index == last_grab_sound_index:
 				random_index = randi() % hand_reach_sounds.size()
 			last_grab_sound_index = random_index
-
-			# Set random pitch and volume
+	
 			var pitch = randf_range(0.9, 1.1)  
 			var volume_db = -30  
-
-			# Play the sound on the left hand
+		
 			left_hand_sound.volume_db = volume_db
 			left_hand_sound.pitch_scale = pitch
 			left_hand_sound.stream = hand_reach_sounds[random_index]
@@ -286,20 +274,14 @@ func _unhandled_input(event):
 	if event.is_action_pressed("grab_right"):
 		hand_animation_player_right.play("open")
 		right_hand_reaching = true
-		
-		# Play random reach sound for right hand
 		if hand_reach_sounds.size() > 0:
 			var random_index = randi() % hand_reach_sounds.size()
-			# Ensure the same sound isn't played twice in a row
 			while random_index == last_grab_sound_index:
 				random_index = randi() % hand_reach_sounds.size()
 			last_grab_sound_index = random_index
-
-			# Set random pitch and volume
 			var pitch = randf_range(0.9, 1.1) 
 			var volume_db = -30 
 
-			# Play the sound on the right hand
 			right_hand_sound.volume_db = volume_db
 			right_hand_sound.pitch_scale = pitch
 			right_hand_sound.stream = hand_reach_sounds[random_index]
@@ -310,14 +292,14 @@ func _unhandled_input(event):
 		right_hand_reaching = false
 		release_grab(false)
 				
-	# Noclip toggle
+	#noclip toggle
 	if event.is_action_pressed("noclip"):
 		noclip_enabled = !noclip_enabled
 		if noclip_enabled:
 			collision_mask = 0 
 		else:
 			collision_mask = LAYER_WORLD
-
+				
 func _physics_process(delta):
 	
 		
@@ -397,7 +379,7 @@ func _physics_process(delta):
 	move_and_slide()
 	
 	
-	# Landing 
+	#landing
 	if was_in_air and is_on_floor():
 		emit_landing_particles()
 		if is_falling:
@@ -405,33 +387,28 @@ func _physics_process(delta):
 			fall_time = 0.0
 			wind_woosh_sound.stop()
 			
-			# Play landing sound
+			#landing sound
 			if landing_sounds.size() > 0:
 				var random_index = randi() % landing_sounds.size()
-				# Ensure the same sound isn't played twice in a row
 				while random_index == last_landing_sound_index:
 					random_index = randi() % landing_sounds.size()
 				last_landing_sound_index = random_index
-
-				# Set random pitch and volume
-				var pitch = randf_range(1.0, 1.2)  # Random pitch between 0.9 and 1.1
-				var volume_db = -25  # Adjust volume as needed
-
-				# Play the sound
+				var pitch = randf_range(1.0, 1.2)
+				var volume_db = -25 
+				
 				landing_sound.stream = landing_sounds[random_index]
 				landing_sound.volume_db = volume_db
 				landing_sound.pitch_scale = pitch
 				landing_sound.play()
 	was_in_air = !is_on_floor()
 	
-	# Falling effects
+	#falling fx
 	if !is_on_floor() and velocity.y < 0:
 		if !left_hand_grabbing and !right_hand_grabbing:
-			fall_time += delta  # Increment fall time
+			fall_time += delta 
 			
 			if fall_time >= MIN_FALL_TIME:
 				if !is_falling:
-					# Start falling effects
 					is_falling = true
 					if wind_woosh_sounds.size() > 0:
 						var random_index = randi() % wind_woosh_sounds.size()
@@ -439,8 +416,7 @@ func _physics_process(delta):
 						wind_woosh_sound.volume_db = -20
 						wind_woosh_sound.pitch_scale = randf_range(0.9, 1.1)
 						wind_woosh_sound.play()
-				
-				# Update falling effects (camera shake)
+							
 				var shake_intensity = FALL_SHAKE_INTENSITY * (fall_time - MIN_FALL_TIME)
 				var shake_offset = Vector3(
 					randf_range(-shake_intensity, shake_intensity),
@@ -471,27 +447,21 @@ func handle_movement(delta):
 	if not is_on_floor():
 		velocity.y -= gravity * delta
 		
-	# Movement input
+	#movement stuff
 	var input_dir = Input.get_vector("left", "right", "up", "down")
 	var direction = (head.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 	var speed = SPRINT_SPEED if Input.is_action_pressed("sprint") else WALK_SPEED
 	
-	# Only process movement if not in initial fall state
 	if not is_falling_spawn:
-		# Lerp for movement
 		if direction:
 			velocity.x = lerp(velocity.x, direction.x * speed, delta * 2.0)
 			velocity.z = lerp(velocity.z, direction.z * speed, delta * 2.0)
 	
-	# Jump handling (works regardless of is_falling_spawn, but only when grounded)
 	if Input.is_action_just_pressed("jump") and is_on_floor():
 		velocity.y = JUMP_VELOCITY
-	
-	# Crouch (preserved from original)
 	if Input.is_action_pressed("crouch"):
 		speed *= 0.6
 	
-	# Ground movement handling (preserved from original)
 	if direction:
 		if is_on_floor():
 			velocity.x = lerp(velocity.x, direction.x * speed, delta * 12.0)
@@ -569,19 +539,19 @@ func handle_climbing(delta):
 			check_wood_break()
 			
 func check_wood_break():
-	# Check left hand
+	#check lh
 	if left_hand_grabbing:
 		var collider = get_node(grab_joint_left.node_b) if grab_joint_left.node_b != NodePath("") else null
 		if collider and collider.is_in_group("Wood"):
-			# Check if force exceeds threshold
+			#threshhold
 			if left_hand_pull_force.length() > WOOD_BREAK_FORCE or left_hand_torque > WOOD_BREAK_TORQUE:
 				break_wood(collider, true)
 	
-	# Check right hand
+	#check rh
 	if right_hand_grabbing:
 		var collider = get_node(grab_joint_right.node_b) if grab_joint_right.node_b != NodePath("") else null
 		if collider and collider.is_in_group("Wood"):
-			# Check if force exceeds threshold
+			#threshhold
 			if right_hand_pull_force.length() > WOOD_BREAK_FORCE or right_hand_torque > WOOD_BREAK_TORQUE:
 				break_wood(collider, false)
 				
@@ -689,21 +659,17 @@ func grab_object(hand_raycast: RayCast3D, is_left_hand: bool):
 		if not grab_timers.has(collider_id):
 			grab_timers[collider_id] = 0.0  # Only start a new timer if the surface isn't already being tracked
 	
-		# Random sound
 		if grab_sounds.size() > 0:
 			var random_index = randi() % grab_sounds.size()
-			# Don't play same sound twice
 			while random_index == last_grab_sound_index:
 				random_index = randi() % grab_sounds.size()
 			last_grab_sound_index = random_index
-
-			# Random pitch
 			if is_left_hand:
 				left_hand_sound.volume_db = -20
 				left_hand_sound.pitch_scale = randf_range(0.9, 1.1) 
 				left_hand_sound.stream = grab_sounds[random_index]
 				left_hand_sound.play()
-			
+					
 			else:
 				right_hand_sound.volume_db = -20
 				right_hand_sound.pitch_scale = randf_range(0.9, 1.1)
@@ -802,14 +768,12 @@ func update_hands(delta):
 	update_hand_position(right_hand, right_target, delta)
 
 func update_hand_position(hand: RigidBody3D, target: Vector3, delta: float):
-	# Calculate movement direction and distance
 	var movement = target - hand.global_position
 	var movement_direction = movement.normalized()
 	var movement_distance = movement.length()
 	
-	# Move_and_collide
+	#moveanndcollide
 	var collision = hand.move_and_collide(movement_direction * movement_distance * delta * hand_smoothing)
-	
 	if collision:
 		var adjusted_target = hand.global_position + movement_direction * collision.get_remainder().length()
 		hand.global_position = hand.global_position.lerp(adjusted_target, delta * hand_smoothing)

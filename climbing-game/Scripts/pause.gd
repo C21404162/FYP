@@ -32,7 +32,7 @@ func _ready():
 func _on_fov_changed(value: float):
 	game_manager.set_fov(value)
 	fov_label.text = "Fov: %.0f" % value
-
+	
 func toggle_pause():
 	visible = !visible
 	if visible:

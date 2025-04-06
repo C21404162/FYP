@@ -1,5 +1,4 @@
-extends RayCast3D
-
+extends RayCast3D#
 
 @onready var interaction_icon: TextureRect = $"../../../../Fade_interact/interaction_icon"
 @onready var dialogue_label: Label = $"../../../../Dialogue/Panel/dialogue_label"
@@ -31,7 +30,7 @@ func _process(delta: float) -> void:
 			#make icon fade in
 			create_tween().tween_property(interaction_icon, "modulate", Color(1, 1, 1, 1), 0.1)
 		
-			#interact logic
+			#interacting
 			if Input.is_action_just_pressed("interact"):
 				if not is_dialogue_active and not cooldown: 
 					is_processing_interaction = true
@@ -72,8 +71,8 @@ func start_dialogue() -> void:
 		is_dialogue_active = true
 		dialogue_panel.visible = true
 		show_dialogue_line()
-		if player and player.has_method("set_can_move"):
-			player.set_can_move(false)
+		#if player and player.has_method("set_can_move"):
+			#player.set_can_move(false)
 
 func show_dialogue_line() -> void:
 	if current_line < current_dialogue.dialogue_lines.size():
@@ -108,6 +107,6 @@ func end_dialogue() -> void:
 	dialogue_panel.visible = false
 	current_dialogue = null
 	current_line = 0
-	if player and player.has_method("set_can_move"):
-		player.set_can_move(true)
+	#if player and player.has_method("set_can_move"):
+		#player.set_can_move(true)
 	print("DIALOGUEENDFULLY")

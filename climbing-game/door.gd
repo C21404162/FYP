@@ -29,7 +29,6 @@ func play_random_knock():
 	while random_index == last_knock_index && knock_sounds.size() > 1:
 		random_index = randi() % knock_sounds.size()
 	last_knock_index = random_index
-	
 	audio_player.stream = knock_sounds[random_index]
 	audio_player.pitch_scale = randf_range(0.9, 1.1) 
 	audio_player.volume_db = -30

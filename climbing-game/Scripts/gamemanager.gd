@@ -15,7 +15,7 @@ var speedrun_active := false
 #var best_time := 0.0
 
 func start_speedrun():
-	print("Starting speedrun. Mode: ", speedrun_mode, " Active: ", speedrun_active)
+	print("speedrunmode: ", speedrun_mode)
 	if speedrun_mode and not speedrun_active:
 		speedrun_time = 0.0
 		speedrun_active = true
@@ -61,13 +61,12 @@ func set_sensitivity(new_sensitivity: float):
 	emit_signal("sensitivity_updated", sensitivity)
 
 func save_game_data():
-	print("Saving game data... Player position: ", player_position)
-	print("Saving game data... Player rotation: ", player_rotation)
-	print("Saving game data... FOV: ", fov)  
-	print("Saving game data... Sensitivity: ", sensitivity)
+	print("saving pos = ", player_position)
+	print("saving rot = ", player_rotation)
+	print("saving fov =", fov)  
+	print("saving sens = ", sensitivity)
 	var save_game = SaveGame.new()
 	save_game.speedrun_mode = speedrun_mode
-	#save_game.best_time = best_time
 	save_game.player_position = player_position
 	save_game.player_rotation = player_rotation
 	save_game.fov = fov
@@ -80,10 +79,10 @@ func save_game_data():
 func load_game_data():
 	var loaded_save = SaveGame.load_savegame()
 	if loaded_save:
-		print("Loaded player position: ", loaded_save.player_position)
-		print("Loaded player rotation: ", loaded_save.player_rotation)
-		print("Loaded FOV: ", loaded_save.fov) 
-		print("Loaded Sensitivity: ", loaded_save.sensitivity)
+		print("loaded pos ", loaded_save.player_position)
+		print("loaded rot ", loaded_save.player_rotation)
+		print("loaded fov ", loaded_save.fov) 
+		print("loaded sens ", loaded_save.sensitivity)
 		update_player_position(loaded_save.player_position)
 		update_player_rotation(loaded_save.player_rotation)
 		set_fov(loaded_save.fov) 

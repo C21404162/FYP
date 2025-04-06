@@ -3,15 +3,15 @@ extends Resource
 
 @export var dialogue_lines: Array[Dictionary] = [
 	{
-		"speaker": "Emaciated Man",  
+		"speaker": "Emaciated Creature",  
 		"text": "..."
 	},
 	{
-		"speaker": "Emaciated Man",
+		"speaker": "Emaciated Creature",
 		"text": "LINE OF DIALOGUE 2"
 	},
 	{
-		"speaker": "Emaciated Man",
+		"speaker": "Emaciated Creature",
 		"text": "LINE OF DIALOGUE 3"
 	}
 ]
