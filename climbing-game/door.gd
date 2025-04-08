@@ -6,7 +6,7 @@ extends CSGBox3D
 
 @onready var audio_player: AudioStreamPlayer3D = $AudioStreamPlayer3D
 
-# Sound tracking
+#soundtracking
 var knock_timer: float = 0.0
 var last_knock_index: int = -1  
 

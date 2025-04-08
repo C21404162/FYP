@@ -1,10 +1,8 @@
-[gd_scene load_steps=119 format=3 uid="uid://daea0cguij4h2"]
+[gd_scene load_steps=112 format=3 uid="uid://daea0cguij4h2"]
 
-[ext_resource type="Material" uid="uid://rt8kwy52hryb" path="res://Materials/highlight.tres" id="1_lgiqj"]
 [ext_resource type="Script" path="res://Scripts/world.gd" id="1_q6rjl"]
 [ext_resource type="Script" path="res://Scripts/Player.gd" id="1_vwaj1"]
 [ext_resource type="Texture2D" uid="uid://c2ote7bbhccsr" path="res://Textures/cobble_wall.png" id="3_umbod"]
-[ext_resource type="Texture2D" uid="uid://dl4ehmpcpnc3u" path="res://Textures/IMG_2034.jpg" id="3_umr55"]
 [ext_resource type="Texture2D" uid="uid://diq7n02p7gbs4" path="res://Textures/wooden_plank_model_wood_bark.png" id="4_05muq"]
 [ext_resource type="Texture2D" uid="uid://d334hub33k2fn" path="res://Textures/IMG_2019.jpg" id="4_a512g"]
 [ext_resource type="Texture2D" uid="uid://guff740bkob4" path="res://Textures/moss_new.jpg" id="4_oki8d"]
@@ -41,11 +39,8 @@
 [ext_resource type="AudioStream" uid="uid://dj31p3pl1wn06" path="res://Sounds/SFX/wood_break1.wav" id="29_t11ei"]
 [ext_resource type="AudioStream" uid="uid://ki020kbqpg4t" path="res://Sounds/SFX/wood_break2.wav" id="30_bubgw"]
 [ext_resource type="AudioStream" uid="uid://d16aq8r6d6ybt" path="res://Sounds/SFX/rockfall.mp3" id="31_atyem"]
+[ext_resource type="PackedScene" uid="uid://5idmgoe2xs4u" path="res://creature.glb" id="41_evjbj"]
 [ext_resource type="PackedScene" uid="uid://bhf3jxhqefcyh" path="res://Models/Foliage/grass_final.glb" id="42_unh21"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5qhtx"]
-albedo_texture = ExtResource("3_umbod")
-texture_filter = 0
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_v853q"]
 sky_top_color = Color(0.0875817, 0.121094, 0.0859752, 1)
@@ -81,32 +76,12 @@ albedo_color = Color(0.3125, 0.242007, 0.0569091, 1)
 albedo_texture = ExtResource("4_oki8d")
 uv1_triplanar = true
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hx26c"]
-albedo_texture = ExtResource("3_umbod")
-uv1_triplanar = true
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_201aj"]
-albedo_texture = ExtResource("4_05muq")
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_e2myu"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gtese"]
-albedo_texture = ExtResource("3_umr55")
-
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_k7ply"]
 albedo_texture = ExtResource("8_w86qp")
 uv1_triplanar = true
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ups6o"]
 albedo_texture = ExtResource("8_irqvw")
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2nb5y"]
-albedo_texture = ExtResource("3_umbod")
-uv1_triplanar = true
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bi1nw"]
-albedo_texture = ExtResource("4_05muq")
-uv1_triplanar = true
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_qdk05"]
 emission_shape = 1
@@ -295,6 +270,8 @@ uv1_triplanar = true
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_p0gp7"]
 albedo_texture = ExtResource("8_w86qp")
 uv1_triplanar = true
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_0mlxh"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_4n5t3"]
 radius = 0.3
@@ -1349,18 +1326,6 @@ script = ExtResource("1_q6rjl")
 
 [node name="Map" type="Node3D" parent="."]
 
-[node name="CSGBox3D4" type="CSGBox3D" parent="Map"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.25, 0.5, -4.75)
-use_collision = true
-size = Vector3(1.5, 1, 1.5)
-material = SubResource("StandardMaterial3D_5qhtx")
-
-[node name="CSGBox3D3" type="CSGBox3D" parent="Map"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, -4.75)
-use_collision = true
-size = Vector3(2, 1.5, 1.5)
-material = ExtResource("1_lgiqj")
-
 [node name="WorldEnvironment" type="WorldEnvironment" parent="Map"]
 environment = SubResource("Environment_jna2u")
 
@@ -1374,42 +1339,8 @@ shadow_enabled = true
 [node name="CSGBox3D" type="CSGBox3D" parent="Map"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.000499994, 0)
 use_collision = true
-size = Vector3(100, 0.001, 100)
+size = Vector3(20, 0.001, 20)
 material = SubResource("StandardMaterial3D_3ahdk")
-
-[node name="CSGBox3D5" type="CSGBox3D" parent="Map" groups=["Climbable"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.25, -9.5)
-use_collision = true
-size = Vector3(1, 8.5, 1)
-
-[node name="CSGBox3D7" type="CSGBox3D" parent="Map" groups=["Climbable"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8, -13.25)
-use_collision = true
-size = Vector3(1, 1, 7.5)
-
-[node name="CSGBox3D8" type="CSGBox3D" parent="Map"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.5, 2.25, 7.251)
-use_collision = true
-size = Vector3(5, 4.5, 0.5)
-material = SubResource("StandardMaterial3D_hx26c")
-
-[node name="CSGBox3D9" type="CSGBox3D" parent="Map"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.249, 2, 10.5)
-material_override = SubResource("StandardMaterial3D_201aj")
-use_collision = true
-size = Vector3(0.5, 5, 7)
-material = SubResource("StandardMaterial3D_e2myu")
-
-[node name="CSGBox3D10" type="CSGBox3D" parent="Map"]
-transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 13.5, 2.25, 13.749)
-use_collision = true
-size = Vector3(5, 4.5, 0.5)
-material = SubResource("StandardMaterial3D_gtese")
-
-[node name="CSGBox3D11" type="CSGBox3D" parent="Map"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.75, 4, 10.5)
-use_collision = true
-size = Vector3(0.5, 1, 7)
 
 [node name="CSGCylinder3D" type="CSGCylinder3D" parent="Map"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10, 0)
@@ -1487,19 +1418,6 @@ size = Vector3(1, 5, 10)
 [node name="CSGBox3D14" type="CSGBox3D" parent="Map/CSGCylinder3D"]
 transform = Transform3D(-3.78552e-08, -2.18557e-08, 1, -0.5, 0.866025, 0, -0.866025, -0.5, -4.37114e-08, 0, 66, 4.5)
 size = Vector3(1, 5, 10)
-
-[node name="CSGBox3D6" type="CSGBox3D" parent="Map"]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -11, 2.5, -3.25)
-use_collision = true
-size = Vector3(5, 5, 0.5)
-material = SubResource("StandardMaterial3D_2nb5y")
-
-[node name="CSGCylinder3D2" type="CSGCylinder3D" parent="Map"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 2, 2.5)
-use_collision = true
-radius = 0.370613
-height = 5.0
-material = SubResource("StandardMaterial3D_bi1nw")
 
 [node name="GPUParticles3D" type="GPUParticles3D" parent="Map"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, 1.5, 0)
@@ -1850,12 +1768,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.21904, 213.967, 2.39857)
 use_collision = true
 radius = 0.301674
 material = SubResource("StandardMaterial3D_ulsda")
-
-[node name="char_1" type="CSGSphere3D" parent="Map" groups=["Interactable"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1.5, -2.5)
-use_collision = true
-radial_segments = 6
-rings = 3
 
 [node name="CSGBox3D2" type="CSGBox3D" parent="Map" groups=["Climbable"]]
 transform = Transform3D(0.998429, -0.0560306, 0, 0.0560306, 0.998429, 0, 0, 0, 1, -0.197885, 38.4675, -2.19892)
@@ -2936,6 +2848,14 @@ material = SubResource("StandardMaterial3D_p0gp7")
 [node name="well_model" parent="Map" groups=["Climbable"] instance=ExtResource("15_g0n7r")]
 transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 225.5, -0.5)
 
+[node name="char_1" type="StaticBody3D" parent="Map" groups=["Interactable"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0, -2.04317)
+disable_mode = 2
+
+[node name="char_1" type="CollisionShape3D" parent="Map/char_1" groups=["Interactable"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.190046, -0.0958247)
+shape = SubResource("CapsuleShape3D_0mlxh")
+
 [node name="Player" type="CharacterBody3D" parent="."]
 script = ExtResource("1_vwaj1")
 grab_sounds = Array[AudioStream]([ExtResource("15_hj3ll"), ExtResource("13_k2b4s"), ExtResource("14_fw5k0")])
@@ -3190,11 +3110,63 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.937892, -0.699615, -1.5)
 [node name="grass_final2" parent="." instance=ExtResource("42_unh21")]
 transform = Transform3D(0.887952, 0, -0.459936, 0, 1, 0, 0.459936, 0, 0.887952, -0.937892, -0.873637, 0.326171)
 
-[node name="grass_final3" parent="." instance=ExtResource("42_unh21")]
-transform = Transform3D(0.336389, 0, -0.941723, 0, 1, 0, 0.941723, 0, 0.336389, 0.865201, -0.479214, -1.60226)
+[node name="creature" parent="." instance=ExtResource("41_evjbj")]
+transform = Transform3D(0.112442, 0.0348007, -0.0929825, 0.045563, 0.106727, 0.0950435, 0.0882091, -0.0994895, 0.0694334, 1.67728, 0.943072, -2.66092)
+
+[node name="Armature" parent="creature" index="0"]
+transform = Transform3D(1, -1.49012e-08, 1.19209e-07, -1.49012e-08, 1, 0, -1.49012e-07, 2.98023e-08, 1, -0.312384, -4.50441, -1.16583)
+
+[node name="Skeleton3D" parent="creature/Armature" index="0"]
+transform = Transform3D(0.965926, 0, 0.258819, 0, 1, 0, -0.258819, 0, 0.965926, 0, 0, 0)
+bones/0/position = Vector3(0.0476041, -1.97693, 0.545728)
+bones/0/rotation = Quaternion(-0.189189, -0.00803128, 0.041253, 0.981041)
+bones/0/scale = Vector3(1, 1, 0.999999)
+bones/1/position = Vector3(-3.42567e-07, 2.08273, -1.76627e-06)
+bones/1/rotation = Quaternion(0.451279, 0.00506649, -0.0703691, 0.889589)
+bones/1/scale = Vector3(1, 1, 1)
+bones/2/position = Vector3(-4.38136e-09, 2.80288, 1.45363e-07)
+bones/2/rotation = Quaternion(0.445524, -0.0239172, -0.0194066, 0.89474)
+bones/2/scale = Vector3(1, 1, 1)
+bones/3/position = Vector3(-1.74847e-07, 0.995733, -6.70846e-07)
+bones/3/rotation = Quaternion(0.135667, 0.00427565, -0.00194745, 0.990743)
+bones/3/scale = Vector3(1, 1, 1)
+bones/4/position = Vector3(2.38708, 2.27929, -0.084946)
+bones/4/rotation = Quaternion(-0.57309, 0.0543932, 0.779645, -0.246502)
+bones/4/scale = Vector3(1, 1, 1)
+bones/5/position = Vector3(-2.49276e-07, 2.22458, -7.63453e-07)
+bones/5/rotation = Quaternion(0.226071, 0.261404, 0.432378, 0.832832)
+bones/5/scale = Vector3(1, 1, 1)
+bones/6/position = Vector3(4.17124e-06, 1.45655, 4.11873e-07)
+bones/6/rotation = Quaternion(-0.0169464, -0.314476, 0.0824094, 0.94553)
+bones/6/scale = Vector3(1, 1, 1)
+bones/7/position = Vector3(-2.19651, 2.3152, -0.0897536)
+bones/7/rotation = Quaternion(0.146393, -0.0420281, 0.947327, 0.281733)
+bones/7/scale = Vector3(1, 1, 1)
+bones/8/position = Vector3(-6.80925e-07, 2.22458, -9.05131e-07)
+bones/8/rotation = Quaternion(-0.00417995, 0.0424886, 0.0126048, 0.999009)
+bones/8/scale = Vector3(1, 1, 1)
+bones/9/position = Vector3(-1.48912e-07, 1.45655, 7.79933e-07)
+bones/9/rotation = Quaternion(0.175322, -0.211032, -0.155163, 0.949027)
+bones/9/scale = Vector3(1, 1, 1)
+bones/10/position = Vector3(0.776048, -0.156065, -0.289228)
+bones/10/rotation = Quaternion(0.0528263, 0.436914, 0.842417, -0.310885)
+bones/10/scale = Vector3(1, 1, 1)
+bones/11/position = Vector3(-5.25919e-07, 2.27367, 4.32316e-07)
+bones/11/rotation = Quaternion(-0.769985, 0.120813, -0.21552, 0.588284)
+bones/11/scale = Vector3(1, 1, 1)
+bones/13/position = Vector3(-0.706024, -0.127572, -0.292124)
+bones/13/rotation = Quaternion(-0.0543056, 0.320385, 0.938841, 0.113935)
+bones/13/scale = Vector3(1, 0.999999, 1)
+bones/14/position = Vector3(6.14656e-08, 2.27367, -1.071e-06)
+bones/14/rotation = Quaternion(-0.476203, -0.0987794, 0.00466674, 0.873757)
+bones/14/scale = Vector3(1, 1, 1)
+bones/15/position = Vector3(3.56006e-07, 2.1835, -4.15956e-07)
+bones/15/rotation = Quaternion(0.687394, -0.106388, -0.0678655, 0.715238)
+bones/15/scale = Vector3(1, 1, 0.999999)
 
 [connection signal="body_entered" from="Map/Area3D" to="Player" method="_on_area_3d_body_entered"]
 [connection signal="body_entered" from="Map/Area3D2" to="Player" method="_on_area_3d_2_body_entered"]
 
 [editable path="Player/lefthand/hand_left_rigged"]
 [editable path="Player/righthand/hand_right_rigged"]
+[editable path="creature"]
