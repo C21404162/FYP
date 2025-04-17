@@ -1,4 +1,4 @@
-# PauseMenu.gd
+#pauseMenu.gd
 extends Control
 
 @onready var pause_panel = $pause_panel

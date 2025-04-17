@@ -85,6 +85,7 @@ var last_grab_sound_index = -1
 var rock_instance: RigidBody3D = null  
 @onready var area_3d = $"../Map/Area3D"
 @onready var area_3d2 = $"../Map/Area3D2"
+@onready var FinishArea = $"../Map/FinishArea"
 @onready var rockfall_sound = $rockfall
 
 var left_hand_cooldown = 0.0
@@ -148,6 +149,9 @@ func _ready():
 		area_3d2.collision_mask = 1 | 4  
 	if area_3d2:
 		area_3d2.connect("body_entered", Callable(self, "_on_area_3d2_body_entered"))
+		
+	if FinishArea:
+		FinishArea.collision_mask = 1 | 4  
 	
 	setup_hands()
 
@@ -862,4 +866,4 @@ func _on_area_3d_2_body_entered(body):
 
 func _on_rock_destroyed():
 	rock_instance = null 
-	print("Rock destroyed.")  
+	print("rock deleted")  

@@ -1,4 +1,4 @@
-[gd_scene load_steps=112 format=3 uid="uid://daea0cguij4h2"]
+[gd_scene load_steps=115 format=3 uid="uid://daea0cguij4h2"]
 
 [ext_resource type="Script" path="res://Scripts/world.gd" id="1_q6rjl"]
 [ext_resource type="Script" path="res://Scripts/Player.gd" id="1_vwaj1"]
@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://d334hub33k2fn" path="res://Textures/IMG_2019.jpg" id="4_a512g"]
 [ext_resource type="Texture2D" uid="uid://guff740bkob4" path="res://Textures/moss_new.jpg" id="4_oki8d"]
 [ext_resource type="Texture2D" uid="uid://c8lm8hg8qpmyg" path="res://Textures/well_model_cobble_wall.png" id="8_irqvw"]
+[ext_resource type="Texture2D" uid="uid://df72lpy55g8ul" path="res://Models/Foliage/tree_0.png" id="8_qc4nu"]
 [ext_resource type="Texture2D" uid="uid://dxn03o3k6f8d2" path="res://Textures/shitwall.png" id="8_w86qp"]
 [ext_resource type="Script" path="res://Scripts/interactray.gd" id="9_bfa6a"]
 [ext_resource type="Texture2D" uid="uid://dd2b1oksuqurn" path="res://Textures/doortex2.jpg" id="11_4660g"]
@@ -17,6 +18,7 @@
 [ext_resource type="AudioStream" uid="uid://b61ncpc6w3jwr" path="res://Sounds/SFX/knock2.mp3" id="14_cvow7"]
 [ext_resource type="AudioStream" uid="uid://dccu8dppqk7x4" path="res://Sounds/SFX/grab_real_3.mp3" id="14_fw5k0"]
 [ext_resource type="FontFile" uid="uid://c8vijpv4huy16" path="res://Fonts/ARIAL.TTF" id="15_86m0o"]
+[ext_resource type="Script" path="res://finish_area.gd" id="15_beqj2"]
 [ext_resource type="PackedScene" uid="uid://8qoj8306fs56" path="res://Models/well_model.glb" id="15_g0n7r"]
 [ext_resource type="AudioStream" uid="uid://y3kmoxpsn2kh" path="res://Sounds/SFX/grab_real_1.mp3" id="15_hj3ll"]
 [ext_resource type="AudioStream" uid="uid://0j6cfrjgbljg" path="res://Sounds/SFX/rock_break2.mp3" id="16_5eljq"]
@@ -194,7 +196,7 @@ albedo_texture = ExtResource("8_w86qp")
 uv1_triplanar = true
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_knbx5"]
-albedo_texture = ExtResource("3_umbod")
+albedo_texture = ExtResource("8_qc4nu")
 uv1_triplanar = true
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4nmou"]
@@ -272,6 +274,8 @@ albedo_texture = ExtResource("8_w86qp")
 uv1_triplanar = true
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_0mlxh"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_cuj28"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_4n5t3"]
 radius = 0.3
@@ -2856,7 +2860,15 @@ disable_mode = 2
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.190046, -0.0958247)
 shape = SubResource("CapsuleShape3D_0mlxh")
 
-[node name="Player" type="CharacterBody3D" parent="."]
+[node name="FinishArea" type="Area3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 225, 0)
+script = ExtResource("15_beqj2")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Map/FinishArea"]
+transform = Transform3D(6, 0, 0, 0, 6, 0, 0, 0, 6, 0, 0.5, 0)
+shape = SubResource("BoxShape3D_cuj28")
+
+[node name="Player" type="CharacterBody3D" parent="." groups=["Player"]]
 script = ExtResource("1_vwaj1")
 grab_sounds = Array[AudioStream]([ExtResource("15_hj3ll"), ExtResource("13_k2b4s"), ExtResource("14_fw5k0")])
 rock_break_sounds = Array[AudioStream]([ExtResource("21_l2y3y"), ExtResource("16_5eljq")])

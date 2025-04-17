@@ -4,6 +4,8 @@ signal player_position_updated(position)
 signal player_rotation_updated(rotation)
 signal fov_updated(fov_value) 
 signal sensitivity_updated(sensitivity_value)
+signal speedrun_started
+signal speedrun_finished(time)
 
 var player_position: Vector3 = Vector3.ZERO
 var player_rotation: Basis = Basis()
@@ -25,10 +27,9 @@ func start_speedrun():
 func stop_speedrun():
 	if speedrun_active:
 		speedrun_active = false
-		#if speedrun_time < best_time or best_time == 0.0:
-			#best_time = speedrun_time
-		if is_instance_valid(get_tree().current_scene):
-			get_tree().current_scene.update_speedrun_ui(false)
+		emit_signal("speedrun_finished", speedrun_time)
+		#if is_instance_valid(get_tree().current_scene):
+			#get_tree().current_scene.update_speedrun_ui(false)
 
 func set_speedrun_mode(enabled: bool):
 	speedrun_mode = enabled
